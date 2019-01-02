@@ -53,7 +53,7 @@ contract Petition is Ownable {
     }
 
     function didSign(uint256 _id, address _sender) public view returns (bool) {
-        for (uint i=0; i < signed[_sender].length; i++) {
+        for (uint i = 0; i < signed[_sender].length; i++) {
             if (signed[_sender][i] == _id) {
                 return true;
             }
@@ -63,7 +63,7 @@ contract Petition is Ownable {
     }
 
     function didWithdraw(uint256 _id, address _sender) public view returns (bool) {
-        for (uint i=0; i < withdraws[_sender].length; i++) {
+        for (uint i = 0; i < withdraws[_sender].length; i++) {
             if (withdraws[_sender][i] == _id) {
                 return true;
             }

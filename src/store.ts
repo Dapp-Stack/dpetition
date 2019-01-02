@@ -40,6 +40,9 @@ const mutations: MutationTree<RootState> = {
   setNetwork(state, { network }) {
     state.network = network;
   },
+  setPetitions(state, { petitions }) {
+    state.petitions = petitions;
+  },
 };
 
 const actions: ActionTree<RootState, RootState> = {
@@ -70,6 +73,10 @@ const actions: ActionTree<RootState, RootState> = {
     }, {});
 
     commit('setContracts', { contracts });
+  },
+  async loadPetitions({ commit, state }) {
+    const petitions =  await state.contracts.Petition.petitions();
+    commit('setPetitions', { petitions });
   },
 };
 

@@ -2,13 +2,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import Vue from 'vue';
+import { Action } from 'vuex-class';
+import { Component } from 'vue-property-decorator';
 
-@Component({
-  components: {
-    HelloWorld,
-  },
-})
-export default class Petitions extends Vue {}
+@Component
+export default class Petitions extends Vue {
+  @Action('loadPetitions') private loadPetitions: any;
+
+  public mounted() {
+    this.loadPetitions();
+  }
+}
 </script>

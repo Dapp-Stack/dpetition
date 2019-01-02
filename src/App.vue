@@ -36,9 +36,9 @@
 
   @Component
   export default class App extends Vue {
-    @State('provider') provider!: null | JsonRpcProvider;
-    @Getter('contractsDeployed') contractsDeployed!: boolean;
-    @Action('init') public init: any;
+    @State('provider') private provider!: null | JsonRpcProvider;
+    @Getter('contractsDeployed') private contractsDeployed!: boolean;
+    @Action('init') private init: any;
 
     public mounted() {
       this.init();
