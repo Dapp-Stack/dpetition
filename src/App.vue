@@ -10,7 +10,17 @@
         </el-menu>
       </el-header>
       <el-main>
-        <router-view/>
+        <router-view v-if="contractsDeployed"/>
+        <el-card v-else-if="provider" class="box-card">
+          <div slot="header" class="clearfix">
+            <span>Contracts not deployed</span>
+          </div>
+        </el-card>
+        <el-card v-else class="box-card">
+          <div slot="header" class="clearfix">
+            <span>Not Connected</span>
+          </div>
+        </el-card>
       </el-main>
     </el-container>
   </div>
@@ -20,9 +30,14 @@
   import Vue from 'vue';
   import { State, Action, Getter } from 'vuex-class';
   import Component from 'vue-class-component';
+  import { JsonRpcProvider } from 'ethers/providers';
+
+  import { Contracts } from './types';
 
   @Component
   export default class App extends Vue {
+    @State('provider') provider!: null | JsonRpcProvider;
+    @Getter('contractsDeployed') contractsDeployed!: boolean;
     @Action('init') public init: any;
 
     public mounted() {

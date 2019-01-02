@@ -1,8 +1,10 @@
 import Vue from 'vue';
-import Vuex, { StoreOptions, MutationTree, ActionTree } from 'vuex';
+import Vuex, { StoreOptions, MutationTree, ActionTree, GetterTree } from 'vuex';
 import * as ethers from 'ethers';
 import { JsonRpcProvider } from 'ethers/providers';
-import { EventFragment, FunctionFragment, Network } from 'ethers/utils';
+import { EventFragment, FunctionFragment } from 'ethers/utils';
+
+import { RootState } from './types';
 
 Vue.use(Vuex);
 
@@ -19,18 +21,6 @@ declare global {
       };
     };
   }
-}
-
-interface Petition {
-  title: string;
-  description: string;
-}
-
-interface RootState {
-  contracts: { [name: string]: ethers.Contract };
-  petitions: { [title: string]: Petition };
-  network: null | Network;
-  provider: null | JsonRpcProvider;
 }
 
 const defaultState: RootState = {
@@ -83,10 +73,17 @@ const actions: ActionTree<RootState, RootState> = {
   },
 };
 
+const getters: GetterTree<RootState, RootState> = {
+  contractsDeployed: (state: RootState) => {
+    return Object.keys(state.contracts).length > 0;
+  },
+};
+
 const store: StoreOptions<RootState> = {
   state: defaultState,
   mutations,
   actions,
+  getters,
 };
 
 export default new Vuex.Store<RootState>(store);
