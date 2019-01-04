@@ -30,8 +30,8 @@ export const getPending = (authorisationService: AuthorisationService) => async 
 };
 
 export const denyRequest = (authorisationService: AuthorisationService) => async (req: Request, res: Response) => {
-  const {identityAddress} = req.params;
-  const {key} = req.body;
+  const { identityAddress } = req.params;
+  const { key } = req.body;
   const response = await authorisationService.removeRequest(identityAddress, key);
   res.status(201)
     .type('json')
