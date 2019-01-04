@@ -1,8 +1,8 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import asyncMiddleware from '../middlewares/asyncMiddleware';
 import IdentityService from '../services/identityService';
 
-export const create = (identityService) => async (req, res, next) => {
+export const create = (identityService: IdentityService) => async (req: Request, res: Response, next: NextFunction) => {
   const {managementKey, ensName} = req.body;
   try {
     const transaction = await identityService.create(managementKey, ensName);
@@ -14,7 +14,7 @@ export const create = (identityService) => async (req, res, next) => {
   }
 };
 
-export const execution = (identityService) => async (req, res, next) => {
+export const execution = (identityService: IdentityService) => async (req: Request, res: Response, next: NextFunction) => {
   try {
     const transaction = await identityService.executeSigned(req.body);
     res.status(201)

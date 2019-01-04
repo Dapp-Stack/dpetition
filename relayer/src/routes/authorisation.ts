@@ -1,10 +1,10 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import geoip from 'geoip-lite';
 import moment from 'moment';
 import asyncMiddleware from '../middlewares/asyncMiddleware';
 import AuthorisationService from '../services/authorisationService';
 
-export const request = (authorisationService) => async (req, res) => {
+export const request = (authorisationService: AuthorisationService) => async (req: Request, res: Response) => {
   const ipAddress = req.headers['x-forwarded-for'] || req.ip;
   const deviceInfo = {
     ipAddress,
@@ -21,7 +21,7 @@ export const request = (authorisationService) => async (req, res) => {
     .send();
 };
 
-export const getPending = (authorisationService) => async (req, res) => {
+export const getPending = (authorisationService: AuthorisationService) => async (req: Request, res: Response) => {
   const {identityAddress} = req.params;
   const response = await authorisationService.getPendingAuthorisations(identityAddress);
   res.status(200)
@@ -29,7 +29,7 @@ export const getPending = (authorisationService) => async (req, res) => {
     .send(JSON.stringify({response}));
 };
 
-export const denyRequest = (authorisationService) => async (req, res) => {
+export const denyRequest = (authorisationService: AuthorisationService) => async (req: Request, res: Response) => {
   const {identityAddress} = req.params;
   const {key} = req.body;
   const response = await authorisationService.removeRequest(identityAddress, key);
