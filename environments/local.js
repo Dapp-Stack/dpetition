@@ -6,9 +6,10 @@ module.exports = {
   compile: {
     // List of contracts to compile
     contracts: [
-      "Petition.sol",
+      "Controller.sol",
       "Escrow.sol",
-      "Controller.sol"
+      "Identity.sol",
+      "Petition.sol",
     ]
   },
 
@@ -31,14 +32,7 @@ module.exports = {
 
     // Function executed by DApp Stack to deploy the contracts.
     migrate: async (deployer) => {
-      // Deploy ENS contracts and bootstrap: simple.eth
-      // await deployer.ens.bootstrapWith('simple', 'eth');
-
-      // Deploy an ERC20 contract
-      // await deployer.erc20.bootstrap();
-      
-      // Deploy an ERC721 contract
-      // await deployer.erc721.bootstrap();
+      await deployer.ens.bootstrapWith('dpetition', 'eth');
 
       const petition = await deployer.deploy('Petition');
       const escrow = await deployer.deploy('Escrow');

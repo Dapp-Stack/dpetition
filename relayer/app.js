@@ -4,8 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var RequestAuthorisationRouter = require('./routes/authorisation');
+var IdentityRouter = require('./routes/identity');
 
 var app = express();
 
@@ -14,17 +14,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/users', usersRouter);
+app.use('/authorisation', RequestAuthorisationRouter(this.authorisationService));
+app.use('/identity', IdentityRouter(this.identityService));
 
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
 app.use(function(err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  res.status(err.status || 500);
+  next(createError(500));
 });
 
 module.exports = app;

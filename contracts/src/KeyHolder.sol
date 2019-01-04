@@ -17,7 +17,7 @@ contract KeyHolder is IERC725KeyHolder {
         emit KeyAdded(keys[_key].key,  keys[_key].purpose, keys[_key].keyType);
     }
 
-    function() public payable {
+    function() external payable {
 
     }
 
@@ -29,7 +29,7 @@ contract KeyHolder is IERC725KeyHolder {
     }
 
     modifier onlyManagementKeyOrThisContract() {
-        bool isManagementKey = keyHasPurpose(bytes32(msg.sender), MANAGEMENT_KEY);
+        bool isManagementKey = keyHasPurpose(bytes32(uint256(msg.sender)), MANAGEMENT_KEY);
         require(isManagementKey || msg.sender == address(this), "Sender not permissioned");
         _;
     }
@@ -46,7 +46,7 @@ contract KeyHolder is IERC725KeyHolder {
         return keys[_key].purpose;
     }
 
-    function getKeysByPurpose(uint256 _purpose) public view returns(bytes32[]) {
+    function getKeysByPurpose(uint256 _purpose) public view returns(bytes32[] memory) {
         return keysByPurpose[_purpose];
     }
 

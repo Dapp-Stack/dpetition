@@ -22,16 +22,16 @@ contract ERC1077 is KeyHolder, IERC1077 {
     function canExecute(
         address to,
         uint256 value,
-        bytes data,
+        bytes memory data,
         uint nonce,
         uint gasPrice,
         address gasToken,
         uint gasLimit,
         OperationType operationType,
-        bytes signatures) public view returns (bool)
+        bytes memory signatures) public view returns (bool)
     {
         address signer = getSigner(
-            this,
+            address(this),
             to,
             value,
             data,
@@ -41,14 +41,14 @@ contract ERC1077 is KeyHolder, IERC1077 {
             gasLimit,
             operationType,
             signatures);
-        return keyExist(bytes32(signer));
+        return keyExist(bytes32(uint256(signer)));
     }
 
     function calculateMessageHash(
         address from,
         address to,
         uint256 value,
-        bytes data,
+        bytes memory data,
         uint nonce,
         uint gasPrice,
         address gasToken,
@@ -73,13 +73,13 @@ contract ERC1077 is KeyHolder, IERC1077 {
         address from,
         address to,
         uint value,
-        bytes data,
+        bytes memory data,
         uint nonce,
         uint gasPrice,
         address gasToken,
         uint gasLimit,
         OperationType operationType,
-        bytes signatures ) public pure returns (address)
+        bytes memory signatures ) public pure returns (address)
     {
         return calculateMessageHash(
             from,
@@ -96,20 +96,20 @@ contract ERC1077 is KeyHolder, IERC1077 {
     function executeSigned(
         address to,
         uint256 value,
-        bytes data,
+        bytes memory data,
         uint nonce,
         uint gasPrice,
         address gasToken,
         uint gasLimit,
         OperationType operationType,
-        bytes signatures) public returns (bytes32)
+        bytes memory signatures) public returns (bytes32)
     {
         require(nonce == _lastNonce, "Invalid nonce");
         require(canExecute(to, value, data, nonce, gasPrice, gasToken, gasLimit, operationType, signatures), "Invalid signature");
         uint256 startingGas = gasleft();
         /* solium-disable-next-line security/no-call-value */
-        bool success = to.call.value(value)(data);
-        bytes32 messageHash = calculateMessageHash(this, to, value, data, nonce, gasPrice, gasToken, gasLimit, operationType);
+        (bool success, ) = to.call.value(value)(data);
+        bytes32 messageHash = calculateMessageHash(address(this), to, value, data, nonce, gasPrice, gasToken, gasLimit, operationType);
         emit ExecutedSigned(messageHash, _lastNonce, success);
         _lastNonce++;
         uint256 gasUsed = startingGas.sub(gasleft());
