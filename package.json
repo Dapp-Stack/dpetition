@@ -2,12 +2,15 @@
   "name": "@dpetition/workspace",
   "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "relayer",
-    "ethereum",
-    "query",
-    "client"
-  ],
+  "workspaces": {
+    "packages": [
+      "relayer",
+      "ethereum",
+      "query",
+      "client"
+    ],
+    "nohoist": ["**/element-ui"]
+  },
   "devDependencies": {
     "typescript": "^3.0.0"
   }
