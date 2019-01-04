@@ -58,7 +58,7 @@ module.exports = {
     // The web framework you are using.
     // Default value is react
     // Possible values are: create-react-app, angular, vue, test, next and false
-    framework: 'vue',
+    framework: 'false',
 
     // How to deploy the assets,
     // Default value is ipfs

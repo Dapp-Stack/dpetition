@@ -25,4 +25,3 @@ yarn-error.log*
 
 .geth
 logs/
-public/tracker.json

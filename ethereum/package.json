@@ -1,0 +1,18 @@
+{
+  "name": "@dpetition/ethereum",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "das": "dapp-stack-scripts",
+    "secrets": "dapp-stack-secrets"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@dapp-stack/scripts": "^0.4.0",
+    "@dapp-stack/secrets": "^0.4.0",
+    "@dapp-stack/test": "^0.4.0",
+    "chai": "^4.2.0",
+    "solium": "^1.1.8"
+  }
+}

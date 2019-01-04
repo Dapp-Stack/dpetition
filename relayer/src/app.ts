@@ -3,8 +3,14 @@ import express, { Request, Response, NextFunction} from 'express';
 import useragent from 'express-useragent';
 import logger from 'morgan';
 
+import AuthorisationService from './services/AuthorisationService';
+import IdentityService from './services/IdentityService';
+
 const RequestAuthorisationRouter = require('./routes/authorisation');
 const IdentityRouter = require('./routes/identity');
+
+const authorisationService = new AuthorisationService();
+const identityService = new IdentityService();
 
 const app = express();
 

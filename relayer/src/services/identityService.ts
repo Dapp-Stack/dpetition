@@ -4,9 +4,9 @@ import {utils, ContractFactory} from 'ethers';
 import defaultDeployOptions from '../config/defaultDeployOptions';
 
 export default class IdentityService {
-  constructor(wallet, ensService, authorisationService, hooks, provider, legacyENS) {
+  constructor(wallet, ensService, authorisationService, hooks, provider) {
     this.wallet = wallet;
-    this.contractJSON = legacyENS ? IdentityLegacy : Identity;
+    this.contractJSON = Identity;
     this.abi = this.contractJSON.interface;
     this.bytecode = `0x${this.contractJSON.bytecode}`;
     this.ensService = ensService;

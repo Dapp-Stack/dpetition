@@ -2,7 +2,7 @@ import { Request } from "express";
 
 interface PendingAuthorisations {
   [identityAddress: string]: [{
-    key: number;
+    key: string;
     deviceInfo: any;
     index: number;
   }];
@@ -21,11 +21,11 @@ export default class AuthorisationService {
     this.index++;
   }
 
-  public getPendingAuthorisations(identityAddress) {
+  public getPendingAuthorisations(identityAddress: string) {
     return this.pendingAuthorisations[identityAddress] || [];
   }
 
-  public removeRequest(identityAddress, key) {
+  public removeRequest(identityAddress: string, key: string) {
     const lowKey = key.toLowerCase();
     this.pendingAuthorisations[identityAddress] = this.pendingAuthorisations[identityAddress] || [];
     this.pendingAuthorisations[identityAddress] = this.pendingAuthorisations[identityAddress]
