@@ -4,7 +4,9 @@
   "private": true,
   "workspaces": [
     "relayer",
-    "dapp"
+    "ethereum",
+    "query",
+    "client"
   ],
   "devDependencies": {
     "typescript": "^3.0.0"

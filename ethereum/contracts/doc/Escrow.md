@@ -3,7 +3,7 @@
 
 |  File Name  |  SHA-1 Hash  |
 |-------------|--------------|
-| /Users/anthony/code/DappStack/dpetition/dapp/contracts/src/Escrow.sol | b3c0ec1e6924dc0db5b0b83a23356f016c672ed1 |
+| /Users/anthony/code/DappStack/dpetition/ethereum/contracts/src/Escrow.sol | b3c0ec1e6924dc0db5b0b83a23356f016c672ed1 |
 
 ### Contracts Description Table
 

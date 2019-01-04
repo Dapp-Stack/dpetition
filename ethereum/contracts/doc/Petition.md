@@ -3,7 +3,7 @@
 
 |  File Name  |  SHA-1 Hash  |
 |-------------|--------------|
-| /Users/anthony/code/DappStack/dpetition/dapp/contracts/src/Petition.sol | 10e434a67e2065b95318abb7be14ca1b9f24fe60 |
+| /Users/anthony/code/DappStack/dpetition/ethereum/contracts/src/Petition.sol | 10e434a67e2065b95318abb7be14ca1b9f24fe60 |
 
 ### Contracts Description Table
 

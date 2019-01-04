@@ -141,7 +141,7 @@
     }
   ],
   "source": "pragma solidity ^0.5.0;\n\ncontract IERC1077 {\n    enum OperationType {CALL, DELEGATECALL, CREATE}\n\n    event ExecutedSigned(bytes32 indexed messageHash, uint indexed nonce, bool indexed success);\n\n    function lastNonce() public view returns (uint nonce);\n\n    function canExecute(\n        address to,\n        uint256 value,\n        bytes memory data,\n        uint nonce,\n        uint gasPrice,\n        address gasToken,\n        uint gasLimit,\n        OperationType operationType,\n        bytes memory signatures) public view returns (bool);\n\n    function executeSigned(\n        address to,\n        uint256 value,\n        bytes memory data,\n        uint nonce,\n        uint gasPrice,\n        address gasToken,\n        uint gasLimit,\n        OperationType operationType,\n        bytes memory signatures) public returns (bytes32);\n}\n",
-  "sourcePath": "/Users/anthony/code/DappStack/dpetition/dapp/contracts/src/IERC1077.sol",
+  "sourcePath": "/Users/anthony/code/DappStack/dpetition/ethereum/contracts/src/IERC1077.sol",
   "bytecode": "",
   "sourceMap": "",
   "deployedBytecode": "",
