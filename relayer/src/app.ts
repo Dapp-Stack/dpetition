@@ -28,7 +28,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
   console.error(err.stack)
-  res.status(500).send('Something broke!')
+  res.status(500)
+    .type('json')
+    .send();
 });
 
 
