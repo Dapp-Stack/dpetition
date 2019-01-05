@@ -21,6 +21,10 @@ contract Petition is Ownable {
     mapping (address => uint256[]) public signed;
     mapping (address => uint256[]) public withdraws;
 
+    function length() public view returns(uint256) {
+        return petitions.length;
+    }
+
     function create(string memory _title,
                     string memory _descriptionHash,
                     uint256 _expiration,

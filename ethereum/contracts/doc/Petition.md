@@ -3,7 +3,7 @@
 
 |  File Name  |  SHA-1 Hash  |
 |-------------|--------------|
-| /Users/anthony/code/DappStack/dpetition/ethereum/contracts/src/Petition.sol | 10e434a67e2065b95318abb7be14ca1b9f24fe60 |
+| /Users/anthony/code/DappStack/dpetition/ethereum/contracts/src/Petition.sol | b94178810d0f323b2287e6337622ac5131a99159 |
 
 ### Contracts Description Table
 
@@ -12,6 +12,7 @@
 |     └      |  **Function Name**  |  **Visibility**  |  **Mutability**  |  **Modifiers**  |
 ||||||
 | **Petition** | Implementation | Ownable |||
+| └ | length | Public ❗️ |   | |
 | └ | create | Public ❗️ | 🛑  | onlyOwner |
 | └ | sign | Public ❗️ | 🛑  | onlyOwner |
 | └ | didSign | Public ❗️ |   | |
