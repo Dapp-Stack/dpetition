@@ -1,15 +1,10 @@
 import createError from 'http-errors';
 import express, { Request, Response, NextFunction} from 'express';
 import logger from 'morgan';
+import PetitionService from './services/petitionService';
 
-import AuthorisationService from './services/AuthorisationService';
-import IdentityService from './services/IdentityService';
-
-const RequestAuthorisationRouter = require('./routes/authorisation');
-const IdentityRouter = require('./routes/identity');
-
-const authorisationService = new AuthorisationService();
-const identityService = new IdentityService();
+const PetitionRouter = require('./routes/petitions');
+const petitionService = new PetitionService();
 
 const app = express();
 
@@ -17,8 +12,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/authorisation', RequestAuthorisationRouter(authorisationService));
-app.use('/identity', IdentityRouter(identityService));
+app.use('/:network/petitions', PetitionRouter(petitionService));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
