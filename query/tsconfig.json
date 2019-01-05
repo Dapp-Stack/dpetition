@@ -10,6 +10,9 @@
     "strict": true,
     "outDir": "dist",
     "baseUrl": ".",
+    "types": [
+      "jest"
+    ],
     "paths": {
       "*": [
         "../node_modules/*"
