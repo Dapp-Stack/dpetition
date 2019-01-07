@@ -10,7 +10,6 @@
       <v-btn
         flat
         to="/"
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
       >
         <v-icon class="mr-2">fa-pencil</v-icon>
         <span>List Petitions</span>
@@ -18,7 +17,6 @@
       <v-btn
         color="primary"
         to="/petitions/new"
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
       >
         <v-icon class="mr-2">fa-plus</v-icon>
         <span>Add Petition</span>
