@@ -9,9 +9,22 @@
       "query",
       "client"
     ],
-    "nohoist": ["**/font-awesome", "**/roboto-fontface", "**/vuetify"]
+    "nohoist": [
+      "**/font-awesome",
+      "**/roboto-fontface",
+      "**/vuetify"
+    ]
+  },
+  "scripts": {
+    "watch": "yarn start:ethereum & sleep 5 && concurrently 'npm:watch:*'",
+    "start:ethereum": "cd ethereum; yarn das start",
+    "watch:query:ts": "cd query; tsc -w",
+    "watch:query:node": "nodemon query/dist/src/app.js",
+    "watch:client": "cd client; yarn serve"
   },
   "devDependencies": {
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.18.9",
     "typescript": "^3.0.0"
   }
 }
