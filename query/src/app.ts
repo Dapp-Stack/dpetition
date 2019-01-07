@@ -1,3 +1,4 @@
+import cors from 'cors';
 import createError from 'http-errors';
 import express, { Request, Response, NextFunction} from 'express';
 import logger from 'morgan';
@@ -16,6 +17,7 @@ petitionService.initialize().catch((error) => {
 const app = express();
 
 app.use(logger('dev'));
+app.use(cors);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

@@ -1,47 +1,37 @@
 <template>
-  <div id="app">
-    <el-container>
-      <el-header>
-        <el-menu :router="true" mode="horizontal">
-          <el-menu-item index="/">All Petitions</el-menu-item>
-          <el-menu-item index="/petitions/new">
-            <el-button type="primary" icon="el-icon-plus">New Petition</el-button>
-          </el-menu-item>
-        </el-menu>
-      </el-header>
-      <el-main>
-        <router-view v-if="contractsDeployed"/>
-        <el-card v-else-if="provider" class="box-card">
-          <div slot="header" class="clearfix">
-            <span>Contracts not deployed</span>
-          </div>
-        </el-card>
-        <el-card v-else class="box-card">
-          <div slot="header" class="clearfix">
-            <span>Not Connected</span>
-          </div>
-        </el-card>
-      </el-main>
-    </el-container>
-  </div>
+  <v-app>
+    <v-toolbar app>
+      <v-toolbar-title class="headline text-uppercase">
+        <span>DPetition</span>
+        <span>|</span>
+        <span class="font-weight-light">Sign Petition that Matters</span>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn
+        flat
+        to="/"
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+      >
+        <v-icon class="mr-2">fa-pencil</v-icon>
+        <span>List Petitions</span>
+      </v-btn>
+      <v-btn
+        color="primary"
+        to="/petitions/new"
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+      >
+        <v-icon class="mr-2">fa-plus</v-icon>
+        <span>Add Petition</span>
+      </v-btn>
+    </v-toolbar>
+    <v-content>
+      <router-view/>
+    </v-content>
+  </v-app>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue';
-  import { State, Action, Getter } from 'vuex-class';
-  import Component from 'vue-class-component';
-  import { JsonRpcProvider } from 'ethers/providers';
-
-  import { Contracts } from './types';
-
-  @Component
-  export default class App extends Vue {
-    @State('provider') private provider!: null | JsonRpcProvider;
-    @Getter('contractsDeployed') private contractsDeployed!: boolean;
-    @Action('init') private init: any;
-
-    public mounted() {
-      this.init();
-    }
-  }
+<script>
+export default {
+  name: 'App',
+};
 </script>

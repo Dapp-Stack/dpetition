@@ -1,9 +1,10 @@
+import axios from 'axios';
+import * as ethers from 'ethers';
 import Vue from 'vue';
 import Vuex, { StoreOptions, MutationTree, ActionTree, GetterTree } from 'vuex';
-import * as ethers from 'ethers';
+
 import { JsonRpcProvider } from 'ethers/providers';
 import { EventFragment, FunctionFragment } from 'ethers/utils';
-
 import { RootState } from './types';
 
 Vue.use(Vuex);
@@ -75,8 +76,9 @@ const actions: ActionTree<RootState, RootState> = {
     commit('setContracts', { contracts });
   },
   async loadPetitions({ commit, state }) {
-    const petitions =  await state.contracts.Petition.petitions();
-    commit('setPetitions', { petitions });
+    axios.get(`http://localhost:3000/petitions`).then((response) => {
+      commit('setPetitions', { petitions: response.data });
+    });
   },
 };
 

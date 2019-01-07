@@ -9,7 +9,7 @@
       "query",
       "client"
     ],
-    "nohoist": ["**/element-ui"]
+    "nohoist": ["**/font-awesome", "**/roboto-fontface", "**/vuetify"]
   },
   "devDependencies": {
     "typescript": "^3.0.0"
