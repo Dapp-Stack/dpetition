@@ -16,14 +16,15 @@
     ]
   },
   "scripts": {
-    "watch": "yarn start:ethereum & sleep 5 && concurrently 'npm:watch:*'",
-    "start:ethereum": "cd ethereum; yarn das start",
-    "watch:query:ts": "cd query; tsc -w",
-    "watch:query:node": "nodemon query/dist/src/app.js",
+    "dev": "concurrently 'npm:watch:*'",
+    "watch:ethereum": "cd ethereum; yarn das start",
+    "watch:query:ts": "cd query; tsc --watch --pretty --preserveWatchOutput",
+    "watch:query:node": "sleep 5 && nodemon -V query/dist/src/app.js -w query/dist -i query/dist/tracker.json",
     "watch:client": "cd client; yarn serve"
   },
   "devDependencies": {
     "concurrently": "^4.1.0",
+    "cross-env": "^5.2.0",
     "nodemon": "^1.18.9",
     "typescript": "^3.0.0"
   }
