@@ -33,17 +33,15 @@ import { Component } from 'vue-property-decorator';
 
 @Component
 export default class Petitions extends Vue {
+  public headers = [
+    { text: 'Title', value: 'title' },
+    { text: 'Expire At', value: 'expiratoin' },
+    { text: 'Deposit', value: 'deposit' },
+  ];
   @Action('loadPetitions') private loadPetitions: any;
 
   public mounted() {
     this.loadPetitions();
   }
-
-  headers = [
-    { text: 'Title', value: 'title'
-    },
-    { text: 'Expire At', value: 'expiratoin' },
-    { text: 'Deposit', value: 'deposit' }
-  ]; 
 }
 </script>
