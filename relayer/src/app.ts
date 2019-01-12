@@ -15,6 +15,7 @@ import PetitionsRouter from './routes/petitions';
 import RequestAuthorisationRouter from './routes/authorisation';
 import IdentityRouter from './routes/identity';
 import EnsRouter from './routes/ens';
+import ConfigRouter from './routes/config';
 
 async function initApp() {
   const jsonRpcService = new JsonRpcService();
@@ -44,6 +45,7 @@ async function initApp() {
   app.use('/identity', IdentityRouter(identityService));
   app.use('/petitions', PetitionsRouter(petitionService));
   app.use('/ens', EnsRouter(ensService));
+  app.use('/config', ConfigRouter(jsonRpcService));
 
   app.use((req: Request, res: Response, next: NextFunction) => {
     next(createError(404));
