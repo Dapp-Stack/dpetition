@@ -1,36 +1,38 @@
-import {utils} from 'ethers';
+import {utils, ethers} from 'ethers';
+import JsonRpcService from './jsonRpcService';
 
-class ENSService {
-  constructor(ensAddress, ensRegistrars) {
-    this.ensRegistrars = ensRegistrars;
-    this.ensAddress = ensAddress;
+export default class EnsService {
+  private ensContract: ethers.Contract;
+  private resolverContract: ethers.Contract;
+
+  constructor(private jsonRpcService: JsonRpcService) {    
+    this.ensContract = jsonRpcService.contracts.ENSRegistry[0]
+    this.resolverContract = jsonRpcService.contracts.PublicResolver[0];
   }
 
-  findRegistrar(ensName) {
-    const [, domain] = this.get2ndLevelDomainForm(ensName);
-    return this.ensRegistrars[domain] || null;
+  public async find(ensName: string) {
+    const node = utils.namehash(ensName);
+    return await this.resolverContract.addr(node);
   }
 
-  get2ndLevelDomainForm(ensName) {
+  public async argsFor(ensName: string) {
+    const [label, domain] = this.get2ndLevelDomainForm(ensName);
+    const hashLabel = utils.keccak256(utils.toUtf8Bytes(label));
+    const node = utils.namehash(`${label}.${domain}`);
+    const registrarAddress = await this.findRegistrar(domain);
+    const resolverAddress = this.resolverContract.address;
+    return [hashLabel, ensName, node, this.ensContract.address, registrarAddress, resolverAddress];
+  }
+
+  private async findRegistrar(domain: string) {
+    return await this.ensContract.owner(domain);
+  }
+
+  private get2ndLevelDomainForm(ensName: string) {
     const labels = ensName.split('.');
     const {length} = labels;
     const label = labels.slice(0, length - 2).join('.');
     const domain = labels.slice(length - 2, length).join('.');
     return [label, domain];
   }
-
-  argsFor(ensName) {
-    const [label, domain] = this.get2ndLevelDomainForm(ensName);
-    const hashLabel = utils.keccak256(utils.toUtf8Bytes(label));
-    const node = utils.namehash(`${label}.${domain}`);
-    const registrarConfig = this.findRegistrar(ensName);
-    if (registrarConfig === null) {
-      return null;
-    }
-    const {resolverAddress} = registrarConfig;
-    const {registrarAddress} = registrarConfig;
-    return [hashLabel, ensName, node, this.ensAddress, registrarAddress, resolverAddress];
-  }
 }
-
-export default ENSService;

@@ -79,7 +79,7 @@ const actions: ActionTree<RootState, RootState> = {
     axios.get(`http://localhost:3000/petitions`).then((response) => {
       commit('setPetitions', { petitions: response.data });
     });
-  },
+  }
 };
 
 const getters: GetterTree<RootState, RootState> = {

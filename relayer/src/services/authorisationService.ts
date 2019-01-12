@@ -1,23 +1,18 @@
-import { Request } from "express";
+import { RequestAuthorisation } from "../types";
 
 interface PendingAuthorisations {
-  [identityAddress: string]: [{
-    key: string;
-    deviceInfo: any;
-    index: number;
-  }];
+  [identityAddress: string]: RequestAuthorisation[];
 }
 
 export default class AuthorisationService {
   private pendingAuthorisations: PendingAuthorisations = {};
   private index: number = 0;
 
-  public addRequest(request: Request) {
-    const { identityAddress, key, deviceInfo } = request;
-    const { index } = this;
-    const pendingAuthorisation = { key, deviceInfo, index };
+  public addRequest(requestAuthorisation: RequestAuthorisation) {
+    requestAuthorisation.index = this.index;
+    const { identityAddress } = requestAuthorisation
     this.pendingAuthorisations[identityAddress] = this.pendingAuthorisations[identityAddress] || [];
-    this.pendingAuthorisations[identityAddress].push(pendingAuthorisation);
+    this.pendingAuthorisations[identityAddress].push(requestAuthorisation);
     this.index++;
   }
 
@@ -26,9 +21,9 @@ export default class AuthorisationService {
   }
 
   public removeRequest(identityAddress: string, key: string) {
-    const lowKey = key.toLowerCase();
-    this.pendingAuthorisations[identityAddress] = this.pendingAuthorisations[identityAddress] || [];
-    this.pendingAuthorisations[identityAddress] = this.pendingAuthorisations[identityAddress]
-      .filter((element) => element.key.toLowerCase() !== lowKey);
+    key = key.toLowerCase();
+    const filter = (requestAuthorisation: RequestAuthorisation) => requestAuthorisation.key !== key
+    this.pendingAuthorisations[identityAddress] = this.getPendingAuthorisations(identityAddress).filter(filter);
+      
   }
 }

@@ -19,7 +19,7 @@
     "dev": "concurrently 'npm:watch:*'",
     "watch:ethereum": "cd ethereum; yarn das start",
     "watch:relayer:ts": "cd relayer; tsc --watch --pretty --preserveWatchOutput",
-    "watch:relayer:node": "sleep 5 && nodemon -V relayer/dist/src/app.js -w relayer/dist -i relayer/dist/tracker.json",
+    "watch:relayer:node": "sleep 5 && DEBUG=t nodemon -V relayer/bin/www -w relayer/dist -i relayer/dist/tracker.json",
     "watch:client": "cd client; yarn serve"
   },
   "devDependencies": {

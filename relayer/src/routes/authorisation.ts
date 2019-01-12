@@ -3,18 +3,31 @@ import geoip from 'geoip-lite';
 import moment from 'moment';
 import asyncMiddleware from '../middlewares/asyncMiddleware';
 import AuthorisationService from '../services/authorisationService';
+import { RequestAuthorisation } from "../types";
 
-export const request = (authorisationService: AuthorisationService) => async (req: Request, res: Response) => {
-  const ipAddress = req.headers['x-forwarded-for'] || req.ip;
-  const deviceInfo = {
-    ipAddress,
-    name: req.useragent.platform,
-    city: geoip.lookup(ipAddress) ? geoip.lookup(ipAddress).city : 'unknown',
-    os: req.useragent.os,
-    browser: req.useragent.browser,
-    time: moment().format('h:mm')
+export const createRequest = (authorisationService: AuthorisationService) => async (req: Request, res: Response) => {
+  if (!req.useragent) {
+    return res.status(422)
+      .type('json')
+      .send();
+  }
+
+  let ipAddress = req.headers['x-forwarded-for'] || req.ip;
+  ipAddress = Array.isArray(ipAddress) ? ipAddress[0] : ipAddress;
+  const city = geoip.lookup(ipAddress) ? geoip.lookup(ipAddress).city : 'unknown';
+
+  const requestAuthorisation: RequestAuthorisation = {
+    deviceInfo: {
+      ipAddress,
+      city,
+      name: req.useragent.platform,
+      os: req.useragent.os,
+      browser: req.useragent.browser,
+      time: moment().format('h:mm'),
+    },
+    key: req.body.key.toLowerCase(),
+    identityAddress: req.body.identityAddress
   };
-  const requestAuthorisation = {...req.body, deviceInfo};
   await authorisationService.addRequest(requestAuthorisation);
   res.status(201)
     .type('json')
@@ -32,20 +45,20 @@ export const getPending = (authorisationService: AuthorisationService) => async 
 export const denyRequest = (authorisationService: AuthorisationService) => async (req: Request, res: Response) => {
   const { identityAddress } = req.params;
   const { key } = req.body;
-  const response = await authorisationService.removeRequest(identityAddress, key);
-  res.status(201)
+  await authorisationService.removeRequest(identityAddress, key);
+  res.status(204)
     .type('json')
-    .send(JSON.stringify({response}));
+    .send();
 };
 
 export default (authorisationService: AuthorisationService) => {
   const router = express.Router();
 
-  router.post('/', asyncMiddleware(request(authorisationService)));
+  router.post('/', asyncMiddleware(createRequest(authorisationService)));
 
   router.get('/:identityAddress', asyncMiddleware(getPending(authorisationService)));
 
-  router.post('/:identityAddress', asyncMiddleware(denyRequest(authorisationService)));
+  router.delete('/:identityAddress', asyncMiddleware(denyRequest(authorisationService)));
 
   return router;
 };
