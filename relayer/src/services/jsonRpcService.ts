@@ -9,7 +9,7 @@ export default class JsonRpcService {
   public provider: ethers.providers.JsonRpcProvider;
   public wallet: ethers.Wallet;
   public network!: ethers.utils.Network;
-  public contracts!: { [name: string]: ethers.Contract[] };
+  public contracts: { [name: string]: ethers.Contract[] } = {};
 
   constructor() {
     this.provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl);
@@ -22,10 +22,13 @@ export default class JsonRpcService {
     if(!contracts) {
       throw new Error("Contracts not deployed on this network")
     }
-
     Object.keys(contracts).forEach((address) => {
-      const contract = new ethers.Contract(address, contracts[address].abi, this.provider);
-        this.contracts[contracts[address].name].push(contract)
+      const { name, abi } = contracts[address]
+      const contract = new ethers.Contract(address, abi, this.provider);
+      if (!this.contracts[name]) {
+        this.contracts[name] = [];
+      }
+      this.contracts[name].push(contract)
     });
   }
 }
