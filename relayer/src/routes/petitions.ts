@@ -5,15 +5,13 @@ import PetitionService from '../services/petitionService';
 export const list = (petitionService: PetitionService) => async (req: Request, res: Response) => {
   const petitions = await petitionService.all()
   res.status(200)
-    .type('json')
-    .send(JSON.stringify(petitions));
+    .json(petitions);
 };
 
 export const get = (petitionService: PetitionService) => async (req: Request, res: Response) => {
   const petition = await petitionService.findById(req.params.id)
   res.status(200)
-    .type('json')
-    .send(JSON.stringify(petition));
+    .json({petition});
 };
 
 export default (petitionService: PetitionService) => {

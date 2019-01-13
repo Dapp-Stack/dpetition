@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import asyncMiddleware from '../middlewares/asyncMiddleware';
-import EnsService from '../services/EnsService';
+import EnsService from '../services/ensService';
 
 export const find = (ensService: EnsService) => async (req: Request, res: Response, next: NextFunction) => {
   const {ensName} = req.params;
@@ -8,14 +8,10 @@ export const find = (ensService: EnsService) => async (req: Request, res: Respon
     const address = await ensService.find(ensName);
     if(address) {
       res.status(200)
-        .type('json')
-        .send(JSON.stringify({address}));
+        .json({address});
     } else {
-      res.status(404)
-        .type('json')
-        .send();
+      res.status(404).end();
     }
-    
   } catch (err) {
     next(err);
   }

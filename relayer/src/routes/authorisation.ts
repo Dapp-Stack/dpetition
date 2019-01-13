@@ -29,26 +29,20 @@ export const createRequest = (authorisationService: AuthorisationService) => asy
     identityAddress: req.body.identityAddress
   };
   await authorisationService.addRequest(requestAuthorisation);
-  res.status(201)
-    .type('json')
-    .send();
+  res.status(201).end();
 };
 
 export const getPending = (authorisationService: AuthorisationService) => async (req: Request, res: Response) => {
   const {identityAddress} = req.params;
   const response = await authorisationService.getPendingAuthorisations(identityAddress);
-  res.status(200)
-    .type('json')
-    .send(JSON.stringify({response}));
+  res.status(200).json({ response });
 };
 
 export const denyRequest = (authorisationService: AuthorisationService) => async (req: Request, res: Response) => {
   const { identityAddress } = req.params;
   const { key } = req.body;
   await authorisationService.removeRequest(identityAddress, key);
-  res.status(204)
-    .type('json')
-    .send();
+  res.status(204).end();
 };
 
 export default (authorisationService: AuthorisationService) => {

@@ -36,7 +36,7 @@ async function initApp() {
   const app = express();
 
   app.use(logger('dev'));
-  app.use(cors);
+  app.use(cors());
   app.use(useragent.express());
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
@@ -52,10 +52,7 @@ async function initApp() {
   });
 
   app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
-    console.error(err.stack)
-    res.status(500)
-      .type('json')
-      .send();
+    res.status(500).json({message: err.message});
   });
 
   return app
