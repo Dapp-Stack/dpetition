@@ -12,7 +12,8 @@ export default class EnsService {
 
   public async find(ensName: string) {
     const node = utils.namehash(ensName);
-    return await this.resolverContract.addr(node);
+    const address: string = await this.resolverContract.addr(node);
+    return address === ethers.constants.AddressZero ? null : address;
   }
 
   public async argsFor(ensName: string) {

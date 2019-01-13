@@ -28,8 +28,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { Action } from 'vuex-class';
+import { Action, State } from 'vuex-class';
 import { Component } from 'vue-property-decorator';
+
+const namespace: string = 'petition';
 
 @Component
 export default class Petitions extends Vue {
@@ -38,10 +40,12 @@ export default class Petitions extends Vue {
     { text: 'Expire At', value: 'expiratoin' },
     { text: 'Deposit', value: 'deposit' },
   ];
-  @Action('loadPetitions') private loadPetitions: any;
+
+  @Action('fetch', { namespace }) private fetch: () => void;
+  @State('list', { namespace }) private petitions: any[];
 
   public mounted() {
-    this.loadPetitions();
+    this.fetch();
   }
 }
 </script>

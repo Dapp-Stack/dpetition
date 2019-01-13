@@ -1,12 +1,12 @@
 <template>
-  <v-app v-if="!apiAvailable">
-    <header/>
+  <v-app v-if="apiAvailable">
+    <Header/>
     <v-content>
       <router-view/>
     </v-content>
   </v-app>
   <v-app v-else>
-    <api-error/>
+    <ApiError/>
   </v-app>
 </template>
 

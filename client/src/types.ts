@@ -10,6 +10,10 @@ export interface PetitionState {
   error: boolean;
 }
 
+export interface EnsState {
+  address: string;
+}
+
 export interface RootState {
   apiAvailable: boolean;
   network: ethers.utils.Network | null;
