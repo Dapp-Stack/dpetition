@@ -1,42 +1,31 @@
 <template>
-  <v-app>
-    <v-toolbar app>
-      <v-toolbar-title class="headline text-uppercase">
-        <span>DPetition</span>
-        <span>|</span>
-        <span class="font-weight-light">Sign Petition that Matters</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn
-        flat
-        to="/"
-      >
-        <v-icon class="mr-2">fa-pencil</v-icon>
-        <span>List Petitions</span>
-      </v-btn>
-      <v-btn
-        color="primary"
-        to="/petitions/new"
-      >
-        <v-icon class="mr-2">fa-plus</v-icon>
-        <span>Add Petition</span>
-      </v-btn>
-      <v-btn
-        color="primary"
-        to="/connect"
-      >
-        <v-icon class="mr-2">fa-user</v-icon>
-        <span>Connect</span>
-      </v-btn>
-    </v-toolbar>
+  <v-app v-if="!apiAvailable">
+    <header/>
     <v-content>
       <router-view/>
     </v-content>
   </v-app>
+  <v-app v-else>
+    <api-error/>
+  </v-app>
 </template>
 
-<script>
-export default {
-  name: 'App',
-};
+<script lang="ts">
+import Vue from 'vue';
+import { Action, State } from 'vuex-class';
+import { Component } from 'vue-property-decorator';
+import Header from './components/header.vue';
+import ApiError from './components/apiError.vue';
+
+@Component({
+  components: { Header, ApiError },
+})
+export default class App extends Vue {
+  @State('apiAvailable') private apiAvailable!: boolean;
+  @Action('init') private init!: () => void;
+
+  public mounted() {
+    this.init();
+  }
+}
 </script>

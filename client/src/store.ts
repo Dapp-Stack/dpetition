@@ -45,15 +45,14 @@ const mutations: MutationTree<RootState> = {
 const actions: ActionTree<RootState, RootState> = {
   async init({ commit }) {
     axios({
-      url: `${apiUrl}/config`
+      url: `${apiUrl}/config`,
     }).then((response) => {
       const payload: RootState = response && response.data;
       commit('setRootState', { ...payload, apiAvailable: true });
     }, (error) => {
-      console.error(error);
       commit('setRootState', { network: null, contract: {}, apiAvailable: false });
     });
-  }
+  },
 };
 
 const store: StoreOptions<RootState> = {
@@ -64,8 +63,8 @@ const store: StoreOptions<RootState> = {
     ens: Ens,
     identity: Identity,
     authorisation: Authorisation,
-    petition: Petition
-  }
+    petition: Petition,
+  },
 };
 
 export default new Vuex.Store<RootState>(store);
