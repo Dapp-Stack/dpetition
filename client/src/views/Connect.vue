@@ -5,8 +5,9 @@
         <h1 class="display-2 text-xs-center mb-5 mt-5">Connect</h1>
         <v-autocomplete
           outline
-          v-model="autocomplete"
+          v-model="value"
           :loading="loading"
+          on:input="console.log('he;;p')"
           :search-input.sync="username"
           :items="items"
           hide-no-data
@@ -45,33 +46,49 @@ const namespace: string = 'ens';
 @Component({})
 export default class Connect extends Vue {
   public username = '';
+  public value = '';
 
-  @Prop(String) public autocomplete!: string;
+  @Prop(Boolean) isTyping: boolean = false;
 
   @Action('find', { namespace }) private find!: ({username: string}) => void;
   @State('address', { namespace }) private address!: string;
+  @State('notFound', { namespace }) private notFound!: boolean;
   @State('loading', { namespace }) private loading!: boolean;
 
   @Watch('username')
-  public onUsernameChanged = debounce((username: string) => {
-    if (username) {
-      this.find({ username });
-    }
-  }, 1000);
+  public onUsernameChanged(username: string) {
+    this.isTyping = true;
+    this.debounceFind(username);
+  }
+
+  @Watch('value')
+  public onValueChanged(newValue: string) {
+    console.log(newValue);
+  }
+
+  public debounceFind = debounce((username: string) => {
+    this.isTyping = false;
+    this.find({ username });
+  }, 500);
 
   get items() {
-    if (this.username && !this.loading) {
-      if (this.address) {
-        return [
-          {text: this.username, value: 'Connect'},
-          {text: this.username, value: 'Recover'},
-        ];
-      } else {
-        return [
-          {text: this.username, value: 'Create'},
-        ];
-      }
+    if (this.isTyping) {
+      return [];
     }
+
+    if (this.address) {
+      return [
+        {text: this.username, value: 'Connect'},
+        {text: this.username, value: 'Recover'},
+      ];
+    }
+
+    if (this.notFound && this.username){
+      return [
+        {text: this.username, value: 'Create'},
+      ];
+    }
+    
     return [];
   }
 }

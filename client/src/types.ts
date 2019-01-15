@@ -11,8 +11,9 @@ export interface PetitionState {
 }
 
 export interface EnsState {
-  address: string;
+  address?: string;
   loading: boolean;
+  notFound: boolean;
 }
 
 export interface RootState {

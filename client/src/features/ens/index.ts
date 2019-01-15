@@ -5,6 +5,7 @@ import { RootState, EnsState } from '../../types';
 
 export const defaultState: EnsState = {
   address: '',
+  notFound: false,
   loading: false,
 };
 
@@ -25,14 +26,19 @@ export const actions: ActionTree<EnsState, RootState> = {
 export const mutations: MutationTree<EnsState> = {
   ensLoading(state) {
     state.loading = true;
+    state.notFound = false;
+    state.address = undefined
   },
-  ensAddressFound(state, payload: string) {
-    state.address = payload;
+  ensAddressFound(state, payload: { address: string}) {
+    state.address = payload.address;
+    state.notFound = false;
     state.loading = false;
   },
   ensAddressNotFound(state) {
     state.address = '';
+    state.notFound = true;
     state.loading = false;
+    console.log(state)
   },
 };
 
