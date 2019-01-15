@@ -16,6 +16,12 @@ export interface EnsState {
   notFound: boolean;
 }
 
+export interface IdentityState {
+  loading: boolean;
+  transaction: ethers.utils.Transaction | null;
+  error: Error | null,
+}
+
 export interface RootState {
   apiAvailable: boolean;
   network: ethers.utils.Network | null;

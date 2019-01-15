@@ -41,7 +41,11 @@ import { Action, State } from 'vuex-class';
 import { Component, Watch, Prop } from 'vue-property-decorator';
 import { debounce } from 'lodash';
 
-const namespace: string = 'ens';
+enum ActionType {
+  Connect = 'Connect',
+  Recover = 'Recover',
+  Create = 'Create',
+}
 
 @Component({})
 export default class Connect extends Vue {
@@ -50,10 +54,13 @@ export default class Connect extends Vue {
 
   @Prop(Boolean) isTyping: boolean = false;
 
-  @Action('find', { namespace }) private find!: ({username: string}) => void;
-  @State('address', { namespace }) private address!: string;
-  @State('notFound', { namespace }) private notFound!: boolean;
-  @State('loading', { namespace }) private loading!: boolean;
+  @Action('find', { namespace: 'ens' }) private find!: ({username: string}) => void;
+  @State('address', { namespace: 'ens' }) private address!: string;
+  @State('notFound', { namespace: 'ens' }) private notFound!: boolean;
+  @State('loading', { namespace: 'ens' }) private loading!: boolean;
+
+
+  @Action('create', { namespace: 'identity' }) private create!: ({username: string}) => void;
 
   @Watch('username')
   public onUsernameChanged(username: string) {
@@ -62,8 +69,19 @@ export default class Connect extends Vue {
   }
 
   @Watch('value')
-  public onValueChanged(newValue: string) {
-    console.log(newValue);
+  public onValueChanged(newValue: ActionType) {
+    const args = { username: this.username };
+    switch(newValue) {
+      case ActionType.Connect:
+        // this.connect(args);
+        break;
+      case ActionType.Recover:
+        // this.recover(args);
+        break;
+      case ActionType.Create:
+        this.create(args);
+        break;
+    }
   }
 
   public debounceFind = debounce((username: string) => {
@@ -78,14 +96,14 @@ export default class Connect extends Vue {
 
     if (this.address) {
       return [
-        {text: this.username, value: 'Connect'},
-        {text: this.username, value: 'Recover'},
+        {text: this.username, value: ActionType.Connect},
+        {text: this.username, value: ActionType.Recover},
       ];
     }
 
     if (this.notFound && this.username){
       return [
-        {text: this.username, value: 'Create'},
+        {text: this.username, value: ActionType.Create},
       ];
     }
     
