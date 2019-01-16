@@ -3,20 +3,13 @@
     <v-layout row wrap>
       <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
         <h1 class="mb-2 mt-2">New Petition</h1>
-      </v-flex>
-
-      <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
         <v-text-field v-model="title" :rules="nameRules" :counter="50" label="Title" required></v-text-field>
-      </v-flex>
+        <editor-content :editor="editor" />
 
-      <v-flex xs12 sm10 offset-sm1 md8 offset-md2 class="mb-5">
         <p>Expiration</p>
         <v-date-picker v-model="expiresOn" :reactive="true"></v-date-picker>
         <span class="mx-5"></span>
         <v-time-picker v-model="expiresAt"></v-time-picker>
-      </v-flex>
-
-      <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
         <v-card class="mx-auto">
           <v-toolbar card dense>
             <v-toolbar-title>
@@ -51,3 +44,26 @@
     </v-layout>
   </v-container>
 </template>
+
+<script lang="ts">
+import Vue from 'vue';
+import { Editor, EditorContent } from 'tiptap';
+import { Component, Watch, Prop } from 'vue-property-decorator';
+
+@Component({
+  components: { EditorContent },
+})
+export default class NewPetition extends Vue {
+  public editor: Editor = null;
+
+  public mounted() {
+    this.editor = new Editor({
+      content: '<p>This is just a boring paragraph</p>',
+    });
+  }
+
+  public beforeDestroy() {
+    this.editor.destroy();
+  }
+}
+</script>

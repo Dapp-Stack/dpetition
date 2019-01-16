@@ -19,7 +19,7 @@ export interface EnsState {
 export interface IdentityState {
   loading: boolean;
   transaction: ethers.utils.Transaction | null;
-  error: Error | null,
+  error: Error | null;
 }
 
 export interface RootState {

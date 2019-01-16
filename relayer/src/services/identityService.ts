@@ -27,6 +27,7 @@ export default class IdentityService {
   async create(managementKey: string, ensName: string, overrideOptions = {}) {
     const key = this.addressToBytes32(managementKey);
     const ensArgs = await this.ensService.argsFor(ensName);
+    console.dir(ensArgs)
     if (!ensArgs) {
       throw new Error('domain not existing / not universal ID compatible');
     }

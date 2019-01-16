@@ -27,7 +27,7 @@ export const mutations: MutationTree<EnsState> = {
   ensLoading(state) {
     state.loading = true;
     state.notFound = false;
-    state.address = undefined
+    state.address = undefined;
   },
   ensAddressFound(state, payload: { address: string}) {
     state.address = payload.address;
@@ -38,7 +38,7 @@ export const mutations: MutationTree<EnsState> = {
     state.address = '';
     state.notFound = true;
     state.loading = false;
-    console.log(state)
+    console.log(state);
   },
 };
 

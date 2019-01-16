@@ -49,10 +49,36 @@ enum ActionType {
 
 @Component({})
 export default class Connect extends Vue {
+
+  get items() {
+    if (this.isTyping) {
+      return [];
+    }
+
+    if (this.address) {
+      return [
+        {text: this.username, value: ActionType.Connect},
+        {text: this.username, value: ActionType.Recover},
+      ];
+    }
+
+    if (this.notFound && this.username) {
+      return [
+        {text: this.username, value: ActionType.Create},
+      ];
+    }
+
+    return [];
+  }
   public username = '';
   public value = '';
 
-  @Prop(Boolean) isTyping: boolean = false;
+  @Prop(Boolean) public isTyping: boolean = false;
+
+  public debounceFind = debounce((username: string) => {
+    this.isTyping = false;
+    this.find({ username });
+  }, 500);
 
   @Action('find', { namespace: 'ens' }) private find!: ({username: string}) => void;
   @State('address', { namespace: 'ens' }) private address!: string;
@@ -71,7 +97,7 @@ export default class Connect extends Vue {
   @Watch('value')
   public onValueChanged(newValue: ActionType) {
     const args = { username: this.username };
-    switch(newValue) {
+    switch (newValue) {
       case ActionType.Connect:
         // this.connect(args);
         break;
@@ -82,32 +108,6 @@ export default class Connect extends Vue {
         this.create(args);
         break;
     }
-  }
-
-  public debounceFind = debounce((username: string) => {
-    this.isTyping = false;
-    this.find({ username });
-  }, 500);
-
-  get items() {
-    if (this.isTyping) {
-      return [];
-    }
-
-    if (this.address) {
-      return [
-        {text: this.username, value: ActionType.Connect},
-        {text: this.username, value: ActionType.Recover},
-      ];
-    }
-
-    if (this.notFound && this.username){
-      return [
-        {text: this.username, value: ActionType.Create},
-      ];
-    }
-    
-    return [];
   }
 }
 </script>

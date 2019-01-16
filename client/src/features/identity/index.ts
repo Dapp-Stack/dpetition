@@ -13,7 +13,7 @@ export const defaultState: IdentityState = {
 export const actions: ActionTree<IdentityState, RootState> = {
   create({ commit }, payload) {
     commit('identityLoading');
-    const privateKey = ethers.Wallet.createRandom().privateKey
+    const privateKey = ethers.Wallet.createRandom().privateKey;
     const wallet = new ethers.Wallet(privateKey);
     const managementKey = wallet.address;
     axios({
@@ -21,8 +21,8 @@ export const actions: ActionTree<IdentityState, RootState> = {
       method: 'post',
       data: {
         ensName: payload.username,
-        managementKey
-      }
+        managementKey,
+      },
     }).then((response) => {
       const transaction: ethers.utils.Transaction = response && response.data;
       commit('identityCreated', transaction);
@@ -36,7 +36,7 @@ export const mutations: MutationTree<IdentityState> = {
   identityLoading(state) {
     state.transaction = null;
     state.error = null;
-    state.loading = true
+    state.loading = true;
   },
   identityCreated(state, payload: { transaction: ethers.utils.Transaction }) {
     state.transaction = payload.transaction;
