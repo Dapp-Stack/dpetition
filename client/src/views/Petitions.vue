@@ -5,11 +5,11 @@
         <v-data-table
           :headers="headers"
           :items="petitions"
-          class="elevation-1"
+          class="elevation-1 mt-5"
         >
           <template slot="no-data">
-            <v-alert :value="true" color="error" icon="fa fa-warning" class="text-xs-center">
-              There is no petitions to sign yet
+            <v-alert :value="true" color="warning" icon="fa fa-warning" class="text-xs-center my-5">
+              There is no petitions to sign yet, why not adding one.
             </v-alert>
           </template>
           <template slot="items" slot-scope="props">
@@ -37,7 +37,7 @@ const namespace: string = 'petition';
 export default class Petitions extends Vue {
   public headers = [
     { text: 'Title', value: 'title' },
-    { text: 'Expire At', value: 'expiratoin' },
+    { text: 'Expire On', value: 'expiration' },
     { text: 'Deposit', value: 'deposit' },
   ];
 
