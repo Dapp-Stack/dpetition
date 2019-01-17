@@ -68,7 +68,12 @@ export const mutations: MutationTree<IdentityState> = {
     state.error = null;
     state.loading = true;
   },
-  identityCreated(state, payload: { transaction: ethers.utils.Transaction, privateKey: string, address: string, ensName: string }) {
+  identityCreated(state,
+                  payload: {
+                    transaction: ethers.utils.Transaction,
+                    privateKey: string,
+                    address: string,
+                    ensName: string }) {
     state.transaction = payload.transaction;
     state.privateKey = payload.privateKey;
     state.address = payload.address;

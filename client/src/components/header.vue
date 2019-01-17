@@ -62,21 +62,21 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-import { Action, State } from "vuex-class";
-import AddPetition from "./addPetition.vue";
-import Blockies from "./blockies.vue";
+import Vue from 'vue';
+import { Component, Prop } from 'vue-property-decorator';
+import { Action, State } from 'vuex-class';
+import AddPetition from './addPetition.vue';
+import Blockies from './blockies.vue';
 
 @Component({
-  components: { AddPetition, Blockies }
+  components: { AddPetition, Blockies },
 })
 export default class Header extends Vue {
   public addPetitionDialog = false;
 
-  @Action("destroy", { namespace: "identity" }) private destroy!: () => void;
-  @State("address", { namespace: "identity" }) private address!: string;
-  @State("ensName", { namespace: "identity" }) private ensName!: string;
+  @Action('destroy', { namespace: 'identity' }) private destroy!: () => void;
+  @State('address', { namespace: 'identity' }) private address!: string;
+  @State('ensName', { namespace: 'identity' }) private ensName!: string;
 
   public logout() {
     this.destroy();

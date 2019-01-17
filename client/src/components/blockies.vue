@@ -13,8 +13,9 @@ blockies.create({});
 @Component({})
 export default class Blockies extends Vue {
 
-  @Prop(String) public address!: string
-  get dataUrl(){
+  @Prop(String) public address!: string;
+
+  get dataUrl() {
     const icon = blockies.create({
       seed: this.address,
     });

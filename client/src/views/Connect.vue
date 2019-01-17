@@ -111,7 +111,7 @@ export default class Connect extends Vue {
           const t = await this.create(args);
           this.isLoadingIdentity = false;
           this.$router.push('/');
-        } catch(error) {
+        } catch (error) {
           this.unexpectedError = true;
           this.isLoadingIdentity = false;
         }
