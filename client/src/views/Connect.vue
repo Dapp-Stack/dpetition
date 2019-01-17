@@ -73,10 +73,9 @@ export default class Connect extends Vue {
   }
   public username = '';
   public value = '';
+  public isTyping = false;
 
-  @Prop(Boolean) public isTyping: boolean = false;
-
-  public debounceFind = debounce((username: string) => {
+  public debounceFind = debounce(function(username: string) {
     this.isTyping = false;
     this.find({ username });
   }, 500);
