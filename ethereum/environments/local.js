@@ -32,7 +32,7 @@ module.exports = {
 
     // Function executed by DApp Stack to deploy the contracts.
     migrate: async (deployer) => {
-      await deployer.ens.bootstrapWith('dpetition', 'eth');
+      await deployer.ens.bootstrapWith('petition', 'eth');
 
       const petition = await deployer.deploy('Petition');
       const escrow = await deployer.deploy('Escrow');

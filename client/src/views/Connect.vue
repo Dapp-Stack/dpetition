@@ -6,6 +6,7 @@
         <v-autocomplete
           outline
           v-model="value"
+          @input="makeIdentityCall()"
           :loading="loading"
           on:input="console.log('he;;p')"
           :search-input.sync="username"
@@ -94,10 +95,9 @@ export default class Connect extends Vue {
     this.debounceFind(username);
   }
 
-  @Watch('value')
-  public onValueChanged(newValue: ActionType) {
+  public makeIdentityCall() {
     const args = { username: this.username };
-    switch (newValue) {
+    switch (this.value) {
       case ActionType.Connect:
         // this.connect(args);
         break;

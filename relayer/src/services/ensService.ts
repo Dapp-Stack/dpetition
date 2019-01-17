@@ -19,14 +19,15 @@ export default class EnsService {
   public async argsFor(ensName: string) {
     const [label, domain] = this.get2ndLevelDomainForm(ensName);
     const hashLabel = utils.keccak256(utils.toUtf8Bytes(label));
-    const node = utils.namehash(`${label}.${domain}`);
+    const node = utils.namehash(ensName);
     const registrarAddress = await this.findRegistrar(domain);
     const resolverAddress = this.resolverContract.address;
     return [hashLabel, ensName, node, this.ensContract.address, registrarAddress, resolverAddress];
   }
 
   private async findRegistrar(domain: string) {
-    return await this.ensContract.owner(domain);
+    const node = utils.namehash(domain);
+    return await this.ensContract.owner(node);
   }
 
   private get2ndLevelDomainForm(ensName: string) {
