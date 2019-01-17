@@ -24,8 +24,11 @@ export default class App extends Vue {
   @State('apiAvailable') private apiAvailable!: boolean;
   @Action('init') private init!: () => void;
 
+  @Action('get', { namespace: 'identity' }) private getIdentity!: () => void;
+
   public mounted() {
     this.init();
+    this.getIdentity();
   }
 }
 </script>

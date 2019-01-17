@@ -74,6 +74,8 @@ export default class Connect extends Vue {
   public username = '';
   public value = '';
   public isTyping = false;
+  public unexpectedError = true;
+  public isLoadingIdentity = false;
 
   public debounceFind = debounce(function(username: string) {
     this.isTyping = false;
@@ -94,7 +96,8 @@ export default class Connect extends Vue {
     this.debounceFind(username);
   }
 
-  public makeIdentityCall() {
+  public async makeIdentityCall() {
+    this.isLoadingIdentity = true;
     const args = { username: this.username };
     switch (this.value) {
       case ActionType.Connect:
@@ -104,7 +107,14 @@ export default class Connect extends Vue {
         // this.recover(args);
         break;
       case ActionType.Create:
-        this.create(args);
+        try {
+          const t = await this.create(args);
+          this.isLoadingIdentity = false;
+          this.$router.push('/');
+        } catch(error) {
+          this.unexpectedError = true;
+          this.isLoadingIdentity = false;
+        }
         break;
     }
   }

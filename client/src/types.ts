@@ -18,6 +18,9 @@ export interface EnsState {
 
 export interface IdentityState {
   loading: boolean;
+  address: string;
+  privateKey: string;
+  ensName: string;
   transaction: ethers.utils.Transaction | null;
   error: Error | null;
 }
