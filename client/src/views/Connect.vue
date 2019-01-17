@@ -12,7 +12,7 @@
           :items="items"
           hide-no-data
           label="Type your username"
-          placeholder="alice.petition.eth"
+          placeholder="alice"
           prepend-icon="fa-users"
         >
         <template slot="item" slot-scope="{ item }">
@@ -80,13 +80,13 @@ export default class Connect extends Vue {
     this.find({ username });
   }, 500);
 
-  @Action('find', { namespace: 'ens' }) private find!: ({username: string}) => void;
+  @Action('find', { namespace: 'ens' }) private find!: (attributes: any) => void;
   @State('address', { namespace: 'ens' }) private address!: string;
   @State('notFound', { namespace: 'ens' }) private notFound!: boolean;
   @State('loading', { namespace: 'ens' }) private loading!: boolean;
 
 
-  @Action('create', { namespace: 'identity' }) private create!: ({username: string}) => void;
+  @Action('create', { namespace: 'identity' }) private create!: (attributes: any) => void;
 
   @Watch('username')
   public onUsernameChanged(username: string) {

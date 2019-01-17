@@ -136,9 +136,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Editor, EditorContent, EditorMenuBar } from "tiptap";
-import { Component, Watch, Prop } from "vue-property-decorator";
+import Vue from 'vue';
+import { Editor, EditorContent, EditorMenuBar } from 'tiptap';
+import { Component, Watch, Prop } from 'vue-property-decorator';
 import {
   Blockquote,
   BulletList,
@@ -155,20 +155,20 @@ import {
   Link,
   Strike,
   Underline,
-  History
-} from "tiptap-extensions";
+  History,
+} from 'tiptap-extensions';
 
 @Component({
   components: {
     EditorContent,
-    EditorMenuBar
-  }
+    EditorMenuBar,
+  },
 })
 export default class AddPetition extends Vue {
-  public editor: Editor = null;
+  public editor: any = null;
   public valid: boolean = false;
-  public title: string = "";
-  public expireOn: string = "";
+  public title: string = '';
+  public expireOn: string = '';
   public deposit: number = 1;
 
   public mounted() {
@@ -189,7 +189,7 @@ export default class AddPetition extends Vue {
         new Link(),
         new Strike(),
         new Underline(),
-        new History()
+        new History(),
       ],
       content: `
         <h2>
@@ -207,7 +207,7 @@ export default class AddPetition extends Vue {
         <p>
           This is what
         </p>
-      `
+      `,
     });
   }
 
@@ -215,7 +215,9 @@ export default class AddPetition extends Vue {
     this.editor.destroy();
   }
 
-  public create() {}
+  public create() {
+    this.$emit('close');
+  }
 }
 </script>
 

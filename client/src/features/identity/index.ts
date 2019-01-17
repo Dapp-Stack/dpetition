@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Module, ActionTree, MutationTree } from 'vuex';
-import { apiUrl } from '../../config';
+import { apiUrl, ensSuffix } from '../../config';
 import { RootState, IdentityState } from '../../types';
 import { ethers } from 'ethers';
 
@@ -20,7 +20,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
       url: `${apiUrl}/identity`,
       method: 'post',
       data: {
-        ensName: payload.username,
+        ensName: `${payload.username}.${ensSuffix}`,
         managementKey,
       },
     }).then((response) => {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Module, ActionTree, MutationTree } from 'vuex';
-import { apiUrl } from '../../config';
+import { apiUrl, ensSuffix } from '../../config';
 import { RootState, EnsState } from '../../types';
 
 export const defaultState: EnsState = {
@@ -13,7 +13,7 @@ export const actions: ActionTree<EnsState, RootState> = {
   find({ commit }, payload) {
     commit('ensLoading');
     axios({
-      url: `${apiUrl}/ens/${payload.username}`,
+      url: `${apiUrl}/ens/${payload.username}.${ensSuffix}`,
     }).then((response) => {
       const address: string = response && response.data;
       commit('ensAddressFound', address);
@@ -38,7 +38,6 @@ export const mutations: MutationTree<EnsState> = {
     state.address = '';
     state.notFound = true;
     state.loading = false;
-    console.log(state);
   },
 };
 

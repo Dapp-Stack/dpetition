@@ -33,6 +33,6 @@ import AddPetition from './addPetition.vue';
   components: { AddPetition },
 })
 export default class Header extends Vue {
-  addPetitionDialog = false;
+  public addPetitionDialog = false;
 }
 </script>
