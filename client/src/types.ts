@@ -1,5 +1,14 @@
 import { ethers } from 'ethers';
 
+export interface Tracker {
+  [chainId: string]: {
+    [address: string]: {
+      name: string;
+      abi: Array<any>;
+    }
+  }
+}
+
 export interface Petition {
   title: string;
   description: string;
@@ -22,6 +31,7 @@ export interface EnsState {
 export interface IdentityState {
   loading: boolean;
   address: string;
+  identityAddress: string;
   privateKey: string;
   ensName: string;
   transaction: ethers.utils.Transaction | null;

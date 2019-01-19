@@ -27,17 +27,17 @@ contract Petition is Ownable {
 
     function create(string memory _title,
                     string memory _descriptionHash,
-                    uint256 _expiration,
+                    uint256 _expireOn,
                     uint256 _deposit,
                     address _owner) public onlyOwner {
         require(bytes(_title).length > 0, "Title cannot be empty.");
         require(bytes(_descriptionHash).length > 0, "DescriptionHash cannot be empty.");
         require(_deposit > 0, "Deposit cannot be less than 1 Wei.");
 
-        uint256 minExpiration = now + 1 days;
-        require(_expiration > minExpiration, "Must expires in at least 1 day.");
+        uint256 minExpireOn = now + 1 days;
+        require(__expireOn > minExpireOn, "Must expires in at least 1 day.");
 
-        Details memory details = Details(_title, _descriptionHash, _expiration, _deposit, _owner);
+        Details memory details = Details(_title, _descriptionHash, _expireOn, _deposit, _owner);
         uint256 id = petitions.push(details) - 1;
 
         emit PetitionCreated(id);

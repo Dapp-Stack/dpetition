@@ -15,9 +15,9 @@ contract Controller is Initializable {
 
     function create(string memory _title,
                     string memory _descriptionHash,
-                    uint256 _expiration,
+                    uint256 _expireOn,
                     uint256 _deposit) public {
-        petition.create(_title, _descriptionHash, _expiration, _deposit, msg.sender);
+        petition.create(_title, _descriptionHash, _expireOn, _deposit, msg.sender);
     }
 
     function sign(uint256 _id) public payable {

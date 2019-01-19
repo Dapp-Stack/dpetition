@@ -1,12 +1,16 @@
 import axios from 'axios';
 import { Module, ActionTree, MutationTree } from 'vuex';
 import { apiUrl, ensSuffix } from '../../config';
-import { RootState, IdentityState } from '../../types';
+import { RootState, IdentityState, Petition } from '../../types';
 import { ethers } from 'ethers';
+import { TransactionReceipt } from 'ethers/providers';
+import { createPetitionBody } from '@/services/petitionService';
+import { waitForTransactionReceipt } from '@/services/ethereumService';
 
 export const defaultState: IdentityState = {
   loading: false,
   address: '',
+  identityAddress: '',
   privateKey: '',
   ensName: '',
   transaction: null,
@@ -14,6 +18,18 @@ export const defaultState: IdentityState = {
 };
 
 export const actions: ActionTree<IdentityState, RootState> = {
+  execute({ commit, state }, payload: Petition) {
+    const data = createPetitionBody(state, payload)
+    axios({
+      url: `${apiUrl}/identity/execution`,
+      method: 'POST',
+      data
+    }).then((response) => {
+      commit('identityExecuteSucceed');
+    }).catch((error) => {
+      commit('identityExecuteError');
+    });
+  },
   get({ commit }) {
     const privateKey = localStorage.getItem('privateKey');
     const ensName = localStorage.getItem('ensName');
@@ -41,18 +57,26 @@ export const actions: ActionTree<IdentityState, RootState> = {
         ensName,
         managementKey,
       },
-    }).then((response) => {
+    }).then(async (response) => {
       const transaction: ethers.utils.Transaction = response && response.data;
       localStorage.setItem('privateKey', privateKey);
       localStorage.setItem('ensName', ensName);
       commit('identityCreated', { transaction, privateKey, ensName, address: wallet.address });
-    }, (error) => {
+
+      if (transaction.hash) {
+        const receipt = await waitForTransactionReceipt(transaction.hash);
+        commit('identityReceipt', receipt);
+      }
+    }).catch((error) => {
       commit('identityNotCreated', error);
     });
   },
 };
 
 export const mutations: MutationTree<IdentityState> = {
+  identityReceipt(state, payload: TransactionReceipt) {
+    state.identityAddress = payload.contractAddress || '';
+  }, 
   identityRetrieved(state, payload: { privateKey: string, address: string, ensName: string }) {
     state.privateKey = payload.privateKey;
     state.address = payload.address;
