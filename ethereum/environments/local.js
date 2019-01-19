@@ -1,4 +1,5 @@
 const secrets = require("@dapp-stack/secrets");
+const ethers = require("ethers");
 
 // const decryptedSecrets = JSON.parse(secrets.decrypt());
 
@@ -7,6 +8,8 @@ module.exports = {
     // List of contracts to compile
     contracts: [
       "Identity/Identity.sol",
+      "DappHub/token",
+      "DappHub/roles",
       "Sai/fab.sol",
       "Sai/weth9.sol",
       "Sai/pit.sol",
@@ -36,6 +39,50 @@ module.exports = {
     // Function executed by DApp Stack to deploy the contracts.
     migrate: async (deployer) => {
       await deployer.ens.bootstrapWith('petition', 'eth');
+
+      const gemFab = await deployer.deploy('GemFab');
+      const voxFab = await deployer.deploy('VoxFab');
+      const tubFab = await deployer.deploy('TubFab');
+      const tapFab = await deployer.deploy('TapFab');
+      const topFab = await deployer.deploy('TopFab');
+      const momFab = await deployer.deploy('MomFab');
+      const dadFab = await deployer.deploy('DadFab');
+
+      const daiFab = await deployer.deploy(
+        'DaiFab',
+        gemFab.address,
+        voxFab.address,
+        tubFab.address,
+        tapFab.address,
+        topFab.address,
+        momFab.address,
+        dadFab.address
+      )
+
+      const saiGem = await deployer.deploy('DSToken', ethers.utils.formatBytes32String('ETH'));
+      const saiGov = await deployer.deploy('DSToken', ethers.utils.formatBytes32String('GOV'));
+
+      const saiPep = await deployer.deploy('DSValue');
+      const saiPip = await deployer.deploy('DSValue');
+      const saiPit = "0x0000000000000000000000000000000000000123"
+
+      const saiAdm = await deployer.deploy('DSRoles');
+      const admT = await saiAdm.setRootUser(deployer.signer._address, true);
+      await admT.wait();
+
+      const daiFabT1 = await daiFab.makeTokens();
+      const daiFabT2 = await daiFab.makeVoxTub(saiGem.address, saiGov.address, saiPip.address, saiPep.address, saiPit);
+      const daiFabT3 = await daiFab.makeTapTop();
+      const daiFabT4 = await daiFab.configParams();
+      const daiFabT5 = await daiFab.verifyParams();
+      const daiFabT6 = await daiFab.configAuth(saiAdm.address)
+
+      await daiFabT1.wait();
+      await daiFabT2.wait();
+      await daiFabT3.wait();
+      await daiFabT4.wait();
+      await daiFabT5.wait();
+      await daiFabT6.wait();
 
       const petition = await deployer.deploy('Petition');
       const escrow = await deployer.deploy('Escrow');

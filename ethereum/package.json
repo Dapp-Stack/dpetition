@@ -7,6 +7,7 @@
     "secrets": "dapp-stack-secrets"
   },
   "dependencies": {
+    "ethers": "^4.0.21"
   },
   "devDependencies": {
     "@dapp-stack/scripts": "^0.4.0",
