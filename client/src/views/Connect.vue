@@ -77,7 +77,7 @@ export default class Connect extends Vue {
   public unexpectedError = true;
   public isLoadingIdentity = false;
 
-  public debounceFind = debounce(function(username: string) {
+  public debounceFind = debounce(function(this: Connect, username: string) {
     this.isTyping = false;
     this.find({ username });
   }, 500);
