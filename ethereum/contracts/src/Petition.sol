@@ -35,7 +35,7 @@ contract Petition is Ownable {
         require(_deposit > 0, "Deposit cannot be less than 1 Wei.");
 
         uint256 minExpireOn = now + 1 days;
-        require(__expireOn > minExpireOn, "Must expires in at least 1 day.");
+        require(_expireOn > minExpireOn, "Must expires in at least 1 day.");
 
         Details memory details = Details(_title, _descriptionHash, _expireOn, _deposit, _owner);
         uint256 id = petitions.push(details) - 1;

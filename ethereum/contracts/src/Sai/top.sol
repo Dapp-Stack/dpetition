@@ -66,8 +66,8 @@ contract SaiTop is DSThing {
 
     function flow() public note {
         require(tub.off());
-        var empty = tub.din() == 0 && tap.fog() == 0;
-        var ended = era() > caged + cooldown;
+        bool empty = tub.din() == 0 && tap.fog() == 0;
+        bool ended = era() > caged + cooldown;
         require(empty || ended);
         tub.flow();
     }
