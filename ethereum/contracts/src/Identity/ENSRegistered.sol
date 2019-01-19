@@ -1,9 +1,9 @@
 pragma solidity ^0.5.0;
 
-import "./ENS/ENS.sol";
-import "./ENS/FIFSRegistrar.sol";
-import "./ENS/PublicResolver.sol";
-import "./ENS/ReverseRegistrar.sol";
+import "../ENS/ENS.sol";
+import "../ENS/FIFSRegistrar.sol";
+import "../ENS/PublicResolver.sol";
+import "../ENS/ReverseRegistrar.sol";
 
 
 contract ENSRegistered {

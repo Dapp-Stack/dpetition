@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-import "./Ownable.sol";
+import "./Lib/Ownable.sol";
 
 contract Petition is Ownable {
 

@@ -1,7 +1,7 @@
 
 pragma solidity ^0.5.0;
 
-import "./IERC725KeyHolder.sol";
+import "../Interfaces/IERC725KeyHolder.sol";
 
 contract KeyHolder is IERC725KeyHolder {
     mapping (bytes32 => Key) public keys;

@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 import "./KeyHolder.sol";
-import "./IERC725.sol";
+import "../Interfaces/IERC725.sol";
 
 contract ERC725ApprovalScheme is KeyHolder, IERC725 {
 

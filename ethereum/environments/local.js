@@ -8,7 +8,7 @@ module.exports = {
     contracts: [
       "Controller.sol",
       "Escrow.sol",
-      "Identity.sol",
+      "Identity/Identity.sol",
       "Petition.sol",
     ]
   },

@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-contract ERC725 {    
+contract IERC725 {    
     event ExecutionRequested(uint256 indexed executionId, address indexed to, uint256 indexed value, bytes data);
     event Executed(uint256 indexed executionId, address indexed to, uint256 indexed value, bytes data);
     event ExecutionFailed(uint256 indexed executionId, address indexed to, uint256 indexed value, bytes data);

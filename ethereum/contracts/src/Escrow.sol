@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
-import "./SafeMath.sol";
-import "./Ownable.sol";
+import "./Lib/SafeMath.sol";
+import "./Lib/Ownable.sol";
 
  /**
  * @title Escrow

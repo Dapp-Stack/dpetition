@@ -1,9 +1,9 @@
 pragma solidity ^0.5.0;
 
 import "./KeyHolder.sol";
-import "./ECRecovery.sol";
-import "./SafeMath.sol";
-import "./ERC20.sol";
+import "../Lib/ECRecovery.sol";
+import "../Lib/SafeMath.sol";
+import "../Token/ERC20.sol";
 
 
 contract SignedApprovalScheme is KeyHolder {

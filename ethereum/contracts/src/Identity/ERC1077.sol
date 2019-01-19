@@ -1,10 +1,10 @@
 pragma solidity ^0.5.0;
 
 import "./KeyHolder.sol";
-import "./IERC1077.sol";
-import "./ECRecovery.sol";
-import "./SafeMath.sol";
-import "./ERC20.sol";
+import "../Interfaces/IERC1077.sol";
+import "../Lib/ECRecovery.sol";
+import "../Lib/SafeMath.sol";
+import "../Token/ERC20.sol";
 
 contract ERC1077 is KeyHolder, IERC1077 {
     using ECRecovery for bytes32;
