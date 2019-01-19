@@ -5,10 +5,20 @@ import { RootState, PetitionState, Petition } from '../../types';
 
 export const defaultState: PetitionState = {
   list: [],
-  error: false,
+  createError: false,
+  fetchError: false,
 };
 
 export const actions: ActionTree<PetitionState, RootState> = {
+  create({ commit }, payload: Petition) {
+    axios({
+      url: `${apiUrl}/identity/execution`,
+    }).then((response) => {
+      commit('petitionsCreated', payload);
+    }, (error) => {
+      commit('petitionsNotCreated');
+    });
+  },
   fetch({ commit }) {
     axios({
       url: `${apiUrl}/petitions`,
@@ -22,12 +32,19 @@ export const actions: ActionTree<PetitionState, RootState> = {
 };
 
 export const mutations: MutationTree<PetitionState> = {
+  petitionsCreated(state, payload: Petition) {
+    state.list.push(payload);
+    state.createError = false;
+  },
+  petitionsNotCreated(state) {
+    state.createError = true;
+  },
   petitionsLoaded(state, payload: Petition[]) {
-    state.error = false;
+    state.fetchError = false;
     state.list = payload;
   },
   petitionsError(state) {
-    state.error = true;
+    state.fetchError = true;
     state.list = [];
   },
 };

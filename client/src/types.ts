@@ -3,11 +3,14 @@ import { ethers } from 'ethers';
 export interface Petition {
   title: string;
   description: string;
+  expireOn: Date;
+  deposit: number;
 }
 
 export interface PetitionState {
   list: Petition[];
-  error: boolean;
+  fetchError: boolean;
+  createError: boolean;
 }
 
 export interface EnsState {

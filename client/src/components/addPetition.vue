@@ -1,144 +1,192 @@
 <template>
   <v-card>
-    <v-toolbar dark color="primary">
-      <v-btn icon dark @click="$emit('close')">
-        <v-icon>fa-close fa-2x</v-icon>
-      </v-btn>
-      <v-toolbar-title>Add Petition</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <v-btn :disabled="!valid" color="success" @click="create">Create</v-btn>
-      </v-toolbar-items>
-    </v-toolbar>
-    <v-card-text>
-      <v-container grid-list-xl>
-        <v-layout wrap>
-          <v-flex xs12 sm6>
-            <v-text-field v-model="title" :counter="50" label="Title" class="mt-5" required></v-text-field>
-            <v-text-field v-model="deposit" label="Deposit" type="number" class="mt-5" required></v-text-field>
-            <p class="mt-5">Expire on</p>
-            <v-date-picker v-model="expireOn" full-width landscape required></v-date-picker>
-          </v-flex>
-          <v-flex xs12 sm6>
-            <div class="editor mt-5">
-              <editor-menu-bar :editor="editor">
-                <div
-                  class="menubar is-hidden"
-                  :class="{ 'is-focused': focused }"
-                  slot-scope="{ commands, isActive, focused }"
-                >
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.bold() }"
-                    @click="commands.bold"
+    <v-form v-model="valid">
+      <v-toolbar dark color="primary">
+        <v-btn icon dark @click="$emit('close')">
+          <v-icon>fa-close fa-2x</v-icon>
+        </v-btn>
+        <v-toolbar-title>Add Petition</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <v-btn :disabled="!valid" dark large flat @click="create">
+            <v-icon class="mr-2">fa-plus</v-icon>Create
+          </v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+      <v-card-text>
+        <v-container grid-list-xl>
+          <v-layout wrap>
+            <v-flex xs12 sm6>
+              <v-text-field
+                v-model="title"
+                :rules="titleRules"
+                :counter="50"
+                label="Title"
+                prepend-icon="fa-header"
+                class="mt-5"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="deposit"
+                :rules="depositRules"
+                label="Deposit"
+                prepend-icon="fa-credit-card"
+                type="number"
+                class="mt-5"
+                required
+              ></v-text-field>
+
+              <v-menu
+                ref="expireOnMenu"
+                :close-on-content-click="false"
+                v-model="expireOnMenu"
+                :nudge-right="40"
+                :return-value.sync="date"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+              >
+                <v-text-field
+                  slot="activator"
+                  class="mt-5"
+                  v-model="expireOn"
+                  :rules="expireOnRules"
+                  label="Expire On"
+                  prepend-icon="fa-calendar"
+                  readonly
+                  required
+                ></v-text-field>
+                <v-date-picker v-model="expireOn" no-title scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn flat color="primary" @click="expireOnMenu = false">Cancel</v-btn>
+                  <v-btn flat color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-flex>
+            <v-flex xs12 sm6>
+              <div class="editor mt-5">
+                <editor-menu-bar :editor="editor">
+                  <div
+                    class="menubar is-hidden"
+                    :class="{ 'is-focused': focused }"
+                    slot-scope="{ commands, isActive, focused }"
                   >
-                    <v-icon>fa-bold</v-icon>
-                  </button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.italic() }"
-                    @click="commands.italic"
-                  >
-                    <v-icon>fa-italic</v-icon>
-                  </button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.strike() }"
-                    @click="commands.strike"
-                  >
-                    <v-icon>fa-strikethrough</v-icon>
-                  </button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.underline() }"
-                    @click="commands.underline"
-                  >
-                    <v-icon>fa-underline</v-icon>
-                  </button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.code() }"
-                    @click="commands.code"
-                  >
-                    <v-icon>fa-code</v-icon>
-                  </button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.paragraph() }"
-                    @click="commands.paragraph"
-                  >
-                    <v-icon>fa-paragraph</v-icon>
-                  </button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.heading({ level: 1 }) }"
-                    @click="commands.heading({ level: 1 })"
-                  >H1</button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.heading({ level: 2 }) }"
-                    @click="commands.heading({ level: 2 })"
-                  >H2</button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.heading({ level: 3 }) }"
-                    @click="commands.heading({ level: 3 })"
-                  >H3</button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.bullet_list() }"
-                    @click="commands.bullet_list"
-                  >
-                    <v-icon>fa-list-ul</v-icon>
-                  </button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.ordered_list() }"
-                    @click="commands.ordered_list"
-                  >
-                    <v-icon>fa-list-ol</v-icon>
-                  </button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.blockquote() }"
-                    @click="commands.blockquote"
-                  >
-                    <v-icon>fa-quote-right</v-icon>
-                  </button>
-                  
-                  <button
-                    class="menubar__button"
-                    :class="{ 'is-active': isActive.code_block() }"
-                    @click="commands.code_block"
-                  >
-                    <v-icon>fa-code</v-icon>
-                  </button>
-                </div>
-              </editor-menu-bar>
-              <editor-content class="editor__content" :editor="editor"/>
-            </div>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-card-text>
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.bold() }"
+                      @click="commands.bold"
+                    >
+                      <v-icon>fa-bold</v-icon>
+                    </button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.italic() }"
+                      @click="commands.italic"
+                    >
+                      <v-icon>fa-italic</v-icon>
+                    </button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.strike() }"
+                      @click="commands.strike"
+                    >
+                      <v-icon>fa-strikethrough</v-icon>
+                    </button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.underline() }"
+                      @click="commands.underline"
+                    >
+                      <v-icon>fa-underline</v-icon>
+                    </button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.code() }"
+                      @click="commands.code"
+                    >
+                      <v-icon>fa-code</v-icon>
+                    </button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.paragraph() }"
+                      @click="commands.paragraph"
+                    >
+                      <v-icon>fa-paragraph</v-icon>
+                    </button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.heading({ level: 1 }) }"
+                      @click="commands.heading({ level: 1 })"
+                    >H1</button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.heading({ level: 2 }) }"
+                      @click="commands.heading({ level: 2 })"
+                    >H2</button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.heading({ level: 3 }) }"
+                      @click="commands.heading({ level: 3 })"
+                    >H3</button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.bullet_list() }"
+                      @click="commands.bullet_list"
+                    >
+                      <v-icon>fa-list-ul</v-icon>
+                    </button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.ordered_list() }"
+                      @click="commands.ordered_list"
+                    >
+                      <v-icon>fa-list-ol</v-icon>
+                    </button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.blockquote() }"
+                      @click="commands.blockquote"
+                    >
+                      <v-icon>fa-quote-right</v-icon>
+                    </button>
+                    
+                    <button
+                      class="menubar__button"
+                      :class="{ 'is-active': isActive.code_block() }"
+                      @click="commands.code_block"
+                    >
+                      <v-icon>fa-code</v-icon>
+                    </button>
+                  </div>
+                </editor-menu-bar>
+                <editor-content class="editor__content" :editor="editor"/>
+              </div>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-card-text>
+    </v-form>
   </v-card>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Editor, EditorContent, EditorMenuBar } from 'tiptap';
-import { Component, Watch, Prop } from 'vue-property-decorator';
+import Vue from "vue";
+import { Editor, EditorContent, EditorMenuBar } from "tiptap";
+import { Action, State } from "vuex-class";
+import { Component, Watch, Prop } from "vue-property-decorator";
 import {
   Blockquote,
   BulletList,
@@ -155,21 +203,36 @@ import {
   Link,
   Strike,
   Underline,
-  History,
-} from 'tiptap-extensions';
+  History
+} from "tiptap-extensions";
+import { Petition } from "../types";
+
+const titleRequired = (v: string) => !!v || "Title is required";
+const titleLength = (v: string) =>
+  (v && v.length <= 50) || "Title must be less than 50 characters";
+const depositRequired = (v: number) => !!v || "Deposit is required";
+const depositMin = (v: number) => v > 0 || "Deposit minimum is 1";
+const expireOnRequired = (v: string) => !!v || "Expire On is required";
 
 @Component({
   components: {
     EditorContent,
-    EditorMenuBar,
-  },
+    EditorMenuBar
+  }
 })
 export default class AddPetition extends Vue {
   public editor: any = null;
   public valid: boolean = false;
-  public title: string = '';
-  public expireOn: string = '';
+  public title: string = "";
+  public titleRules = [titleRequired, titleLength];
+  public expireOn: string = "";
+  public expireOnRules = [expireOnRequired];
   public deposit: number = 1;
+  public depositRules = [depositRequired, depositMin];
+
+  @Action("create", { namespace: "petition" }) private createPetition!: (
+    attributes: Petition
+  ) => void;
 
   public mounted() {
     this.editor = new Editor({
@@ -189,7 +252,7 @@ export default class AddPetition extends Vue {
         new Link(),
         new Strike(),
         new Underline(),
-        new History(),
+        new History()
       ],
       content: `
         <h2>
@@ -207,7 +270,7 @@ export default class AddPetition extends Vue {
         <p>
           This is what
         </p>
-      `,
+      `
     });
   }
 
@@ -215,8 +278,15 @@ export default class AddPetition extends Vue {
     this.editor.destroy();
   }
 
-  public create() {
-    this.$emit('close');
+  public async create() {
+    const petition: Petition = {
+      title: this.title,
+      description: this.editor.getHTML(),
+      expireOn: new Date(this.expireOn),
+      deposit: this.deposit
+    };
+    await this.createPetition(petition);
+    this.$emit("close");
   }
 }
 </script>
@@ -263,7 +333,7 @@ $color-grey: #dddddd;
 }
 
 .editor {
-  :focus { 
+  :focus {
     outline: none;
   }
 
@@ -333,7 +403,8 @@ $color-grey: #dddddd;
       margin: 0;
       overflow: hidden;
 
-      td, th {
+      td,
+      th {
         min-width: 1em;
         border: 2px solid $color-grey;
         padding: 3px 5px;
@@ -354,14 +425,19 @@ $color-grey: #dddddd;
         z-index: 2;
         position: absolute;
         content: "";
-        left: 0; right: 0; top: 0; bottom: 0;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
         background: rgba(200, 200, 255, 0.4);
         pointer-events: none;
       }
 
       .column-resize-handle {
         position: absolute;
-        right: -2px; top: 0; bottom: 0;
+        right: -2px;
+        top: 0;
+        bottom: 0;
         width: 4px;
         z-index: 20;
         background-color: #adf;
