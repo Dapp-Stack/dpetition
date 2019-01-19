@@ -6,9 +6,12 @@ module.exports = {
   compile: {
     // List of contracts to compile
     contracts: [
+      "Identity/Identity.sol",
+      // "Sai/fab.sol",
+      // "Sai/weth9.sol",
+      // "Sai/pit.sol",
       "Controller.sol",
       "Escrow.sol",
-      "Identity/Identity.sol",
       "Petition.sol",
     ]
   },

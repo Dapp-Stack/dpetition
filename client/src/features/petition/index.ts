@@ -11,6 +11,15 @@ export const defaultState: PetitionState = {
 
 export const actions: ActionTree<PetitionState, RootState> = {
   create({ commit }, payload: Petition) {
+    // const message = {
+    //   to: this.addresses.clicker,
+    //   from: this.identityService.identity.address,
+    //   value: 0,
+    //   data: new utils.Interface(Clicker.interface).functions.press.encode([]),
+    //   gasToken: this.addresses.token,
+    //   ...this.defaultPaymentOptions
+    // };
+    // await this.identityService.execute(message);
     axios({
       url: `${apiUrl}/identity/execution`,
     }).then((response) => {
