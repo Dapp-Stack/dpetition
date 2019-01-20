@@ -13,7 +13,8 @@ const saiContracts = [
   "Sai/fab.sol",
   "Sai/weth9.sol",
   "Sai/pit.sol",
-]
+];
+
 async function deploySAIProtocol(deployer) {
   const gemFab = await deployer.deploy('GemFab');
   const voxFab = await deployer.deploy('VoxFab');
@@ -70,9 +71,14 @@ const zeroContracts = [
   "0x/extensions/OrderValidator/OrderValidator.sol",
   "0x/extensions/DutchAuction/DutchAuction.sol",
   "0x/protocol/AssetProxyOwner/AssetProxyOwner.sol",
-]
-async function deploy0xProtocol(deployer) {
+];
 
+async function deploy0xProtocol(deployer) {
+  const erc20Proxy = await deployer.deploy('ERC20Proxy');
+  const erc721Proxy = await deployer.deploy('ERC721Proxy');
+  const zrxToken = await deployer.deploy('ZRXToken');
+
+  const exchange = await deployer.deploy('Exchange');
 }
 
 const identityContracts = [
@@ -101,7 +107,8 @@ async function deployPetitionProtocol(deployer) {
 module.exports = {
   compile: {
     // List of contracts to compile
-    contracts: saiContracts.concat(zeroContracts).concat(identityContracts).concat(petitionContracts)
+    // contracts: saiContracts.concat(zeroContracts).concat(identityContracts).concat(petitionContracts)
+    contracts: identityContracts.concat(petitionContracts)
   },
 
   // Ethererum configuration, it can be false if not needed
@@ -123,10 +130,10 @@ module.exports = {
 
     // Function executed by DApp Stack to deploy the contracts.
     migrate: async (deployer) => {
-      // await deployENSProtocol(deployer);
+      await deployENSProtocol(deployer);
       // await deploySAIProtocol(deployer);
       // await deploy0xProtocol(deployer);
-      // await deployPetitionProtocol(deployer);
+      await deployPetitionProtocol(deployer);
     }
   },
 
