@@ -1,6 +1,6 @@
 export interface RequestAuthorisation {
   identityAddress: string;
-  key: string;
+  address: string;
   index?: number
   deviceInfo: {
     ipAddress: string;

@@ -1,35 +1,28 @@
-import axios from 'axios';
 import { Module, ActionTree, MutationTree } from 'vuex';
-import { apiUrl } from '../../config';
-import { RootState, PetitionState, Petition } from '../../types';
+import { RootState, PetitionState } from '../../types';
 
 export const defaultState: PetitionState = {
   list: [],
-  fetchError: false,
 };
 
 export const actions: ActionTree<PetitionState, RootState> = {
-  fetch({ commit }) {
-    axios({
-      url: `${apiUrl}/petitions`,
-    }).then((response) => {
-      const payload: Petition[] = response && response.data;
-      commit('petitionsLoaded', payload);
-    }, (error) => {
-      commit('petitionsError');
-    });
+  async fetch({ commit, rootState }) {
+    const contract = rootState.contracts.Petition
+    const promises = []
+    const length = await contract.length();
+
+    for(let i=0; i++; i < length) {
+      promises.push(contract.petitions(i));
+    }
+    const petitions: Petition[] = await Promise.all(promises);
+    commit('updatePetitions', petitions);
   },
 };
 
 export const mutations: MutationTree<PetitionState> = {
-  petitionsLoaded(state, payload: Petition[]) {
-    state.fetchError = false;
+  updatePetitions(state, payload: Petition[]) {
     state.list = payload;
-  },
-  petitionsError(state) {
-    state.fetchError = true;
-    state.list = [];
-  },
+  }
 };
 
 const namespaced: boolean = true;

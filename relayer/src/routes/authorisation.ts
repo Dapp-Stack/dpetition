@@ -25,7 +25,7 @@ export const createRequest = (authorisationService: AuthorisationService) => asy
       browser: req.useragent.browser,
       time: moment().format('h:mm'),
     },
-    key: req.body.key.toLowerCase(),
+    address: req.body.address.toLowerCase(),
     identityAddress: req.body.identityAddress
   };
   await authorisationService.addRequest(requestAuthorisation);
@@ -40,8 +40,8 @@ export const getPending = (authorisationService: AuthorisationService) => async 
 
 export const denyRequest = (authorisationService: AuthorisationService) => async (req: Request, res: Response) => {
   const { identityAddress } = req.params;
-  const { key } = req.body;
-  await authorisationService.removeRequest(identityAddress, key);
+  const address = req.body.addres.toLowerCase();
+  await authorisationService.removeRequest(identityAddress, address);
   res.status(204).end();
 };
 

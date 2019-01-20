@@ -3,9 +3,9 @@ import asyncMiddleware from '../middlewares/asyncMiddleware';
 import IdentityService from '../services/identityService';
 
 export const create = (identityService: IdentityService) => async (req: Request, res: Response, next: NextFunction) => {
-  const {managementKey, ensName} = req.body;
+  const {address, ensName} = req.body;
   try {
-    const transaction = await identityService.create(managementKey, ensName);
+    const transaction = await identityService.create(address, ensName);
     res.status(201)
       .json({transaction});
   } catch (err) {

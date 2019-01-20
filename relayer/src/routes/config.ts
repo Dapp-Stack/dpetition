@@ -3,10 +3,7 @@ import JsonRpcService from '../services/jsonRpcService';
 
 export const get = (jsonRpcService: JsonRpcService) => async (req: Request, res: Response, next: NextFunction) => {
   res.status(200)
-    .json({
-      network: jsonRpcService.network,
-      contracts: jsonRpcService.contracts,
-    });
+    .json(jsonRpcService.network);
 };
 
 export default (jsonRpcService: JsonRpcService) => {

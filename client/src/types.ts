@@ -1,45 +1,24 @@
 import { ethers } from 'ethers';
 
-export interface Tracker {
-  [chainId: string]: {
-    [address: string]: {
-      name: string;
-      abi: Array<any>;
-    }
-  }
-}
-
-export interface Petition {
-  title: string;
-  description: string;
-  expireOn: Date;
-  deposit: number;
-}
-
 export interface PetitionState {
   list: Petition[];
-  fetchError: boolean;
-  createError: boolean;
 }
 
 export interface EnsState {
-  address?: string;
-  loading: boolean;
-  notFound: boolean;
+  address: string;
 }
 
 export interface IdentityState {
-  loading: boolean;
   address: string;
   identityAddress: string;
   privateKey: string;
   ensName: string;
-  transaction: ethers.utils.Transaction | null;
-  error: Error | null;
+  executeSuccess: null | boolean,
+  createSuccess: null | boolean
 }
 
 export interface RootState {
   apiAvailable: boolean;
-  network: ethers.utils.Network | null;
-  contracts: { [name: string]: ethers.Contract[] };
+  network: ethers.utils.Network;
+  contracts: Contracts;
 }

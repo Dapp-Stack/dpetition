@@ -24,8 +24,8 @@ export default class IdentityService {
     this.petitionToken = jsonRpcService.contracts.petitionToken[0];
   }
 
-  async create(managementKey: string, ensName: string, overrideOptions = {}) {
-    const key = addressToBytes32(managementKey);
+  async create(address: string, ensName: string, overrideOptions = {}) {
+    const key = addressToBytes32(address);
     const ensArgs = await this.ensService.argsFor(ensName);
     if (!ensArgs) {
       throw new Error('domain not existing / not universal ID compatible');

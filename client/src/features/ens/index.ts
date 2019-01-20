@@ -1,44 +1,26 @@
-import axios from 'axios';
 import { Module, ActionTree, MutationTree } from 'vuex';
-import { apiUrl, ensSuffix } from '../../config';
 import { RootState, EnsState } from '../../types';
+import { utils, ethers } from 'ethers';
+import { usernameToEns } from '../..//services/ensService';
 
 export const defaultState: EnsState = {
-  address: '',
-  notFound: false,
-  loading: false,
+  address: ethers.constants.AddressZero,
 };
 
 export const actions: ActionTree<EnsState, RootState> = {
-  find({ commit }, payload) {
-    commit('ensLoading');
-    axios({
-      url: `${apiUrl}/ens/${payload.username}.${ensSuffix}`,
-    }).then((response) => {
-      const address: string = response && response.data;
-      commit('ensAddressFound', address);
-    }, () => {
-      commit('ensAddressNotFound');
-    });
+  async find({ commit, rootState }, payload: string) {
+    const ensName = usernameToEns(payload);
+    const node = utils.namehash(ensName);
+    const address =  rootState.contracts.PublicResolver[0].addr(node);
+    commit('updateAddress', address);
   },
 };
 
+  
 export const mutations: MutationTree<EnsState> = {
-  ensLoading(state) {
-    state.loading = true;
-    state.notFound = false;
-    state.address = undefined;
-  },
-  ensAddressFound(state, payload: { address: string}) {
+  updateAddress(state, payload: { address: string}) {
     state.address = payload.address;
-    state.notFound = false;
-    state.loading = false;
-  },
-  ensAddressNotFound(state) {
-    state.address = '';
-    state.notFound = true;
-    state.loading = false;
-  },
+  }
 };
 
 const namespaced: boolean = true;

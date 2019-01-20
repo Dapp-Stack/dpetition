@@ -20,9 +20,8 @@ export default class AuthorisationService {
     return this.pendingAuthorisations[identityAddress] || [];
   }
 
-  public removeRequest(identityAddress: string, key: string) {
-    key = key.toLowerCase();
-    const filter = (requestAuthorisation: RequestAuthorisation) => requestAuthorisation.key !== key
+  public removeRequest(identityAddress: string, address: string) {
+    const filter = (requestAuthorisation: RequestAuthorisation) => requestAuthorisation.address !== address
     this.pendingAuthorisations[identityAddress] = this.getPendingAuthorisations(identityAddress).filter(filter);
       
   }
