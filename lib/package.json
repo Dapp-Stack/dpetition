@@ -2,6 +2,7 @@
   "name": "@dpetition/lib",
   "version": "0.1.0",
   "private": true,
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "tslint": "tslint -c tslint.json -p tsconfig.json"

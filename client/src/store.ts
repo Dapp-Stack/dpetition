@@ -2,6 +2,7 @@ import axios from 'axios';
 import Vue from 'vue';
 import Vuex, { StoreOptions, MutationTree, ActionTree } from 'vuex';
 import { Network } from 'ethers/utils';
+import { Tracker, loadContracts } from '@dpetition/lib';
 
 import Authorisation from './features/authorisation';
 import Ens from './features/ens';
@@ -10,6 +11,7 @@ import Petition from './features/petition';
 
 import { apiUrl, provider } from './config';
 import { RootState } from './types';
+import { JsonRpcProvider } from 'ethers/providers';
 
 Vue.use(Vuex);
 
@@ -21,20 +23,21 @@ declare global {
   }
 }
 
+const NULL_NETWORK = {
+  name: '',
+  chainId: -1
+};
+
 const defaultState: RootState = {
-  network: {
-    name: '',
-    chainId: -1
-  },
+  network: NULL_NETWORK,
   contracts: {},
-  apiAvailable: true,
 };
 
 const mutations: MutationTree<RootState> = {
-  setRootState(state, { network, contracts, apiAvailable }) {
+  setRootState(state, { network, contracts, provider }) {
     state.network = network;
     state.contracts = contracts;
-    state.apiAvailable = true;
+    state.provider = provider;
   },
 };
 
@@ -50,9 +53,9 @@ const actions: ActionTree<RootState, RootState> = {
       }
       const contracts = loadContracts(network, window.tracker, provider);
 
-      commit('setRootState', { ...payload, contracts, apiAvailable: true });
+      commit('setRootState', { provider, network, contracts });
     } catch(error) {
-      commit('setRootState', { network: null, contract: {}, apiAvailable: false });
+      commit('setRootState', { provider: undefined, network: NULL_NETWORK, contract: {} });
     }
   },
 };

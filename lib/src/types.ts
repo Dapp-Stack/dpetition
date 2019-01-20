@@ -16,7 +16,6 @@ export interface Petition {
   deposit: number;
 }
 
-
 export interface Contracts {
   [name: string]: ethers.Contract[];
 };

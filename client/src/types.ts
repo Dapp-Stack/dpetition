@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { Contracts, Petition } from '@dpetition/lib';
 
 export interface PetitionState {
   list: Petition[];
@@ -18,7 +19,7 @@ export interface IdentityState {
 }
 
 export interface RootState {
-  apiAvailable: boolean;
   network: ethers.utils.Network;
   contracts: Contracts;
+  provider?: ethers.providers.JsonRpcProvider;
 }

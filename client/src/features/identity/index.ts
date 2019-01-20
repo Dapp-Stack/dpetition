@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { Module, ActionTree, MutationTree } from 'vuex';
+import { waitForTransactionReceipt, Petition } from '@dpetition/lib';
+import { ethers } from 'ethers';
+
 import { apiUrl } from '../../config';
 import { RootState, IdentityState } from '../../types';
-import { ethers } from 'ethers';
 import { TransactionReceipt } from 'ethers/providers';
-import { createPetitionBody } from '@/services/petitionService';
-import { waitForTransactionReceipt } from '@/services/ethereumService';
-import { usernameToEns } from '@/services/ensService';
+import { buildData } from '../../services/identityService';
+import { usernameToEns } from '../../services/ensService';
 
 export const defaultState: IdentityState = {
   address: '',
@@ -18,9 +19,9 @@ export const defaultState: IdentityState = {
 };
 
 export const actions: ActionTree<IdentityState, RootState> = {
-  async execute({ commit, state }, payload: Petition) {
+  async execute({ commit, state, rootState }, payload: Petition) {
     try {
-      const data = builData(state, payload)
+      const data = buildData(state, rootState, payload);
       await axios({
         url: `${apiUrl}/identity/execution`,
         method: 'POST',
@@ -48,7 +49,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
     localStorage.removeItem('identityAddress');
     commit('identityDestroySuccess');
   },
-  async create({ commit }, payload: string) {
+  async create({ commit, rootState }, payload: string) {
     try {
       const privateKey = ethers.Wallet.createRandom().privateKey;
       const wallet = new ethers.Wallet(privateKey);
@@ -69,8 +70,8 @@ export const actions: ActionTree<IdentityState, RootState> = {
       
       commit('identityCreateSuccess', { privateKey, ensName, address: wallet.address });
 
-      if (transaction.hash) {
-        const receipt = await waitForTransactionReceipt(transaction.hash);
+      if (transaction.hash && rootState.provider) {
+        const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
         commit('identityCreateReceipt', receipt);
       }
     } catch(error) {

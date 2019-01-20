@@ -1,5 +1,5 @@
 import {ethers, utils, ContractFactory} from 'ethers';
-import { addressToBytes32 } from '@dpetition/lib/address';
+import { addressToBytes32 } from '@dpetition/lib';
 
 import Identity from '../../contracts/Identity/Identity.sol/Identity.json';
 import JsonRpcService from './jsonRpcService.js';
