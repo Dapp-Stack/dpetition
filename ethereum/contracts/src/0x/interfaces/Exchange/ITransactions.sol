@@ -28,8 +28,8 @@ contract ITransactions {
     function executeTransaction(
         uint256 salt,
         address signerAddress,
-        bytes data,
-        bytes signature
+        bytes calldata data,
+        bytes calldata signature
     )
         external;
 }

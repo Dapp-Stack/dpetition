@@ -16,10 +16,10 @@
 
 */
 
-pragma solidity 0.5.0;
+pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "@0x/contracts-libs/contracts/libs/LibConstants.sol";
+import "../../libs/LibConstants.sol";
 import "./MixinExchangeCore.sol";
 import "./MixinSignatureValidator.sol";
 import "./MixinWrapperFunctions.sol";

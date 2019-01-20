@@ -21,10 +21,10 @@ pragma experimental ABIEncoderV2;
 
 import "./libs/LibConstants.sol";
 import "./mixins/MExchangeWrapper.sol";
-import "@0x/contracts-libs/contracts/libs/LibAbiEncoder.sol";
-import "@0x/contracts-libs/contracts/libs/LibOrder.sol";
-import "@0x/contracts-libs/contracts/libs/LibFillResults.sol";
-import "@0x/contracts-libs/contracts/libs/LibMath.sol";
+import "../../libs/LibAbiEncoder.sol";
+import "../../libs/LibOrder.sol";
+import "../../libs/LibFillResults.sol";
+import "../../libs/LibMath.sol";
 
 
 contract MixinExchangeWrapper is
@@ -142,7 +142,7 @@ contract MixinExchangeWrapper is
     {
         bytes memory makerAssetData = orders[0].makerAssetData;
         bytes memory wethAssetData = WETH_ASSET_DATA;
-
+        uint256 makerAssetFilledAmount;
         uint256 ordersLength = orders.length;
         for (uint256 i = 0; i != ordersLength; i++) {
 
@@ -175,7 +175,7 @@ contract MixinExchangeWrapper is
             addFillResults(totalFillResults, singleFillResults);
 
             // Stop execution if the entire amount of makerAsset has been bought
-            uint256 makerAssetFilledAmount = totalFillResults.makerAssetFilledAmount;
+            makerAssetFilledAmount = totalFillResults.makerAssetFilledAmount;
             if (makerAssetFilledAmount >= makerAssetFillAmount) {
                 break;
             }

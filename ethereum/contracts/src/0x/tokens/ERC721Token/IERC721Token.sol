@@ -66,7 +66,7 @@ contract IERC721Token {
         address _from,
         address _to,
         uint256 _tokenId,
-        bytes _data
+        bytes calldata _data
     )
         external;
 

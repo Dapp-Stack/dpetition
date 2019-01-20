@@ -18,13 +18,12 @@
 
 pragma solidity ^0.5.0;
 
-import "@0x/contracts-utils/contracts/utils/LibBytes/LibBytes.sol";
-import "@0x/contracts-utils/contracts/utils/ReentrancyGuard/ReentrancyGuard.sol";
+import "../../utils/LibBytes/LibBytes.sol";
+import "../../utils/ReentrancyGuard/ReentrancyGuard.sol";
 import "./mixins/MSignatureValidator.sol";
 import "./mixins/MTransactions.sol";
-import "@0x/contracts-interfaces/contracts/protocol/Exchange/IWallet.sol";
-import "@0x/contracts-interfaces/contracts/protocol/Exchange/IValidator.sol";
-
+import "../../interfaces/Exchange/IWallet.sol";
+import "../../interfaces/Exchange/IValidator.sol";
 
 contract MixinSignatureValidator is
     ReentrancyGuard,
@@ -46,7 +45,7 @@ contract MixinSignatureValidator is
     function preSign(
         bytes32 hash,
         address signerAddress,
-        bytes signature
+        bytes calldata signature
     )
         external
     {
@@ -233,7 +232,7 @@ contract MixinSignatureValidator is
     function isValidWalletSignature(
         bytes32 hash,
         address walletAddress,
-        bytes signature
+        bytes memory signature
     )
         internal
         view
@@ -282,7 +281,7 @@ contract MixinSignatureValidator is
         address validatorAddress,
         bytes32 hash,
         address signerAddress,
-        bytes signature
+        bytes memory signature
     )
         internal
         view

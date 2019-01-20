@@ -18,10 +18,9 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "@0x/contracts-libs/contracts/libs/LibOrder.sol";
-import "@0x/contracts-libs/contracts/libs/LibFillResults.sol";
-import "@0x/contracts-interfaces/contracts/protocol/Exchange/IMatchOrders.sol";
-
+import "../../../libs/LibOrder.sol";
+import "../../../libs/LibFillResults.sol";
+import "../../../interfaces/Exchange/IMatchOrders.sol";
 
 contract MMatchOrders is
     IMatchOrders

@@ -18,7 +18,7 @@
 
 pragma solidity ^0.5.0;
 
-import "@0x/contracts-libs/contracts/libs/LibMath.sol";
+import "../../libs/LibMath.sol";
 import "./libs/LibConstants.sol";
 import "./mixins/MWeth.sol";
 
@@ -30,7 +30,7 @@ contract MixinWeth is
 {
     /// @dev Default payabale function, this allows us to withdraw WETH
     function ()
-        public
+        external
         payable
     {
         require(
@@ -60,7 +60,7 @@ contract MixinWeth is
         uint256 wethSoldExcludingFeeOrders,
         uint256 wethSoldForZrx,
         uint256 feePercentage,
-        address feeRecipient
+        address payable feeRecipient
     )
         internal
     {

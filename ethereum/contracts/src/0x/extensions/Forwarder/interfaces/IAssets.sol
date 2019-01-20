@@ -27,7 +27,7 @@ contract IAssets {
     /// @param assetData Byte array encoded for the respective asset proxy.
     /// @param amount Amount of ERC20 token to withdraw.
     function withdrawAsset(
-        bytes assetData,
+        bytes calldata assetData,
         uint256 amount
     )
         external;

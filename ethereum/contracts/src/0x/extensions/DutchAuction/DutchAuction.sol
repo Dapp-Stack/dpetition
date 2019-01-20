@@ -16,14 +16,14 @@
 
 */
 
-pragma solidity 0.5.0;
+pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "@0x/contracts-interfaces/contracts/protocol/Exchange/IExchange.sol";
-import "@0x/contracts-libs/contracts/libs/LibOrder.sol";
-import "@0x/contracts-tokens/contracts/tokens/ERC20Token/IERC20Token.sol";
-import "@0x/contracts-utils/contracts/utils/LibBytes/LibBytes.sol";
-import "@0x/contracts-utils/contracts/utils/SafeMath/SafeMath.sol";
+import "../../interfaces/Exchange/IExchange.sol";
+import "../../libs/LibOrder.sol";
+import "../../tokens/ERC20Token/IERC20Token.sol";
+import "../../utils/LibBytes/LibBytes.sol";
+import "../../utils/SafeMath/SafeMath.sol";
 
 
 contract DutchAuction is
@@ -142,7 +142,7 @@ contract DutchAuction is
     function getAuctionDetails(
         LibOrder.Order memory order
     )
-        public
+        public view
         returns (AuctionDetails memory auctionDetails)
     {
         uint256 makerAssetDataLength = order.makerAssetData.length;

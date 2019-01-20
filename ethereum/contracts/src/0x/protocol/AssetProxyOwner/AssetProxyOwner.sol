@@ -16,10 +16,10 @@
 
 */
 
-pragma solidity 0.5.0;
+pragma solidity ^0.5.0;
 
-import "@0x/contracts-multisig/contracts/multisig/MultiSigWalletWithTimeLock.sol";
-import "@0x/contracts-utils/contracts/utils/LibBytes/LibBytes.sol";
+import "../../multisig/MultiSigWalletWithTimeLock.sol";
+import "../../utils/LibBytes/LibBytes.sol";
 
 
 contract AssetProxyOwner is

@@ -20,7 +20,7 @@ pragma solidity ^0.5.0;
 
 import "./IERC721Token.sol";
 import "./IERC721Receiver.sol";
-import "@0x/contracts-utils/contracts/utils/SafeMath/SafeMath.sol";
+import "../../utils/SafeMath/SafeMath.sol";
 
 
 contract ERC721Token is

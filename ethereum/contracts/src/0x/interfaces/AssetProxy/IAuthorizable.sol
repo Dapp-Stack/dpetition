@@ -18,8 +18,7 @@
 
 pragma solidity ^0.5.0;
 
-import "@0x/contracts-utils/contracts/utils/Ownable/IOwnable.sol";
-
+import "../../utils/Ownable/IOwnable.sol";
 
 contract IAuthorizable is
     IOwnable

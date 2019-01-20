@@ -16,28 +16,29 @@
 
 */
 
-
-
 pragma solidity ^0.5.0;
 
-// solhint-disable-next-line max-line-length
-import { UnlimitedAllowanceToken_v1 as UnlimitedAllowanceToken } from "./UnlimitedAllowanceToken_v1.sol";
+contract ReentrancyGuard {
 
+    // Locked state of mutex
+    bool private locked = false;
 
-contract ZRXToken is 
-    UnlimitedAllowanceToken
-{
+    /// @dev Functions with this modifer cannot be reentered. The mutex will be locked
+    ///      before function execution and unlocked after.
+    modifier nonReentrant() {
+        // Ensure mutex is unlocked
+        require(
+            !locked,
+            "REENTRANCY_ILLEGAL"
+        );
 
-    // solhint-disable const-name-snakecase
-    uint8 constant public decimals = 18;
-    uint256 public totalSupply = 10**27; // 1 billion tokens, 18 decimal places
-    string constant public name = "0x Protocol Token";
-    string constant public symbol = "ZRX";
-    // solhint-enableconst-name-snakecase
+        // Lock mutex before function call
+        locked = true;
 
-    constructor()
-        public
-    {
-        balances[msg.sender] = totalSupply;
+        // Perform function call
+        _;
+
+        // Unlock mutex after function call
+        locked = false;
     }
 }

@@ -18,7 +18,7 @@
 
 pragma solidity ^0.5.0;
 
-import "@0x/contracts-utils/contracts/utils/Ownable/Ownable.sol";
+import "../../utils/Ownable/Ownable.sol";
 import "./mixins/MAuthorizable.sol";
 
 

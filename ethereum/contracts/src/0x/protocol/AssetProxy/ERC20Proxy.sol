@@ -16,10 +16,9 @@
 
 */
 
-pragma solidity 0.5.0;
+pragma solidity ^0.5.0;
 
 import "./MixinAuthorizable.sol";
-
 
 contract ERC20Proxy is
     MixinAuthorizable

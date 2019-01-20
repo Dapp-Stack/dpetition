@@ -17,10 +17,10 @@
 */
 pragma solidity ^0.5.0;
 
-import "@0x/contracts-libs/contracts/libs/LibExchangeErrors.sol";
+import "../../libs/LibExchangeErrors.sol";
 import "./mixins/MSignatureValidator.sol";
 import "./mixins/MTransactions.sol";
-import "@0x/contracts-libs/contracts/libs/LibEIP712.sol";
+import "../../libs/LibEIP712.sol";
 
 
 contract MixinTransactions is
@@ -43,8 +43,8 @@ contract MixinTransactions is
     function executeTransaction(
         uint256 salt,
         address signerAddress,
-        bytes data,
-        bytes signature
+        bytes calldata data,
+        bytes calldata signature
     )
         external
     {
@@ -84,8 +84,10 @@ contract MixinTransactions is
 
         // Execute transaction
         transactions[transactionHash] = true;
+
+        (bool ok,) = address(this).delegatecall(data);
         require(
-            address(this).delegatecall(data),
+            ok,
             "FAILED_EXECUTION"
         );
 

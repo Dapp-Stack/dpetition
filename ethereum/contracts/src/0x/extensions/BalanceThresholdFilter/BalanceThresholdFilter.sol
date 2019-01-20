@@ -16,7 +16,7 @@
 
 */
 
-pragma solidity 0.5.0;
+pragma solidity ^0.5.0;
 
 import "@0x/contracts-interfaces/contracts/protocol/Exchange/IExchange.sol";
 import "./interfaces/IThresholdAsset.sol";

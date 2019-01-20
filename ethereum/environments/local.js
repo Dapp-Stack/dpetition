@@ -61,7 +61,15 @@ async function deploySAIProtocol(deployer) {
 }
 
 const zeroContracts = [
-
+  "0x/protocol/AssetProxy/ERC20Proxy.sol",
+  "0x/protocol/AssetProxy/ERC721Proxy.sol",
+  "0x/tokens/ZRXToken/ZRXToken.sol",
+  "0x/protocol/Exchange/Exchange.sol",
+  "0x/protocol/AssetProxy/MultiAssetProxy.sol",
+  "0x/extensions/Forwarder/Forwarder.sol",
+  "0x/extensions/OrderValidator/OrderValidator.sol",
+  "0x/extensions/DutchAuction/DutchAuction.sol",
+  "0x/protocol/AssetProxyOwner/AssetProxyOwner.sol",
 ]
 async function deploy0xProtocol(deployer) {
 
@@ -115,10 +123,10 @@ module.exports = {
 
     // Function executed by DApp Stack to deploy the contracts.
     migrate: async (deployer) => {
-      await deployENSProtocol(deployer);
-      await deploySAIProtocol(deployer);
-      await deploy0xProtocol(deployer);
-      await deployPetitionProtocol(deployer);
+      // await deployENSProtocol(deployer);
+      // await deploySAIProtocol(deployer);
+      // await deploy0xProtocol(deployer);
+      // await deployPetitionProtocol(deployer);
     }
   },
 

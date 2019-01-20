@@ -19,11 +19,11 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "@0x/contracts-utils/contracts/utils/ReentrancyGuard/ReentrancyGuard.sol";
-import "@0x/contracts-libs/contracts/libs/LibMath.sol";
-import "@0x/contracts-libs/contracts/libs/LibOrder.sol";
-import "@0x/contracts-libs/contracts/libs/LibFillResults.sol";
-import "@0x/contracts-libs/contracts/libs/LibAbiEncoder.sol";
+import "../../utils/ReentrancyGuard/ReentrancyGuard.sol";
+import "../../libs/LibMath.sol";
+import "../../libs/LibOrder.sol";
+import "../../libs/LibFillResults.sol";
+import "../../libs/LibAbiEncoder.sol";
 import "./mixins/MExchangeCore.sol";
 import "./mixins/MWrapperFunctions.sol";
 

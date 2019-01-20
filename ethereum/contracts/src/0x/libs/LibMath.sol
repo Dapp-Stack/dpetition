@@ -18,7 +18,7 @@
 
 pragma solidity ^0.5.0;
 
-import "@0x/contracts-utils/contracts/utils/SafeMath/SafeMath.sol";
+import "../utils/SafeMath/SafeMath.sol";
 
 
 contract LibMath is

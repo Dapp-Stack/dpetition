@@ -18,10 +18,10 @@
 
 pragma solidity ^0.5.0;
 
-import "@0x/contracts-utils/contracts/utils/LibBytes/LibBytes.sol";
-import "@0x/contracts-utils/contracts/utils/Ownable/Ownable.sol";
-import "@0x/contracts-tokens/contracts/tokens/ERC20Token/IERC20Token.sol";
-import "@0x/contracts-tokens/contracts/tokens/ERC721Token/IERC721Token.sol";
+import "../../utils/LibBytes/LibBytes.sol";
+import "../../utils/Ownable/Ownable.sol";
+import "../../tokens/ERC20Token/IERC20Token.sol";
+import "../../tokens/ERC721Token/IERC721Token.sol";
 import "./libs/LibConstants.sol";
 import "./mixins/MAssets.sol";
 
@@ -41,7 +41,7 @@ contract MixinAssets is
     /// @param assetData Byte array encoded for the respective asset proxy.
     /// @param amount Amount of ERC20 token to withdraw.
     function withdrawAsset(
-        bytes assetData,
+        bytes calldata assetData,
         uint256 amount
     )
         external
@@ -84,7 +84,7 @@ contract MixinAssets is
         // Transfer tokens.
         // We do a raw call so we can check the success separate
         // from the return data.
-        bool success = token.call(abi.encodeWithSelector(
+        (bool success,) = token.call(abi.encodeWithSelector(
             ERC20_TRANSFER_SELECTOR,
             msg.sender,
             amount

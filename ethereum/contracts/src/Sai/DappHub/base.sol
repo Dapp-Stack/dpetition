@@ -1,6 +1,6 @@
 pragma solidity >=0.4.23;
 
-import "../Interfaces/IERC20.sol";
+import "./IERC20.sol";
 import "./math.sol";
 
 contract DSTokenBase is IERC20, DSMath {

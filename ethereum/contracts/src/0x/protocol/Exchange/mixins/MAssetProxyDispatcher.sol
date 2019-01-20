@@ -18,7 +18,7 @@
 
 pragma solidity ^0.5.0;
 
-import "@0x/contracts-interfaces/contracts/protocol/Exchange/IAssetProxyDispatcher.sol";
+import "../../../interfaces/Exchange/IAssetProxyDispatcher.sol";
 
 
 contract MAssetProxyDispatcher is
