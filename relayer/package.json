@@ -9,6 +9,7 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "dependencies": {
+    "@dpetition/lib": "0.1.0",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "ethers": "^4.0.20",

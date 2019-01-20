@@ -2,23 +2,6 @@ import { ethers } from 'ethers';
 import { Petition, IdentityState } from '../types';
 import { getContracts, provider } from './ethereumService';
 
-const calculateMessageHash = (message) => {
-  const dataHash = ethers.utils.solidityKeccak256(['bytes'], [message.data]);
-  return ethers.utils.solidityKeccak256(
-    ['address', 'address', 'uint256', 'bytes32', 'uint256', 'uint', 'address', 'uint', 'uint'],
-    [
-      message.from,
-      message.to,
-      message.value,
-      dataHash,
-      message.nonce, 
-      message.gasPrice,
-      message.gasToken,
-      message.gasLimit,
-      message.operationType
-    ]);
-};
-
 export const createPetitionBody = async (state: IdentityState, petition: Petition) => {
   const contracts = await getContracts();
   const params = [petition.title, petition.description, petition.expireOn, petition.deposit];

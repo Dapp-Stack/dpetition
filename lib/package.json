@@ -1,0 +1,16 @@
+{
+  "name": "@dpetition/lib",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "tslint": "tslint -c tslint.json -p tsconfig.json"
+  },
+  "dependencies": {
+    "ethers": "^4.0.20"
+  },
+  "devDependencies": {
+    "@types/node": "^9.4.6",
+    "tslint": "^5.9.1"
+  }
+}

@@ -81,13 +81,10 @@ export default class IdentityService {
     return addKeySighash === data.slice(0, addKeySighash.length);
   };
   
-
   private isAddKeysCall(data: string) {
     const addKeysSighash = new utils.Interface(Identity.abi).functions.addKeys.sighash;
     return addKeysSighash === data.slice(0, addKeysSighash.length);
   };
-
-  private addressToBytes32 = (address: string) => utils.padZeros(utils.arrayify(address), 32);
 
   private getKeyFromData(data: string) {
     const codec = new utils.AbiCoder();
