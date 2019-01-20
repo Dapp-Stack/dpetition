@@ -16,7 +16,7 @@
 
 */
 
-pragma solidity 0.4.24;
+pragma solidity 0.5.0;
 pragma experimental ABIEncoderV2;
 
 import "@0x/contracts-utils/contracts/utils/Ownable/Ownable.sol";

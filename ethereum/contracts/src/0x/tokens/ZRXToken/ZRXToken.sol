@@ -16,7 +16,7 @@
 
 */
 
-pragma solidity 0.4.11;
+pragma solidity 0.5.0;
 
 // solhint-disable-next-line max-line-length
 import { UnlimitedAllowanceToken_v1 as UnlimitedAllowanceToken } from "./UnlimitedAllowanceToken_v1.sol";
