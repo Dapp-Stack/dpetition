@@ -1,4 +1,4 @@
-import {utils, ethers} from 'ethers';
+import { utils, ethers } from 'ethers';
 import JsonRpcService from './jsonRpcService';
 
 export default class EnsService {
@@ -8,12 +8,6 @@ export default class EnsService {
   constructor(jsonRpcService: JsonRpcService) {    
     this.ensContract = jsonRpcService.contracts.ENSRegistry[0]
     this.resolverContract = jsonRpcService.contracts.PublicResolver[0];
-  }
-
-  public async find(ensName: string) {
-    const node = utils.namehash(ensName);
-    const address: string = await this.resolverContract.addr(node);
-    return address === ethers.constants.AddressZero ? null : address;
   }
 
   public async argsFor(ensName: string) {

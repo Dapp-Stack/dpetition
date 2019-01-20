@@ -1,6 +1,6 @@
 import {ethers, utils, ContractFactory} from 'ethers';
+import { addressToBytes32 } from '@dpetition/lib/address';
 
-import IERC20 from '../../contracts/DummyToken/IERC20.sol/IERC20.json';
 import Identity from '../../contracts/Identity/Identity.sol/Identity.json';
 import JsonRpcService from './jsonRpcService.js';
 import EnsService from './ensService.js';
@@ -11,9 +11,8 @@ const defaultDeployOptions = {
   gasPrice: utils.bigNumberify(9000000000)
 };
 
-const ether = '0x0000000000000000000000000000000000000000';
-
 export default class IdentityService {
+  private petitionToken: ethers.Contract;
   private bytecode: string;
   private abi: any;
 
@@ -22,10 +21,11 @@ export default class IdentityService {
               private authorisationService: AuthorisationService) {
     this.abi = Identity.abi;
     this.bytecode = `0x${Identity.bytecode}`;
+    this.petitionToken = jsonRpcService.contracts.petitionToken[0];
   }
 
   async create(managementKey: string, ensName: string, overrideOptions = {}) {
-    const key = this.addressToBytes32(managementKey);
+    const key = addressToBytes32(managementKey);
     const ensArgs = await this.ensService.argsFor(ensName);
     if (!ensArgs) {
       throw new Error('domain not existing / not universal ID compatible');
@@ -41,39 +41,48 @@ export default class IdentityService {
   }
 
   async executeSigned(message: any) {
-    if (await this.hasEnoughToken(message.gasToken, message.from, message.gasLimit)) {
-      const data = new utils.Interface(Identity.abi).functions.executeSigned.encode([
-        message.to,
-        message.value,
-        message.data,
-        message.nonce,
-        message.gasPrice,
-        message.gasToken,
-        message.gasLimit,
-        message.operationType,
-        message.signature
-      ]);
-      const transaction = {
-        ...defaultDeployOptions,
-        value: utils.parseEther('0'),
-        to: message.from,
-        data
-      };
-      const estimateGas = await this.jsonRpcService.provider.estimateGas({...transaction, from: this.jsonRpcService.wallet.address});
-      if (utils.bigNumberify(message.gasLimit).gte(estimateGas)) {
-        if (message.to === message.from && this.isAddKeyCall(message.data)) {
-          const key = this.getKeyFromData(message.data);
-          this.authorisationService.removeRequest(message.from, key);
-          const sentTransaction = await this.jsonRpcService.wallet.sendTransaction(transaction);
-          return sentTransaction;
-        } else if (message.to === message.from && this.isAddKeysCall(message.data)) {
-          const sentTransaction = await this.jsonRpcService.wallet.sendTransaction(transaction);
-          return sentTransaction;
-        }
-        return await this.jsonRpcService.wallet.sendTransaction(transaction);
-      }
+    if (!await this.hasEnoughToken(message.from, message.gasLimit)) { 
+      throw new Error('Not enough tokens');
     }
-    throw new Error('Not enough tokens');
+
+    const transaction = this.buildTransaction(message);
+    const { wallet, provider } = this.jsonRpcService;
+
+    const estimateGas = await provider.estimateGas({...transaction, from: wallet.address});
+    if (!utils.bigNumberify(message.gasLimit).gte(estimateGas)) {
+      throw new Error('Not enough Gas');
+    }
+
+    if (message.to === message.from && this.isAddKeyCall(message.data)) {
+      const key = this.getKeyFromData(message.data);
+      this.authorisationService.removeRequest(message.from, key);
+      return await wallet.sendTransaction(transaction);
+    } else if (message.to === message.from && this.isAddKeysCall(message.data)) {
+      return await wallet.sendTransaction(transaction);
+    }
+    
+    return await this.jsonRpcService.wallet.sendTransaction(transaction);
+  }
+
+  private buildTransaction(message: any) {
+    const data = new utils.Interface(Identity.abi).functions.executeSigned.encode([
+      message.to,
+      message.value,
+      message.data,
+      message.nonce,
+      message.gasPrice,
+      message.gasToken,
+      message.gasLimit,
+      message.operationType,
+      message.signature
+    ]);
+    
+    return {
+      ...defaultDeployOptions,
+      value: utils.parseEther('0'),
+      to: message.from,
+      data
+    };
   }
 
   private isAddKeyCall(data: string) {
@@ -93,17 +102,9 @@ export default class IdentityService {
     return utils.hexlify(utils.stripZeros(address));
   };
 
-  private async hasEnoughToken(gasToken: string, identityAddress: string, gasLimit: ethers.utils.BigNumber) {
-    const erc20Bytecode = '0x6080604052600436106100b95763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630';
-    if (gasToken === ether) {
-      throw new Error('Ether refunds are not yet supported');
-    } else if ((await this.jsonRpcService.provider.getCode(gasToken)).slice(2, 111) !== erc20Bytecode.slice(2, 111)) {
-      throw new Error('Address isn`t token');
-    } else {
-      const token = new ethers.Contract(gasToken, IERC20.abi, this.jsonRpcService.provider);
-      const identityTokenBalance = await token.balanceOf(identityAddress);
-      return identityTokenBalance.gte(utils.bigNumberify(gasLimit));
-    }
+  private async hasEnoughToken(identityAddress: string, gasLimit: ethers.utils.BigNumber) {
+    const identityTokenBalance = await this.petitionToken.balanceOf(identityAddress);
+    return identityTokenBalance.gte(utils.bigNumberify(gasLimit));
   };
   
 }
