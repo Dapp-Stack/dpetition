@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
-import "./ENSRegistered.sol";
-import "./ERC1077.sol";
+import "./Mixin/ENSRegistered.sol";
+import "./Mixin/ERC1077.sol";
 
 contract Identity is ENSRegistered, ERC1077 {
     constructor(bytes32 _key,

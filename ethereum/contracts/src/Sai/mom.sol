@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-import '../DappHub/thing.sol';
+import './DappHub/thing.sol';
 import './tub.sol';
 import './top.sol';
 import './tap.sol';

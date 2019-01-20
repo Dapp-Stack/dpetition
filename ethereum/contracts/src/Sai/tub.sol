@@ -1,8 +1,8 @@
 pragma solidity ^0.5.0;
 
-import "../DappHub/thing.sol";
-import "../DappHub/token.sol";
-import "../DappHub/value.sol";
+import "./DappHub/thing.sol";
+import "./DappHub/token.sol";
+import "./DappHub/value.sol";
 
 import "./vox.sol";
 

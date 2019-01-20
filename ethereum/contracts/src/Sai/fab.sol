@@ -1,10 +1,10 @@
 pragma solidity ^0.5.0;
 
-import "../DappHub/auth.sol";
-import "../DappHub/token.sol";
-import "../DappHub/guard.sol";
-import "../DappHub/roles.sol";
-import "../DappHub/value.sol";
+import "./DappHub/auth.sol";
+import "./DappHub/token.sol";
+import "./DappHub/guard.sol";
+import "./DappHub/roles.sol";
+import "./DappHub/value.sol";
 
 import "./mom.sol";
 

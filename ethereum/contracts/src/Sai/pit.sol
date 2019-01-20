@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-import "../DappHub/token.sol";
+import "./DappHub/token.sol";
 
 contract GemPit {
     function burn(DSToken gem) public {
