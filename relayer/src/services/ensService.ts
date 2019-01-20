@@ -5,7 +5,7 @@ export default class EnsService {
   private ensContract: ethers.Contract;
   private resolverContract: ethers.Contract;
 
-  constructor(private jsonRpcService: JsonRpcService) {    
+  constructor(jsonRpcService: JsonRpcService) {    
     this.ensContract = jsonRpcService.contracts.ENSRegistry[0]
     this.resolverContract = jsonRpcService.contracts.PublicResolver[0];
   }

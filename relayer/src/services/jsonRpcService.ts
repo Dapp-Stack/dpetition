@@ -1,6 +1,7 @@
 import * as ethers from 'ethers';
 import tracker from '../../tracker.json';
-import { Tracker } from '../types';
+import { loadContracts } from "@dpetition/lib/contracts";
+import { Contracts } from "@dpetition/lib/types";
 
 const jsonRpcUrl = process.env.JSON_RPC_URL || 'http://localhost:8545';
 const privateKey = process.env.PRIVATE_KEY || '';
@@ -9,7 +10,7 @@ export default class JsonRpcService {
   public provider: ethers.providers.JsonRpcProvider;
   public wallet: ethers.Wallet;
   public network!: ethers.utils.Network;
-  public contracts: { [name: string]: ethers.Contract[] } = {};
+  public contracts: Contracts = {};
 
   constructor() {
     this.provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl);
@@ -18,17 +19,6 @@ export default class JsonRpcService {
 
   async initialize() {
     this.network = await this.provider.getNetwork()
-    const contracts = (tracker as Tracker)[this.network.chainId];
-    if(!contracts) {
-      throw new Error("Contracts not deployed on this network")
-    }
-    Object.keys(contracts).forEach((address) => {
-      const { name, abi } = contracts[address]
-      const contract = new ethers.Contract(address, abi, this.provider);
-      if (!this.contracts[name]) {
-        this.contracts[name] = [];
-      }
-      this.contracts[name].push(contract)
-    });
+    this.contracts = loadContracts(this.network, tracker, this.provider) 
   }
 }

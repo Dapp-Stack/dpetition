@@ -3,6 +3,14 @@ const ethers = require("ethers");
 
 // const decryptedSecrets = JSON.parse(secrets.decrypt());
 
+const petitionTokenContracts = [
+  "PetitionToken/PetitionToken.sol"
+]
+
+async function deployPetitionTokenProtocol(deployer) {
+  await deployer.deploy('PetitionToken');
+}
+
 async function deployENSProtocol(deployer) {
   await deployer.ens.bootstrapWith('petition', 'eth');
 }
@@ -108,7 +116,7 @@ module.exports = {
   compile: {
     // List of contracts to compile
     // contracts: saiContracts.concat(zeroContracts).concat(identityContracts).concat(petitionContracts)
-    contracts: identityContracts.concat(petitionContracts)
+    contracts: identityContracts.concat(petitionContracts).concat(petitionTokenContracts)
   },
 
   // Ethererum configuration, it can be false if not needed
@@ -134,6 +142,7 @@ module.exports = {
       // await deploySAIProtocol(deployer);
       // await deploy0xProtocol(deployer);
       await deployPetitionProtocol(deployer);
+      await deployPetitionTokenProtocol(deployer);
     }
   },
 
