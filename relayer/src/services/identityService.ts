@@ -1,6 +1,6 @@
 import {ethers, utils, ContractFactory} from 'ethers';
 
-import IERC20 from '../../contracts/Interfaces/IERC20.sol/IERC20.json';
+import IERC20 from '../../contracts/DummyToken/IERC20.sol/IERC20.json';
 import Identity from '../../contracts/Identity/Identity.sol/Identity.json';
 import JsonRpcService from './jsonRpcService.js';
 import EnsService from './ensService.js';
