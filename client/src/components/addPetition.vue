@@ -37,11 +37,11 @@
               ></v-text-field>
 
               <v-menu
-                ref="expireOnMenu"
+                ref="expireOnMenuRef"
                 :close-on-content-click="false"
                 v-model="expireOnMenu"
                 :nudge-right="40"
-                :return-value.sync="date"
+                :return-value.sync="expireOn"
                 lazy
                 transition="scale-transition"
                 offset-y
@@ -61,7 +61,7 @@
                 <v-date-picker v-model="expireOn" no-title scrollable>
                   <v-spacer></v-spacer>
                   <v-btn flat color="primary" @click="expireOnMenu = false">Cancel</v-btn>
-                  <v-btn flat color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+                  <v-btn flat color="primary" @click="$refs.expireOnMenuRef.save(expireOn)">OK</v-btn>
                 </v-date-picker>
               </v-menu>
             </v-flex>
@@ -229,9 +229,10 @@ export default class AddPetition extends Vue {
   public expireOnRules = [expireOnRequired];
   public deposit: number = 1;
   public depositRules = [depositRequired, depositMin];
+  public expireOnMenu: boolean = false;
 
-  @Action('create', { namespace: 'petition' }) private createPetition!: (
-    attributes: Petition,
+  @Action('execute', { namespace: 'identity' }) private execute!: (
+    petition: Petition,
   ) => void;
 
   public mounted() {
@@ -285,7 +286,7 @@ export default class AddPetition extends Vue {
       expireOn: new Date(this.expireOn),
       deposit: this.deposit,
     };
-    await this.createPetition(petition);
+    await this.execute(petition);
     this.$emit('close');
   }
 }

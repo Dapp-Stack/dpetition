@@ -1,14 +1,18 @@
 import { ethers } from 'ethers';
-import { IdentityState, RootState } from '../types';
 import { Petition, calculateHash, Message } from '@dpetition/lib';
 import { BigNumber } from 'ethers/utils';
+import { IdentityState, RootState } from '../types';
+import identityJson from  "../../contracts/Identity/Identity.sol/Identity.json";
 
 export const buildData = async (state: IdentityState, rootState: RootState, petition: Petition) => {
-  const params = [petition.title, petition.description, petition.expireOn, petition.deposit];
+  debugger
+  const params = [petition.title, petition.description, petition.expireOn.getTime(), petition.deposit];
+  debugger
   const wallet = new ethers.Wallet(state.privateKey, rootState.provider);
-  const contract = new ethers.Contract(state.identityAddress, '', wallet);
-  const nonce =  await contract.lastNonce();
-
+  debugger
+  const contract = new ethers.Contract(state.identityAddress, identityJson.abi, wallet);
+  debugger
+  debugger
   const message: Message =  {
     to: rootState.contracts.Controller[0].address,
     from: state.identityAddress,
@@ -19,10 +23,12 @@ export const buildData = async (state: IdentityState, rootState: RootState, peti
     gasLimit: new BigNumber(1),
     gasPrice: new BigNumber(1),
     chainId: rootState.network.chainId,
-    nonce,
+    nonce: 0
   };
+  debugger
   const messageHash = calculateHash(message);
+  debugger
   const signature = wallet.signMessage(ethers.utils.arrayify(messageHash));
-
+  debugger
   return {...message, signature};
 };

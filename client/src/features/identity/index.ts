@@ -21,7 +21,10 @@ export const defaultState: IdentityState = {
 export const actions: ActionTree<IdentityState, RootState> = {
   async execute({ commit, state, rootState }, payload: Petition) {
     try {
-      const data = buildData(state, rootState, payload);
+      debugger
+      const data = await buildData(state, rootState, payload);
+      debugger
+      console.dir(data)
       await axios({
         url: `${apiUrl}/identity/execution`,
         method: 'POST',
@@ -29,6 +32,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
       });
       commit('identityExecuteSuccess');
     } catch (error) {
+      console.dir(error)
       commit('identityExecuteError');
     }
   },
@@ -52,9 +56,13 @@ export const actions: ActionTree<IdentityState, RootState> = {
 
       const transaction: ethers.utils.Transaction = response && response.data;
       commit('identityCreateSuccess', { privateKey, ensName, address: wallet.address });
-
+      debugger
+      console.log(transaction.hash)
+      console.log(rootState.provider)
       if (transaction.hash && rootState.provider) {
+        debugger
         const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
+        debugger
         commit('identityCreateReceipt', receipt);
       }
     } catch (error) {

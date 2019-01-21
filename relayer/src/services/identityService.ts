@@ -41,6 +41,7 @@ export default class IdentityService {
   }
 
   async executeSigned(message: any) {
+    console.dir(message)
     if (!await this.hasEnoughToken(message.from, message.gasLimit)) { 
       throw new Error('Not enough tokens');
     }

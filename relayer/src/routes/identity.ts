@@ -15,6 +15,7 @@ export const create = (identityService: IdentityService) => async (req: Request,
 
 export const execution = (identityService: IdentityService) => async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.dir(req.body)
     const transaction = await identityService.executeSigned(req.body);
     res.status(201)
       .json({transaction});
