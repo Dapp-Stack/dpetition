@@ -29,7 +29,7 @@ contract Petition is Ownable {
                     string memory _descriptionHash,
                     uint256 _expireOn,
                     uint256 _deposit,
-                    address _owner) public onlyOwner {
+                    address _owner) public {
         require(bytes(_title).length > 0, "Title cannot be empty.");
         require(bytes(_descriptionHash).length > 0, "DescriptionHash cannot be empty.");
         require(_deposit > 0, "Deposit cannot be less than 1 Wei.");

@@ -105,7 +105,7 @@ async function deployPetitionProtocol(deployer) {
 
   const t1 = await petition.transferOwnership(controller.address);
   const t2 = await escrow.transferOwnership(controller.address);
-  const t3 = await controller.initialize(petition.address, escrow.address);
+  const t3 = await controller.initialize(escrow.address, petition.address);
   
   await t1.wait();
   await t2.wait();

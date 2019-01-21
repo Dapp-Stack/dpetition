@@ -41,15 +41,13 @@ export default class IdentityService {
   }
 
   async executeSigned(message: any) {
-    console.dir(message)
     if (!await this.hasEnoughToken(message.from, message.gasLimit)) { 
       throw new Error('Not enough tokens');
     }
 
     const transaction = this.buildTransaction(message);
     const { wallet, provider } = this.jsonRpcService;
-    console.dir(transaction)
-    const estimateGas = await provider.estimateGas({...transaction, from: wallet.address});
+    // const estimateGas = await provider.estimateGas({...transaction, from: wallet.address});
     // if (!utils.bigNumberify(message.gasLimit).gte(estimateGas)) {
     //   throw new Error('Not enough Gas');
     // }
@@ -61,8 +59,42 @@ export default class IdentityService {
     } else if (message.to === message.from && this.isAddKeysCall(message.data)) {
       return await wallet.sendTransaction(transaction);
     }
+
+    const contract = new ethers.Contract(message.from, Identity.abi, wallet);
+    console.dir("MESSAGE")
+    console.dir([
+      message.to,
+      0,
+      message.data,
+      0,
+      1000000000,
+      message.gasToken,
+      1000000,
+      0,
+      message.signature
+    ])
+    // address to,
+    //     uint256 value,
+    //     bytes memory data,
+    //     uint nonce,
+    //     uint gasPrice,
+    //     address gasToken,
+    //     uint gasLimit,
+    //     OperationType operationType,
+    //     bytes memory signatures
+    return await contract.executeSigned(
+      message.to,
+      0,
+      message.data,
+      0,
+      1000000000,
+      message.gasToken,
+      1000000,
+      0,
+      message.signature
+    )
     
-    return await this.jsonRpcService.wallet.sendTransaction(transaction);
+    // return await this.jsonRpcService.wallet.sendTransaction(transaction);
   }
 
   private buildTransaction(message: any) {

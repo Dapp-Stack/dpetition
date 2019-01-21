@@ -11,7 +11,7 @@ export const actions: ActionTree<PetitionState, RootState> = {
   async fetch({ commit, rootState }) {
     const contract = rootState.contracts.Petition[0];
     const length = await contract.length();
-    debugger
+
     const promises = [];
     for (let i = 0; i++; i < parseInt(length, 10)) {
       promises.push(contract.petitions(i));
