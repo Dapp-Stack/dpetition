@@ -1,5 +1,5 @@
 <template>
-  <v-app v-if="network">
+  <v-app v-if="network.chainId !== -1">
     <Header/>
     <v-content>
       <router-view/>

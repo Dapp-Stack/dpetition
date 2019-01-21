@@ -11,15 +11,15 @@ export const actions: ActionTree<EnsState, RootState> = {
   async find({ commit, rootState }, payload: string) {
     const ensName = usernameToEns(payload);
     const node = utils.namehash(ensName);
-    const address =  rootState.contracts.PublicResolver[0].addr(node);
+    const address = await rootState.contracts.PublicResolver[0].addr(node);
     commit('updateAddress', address);
   },
 };
 
 
 export const mutations: MutationTree<EnsState> = {
-  updateAddress(state, payload: { address: string}) {
-    state.address = payload.address;
+  updateAddress(state, payload: string) {
+    state.address = payload;
   },
 };
 

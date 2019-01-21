@@ -7,7 +7,7 @@
           outline
           v-model="value"
           @input="makeIdentityCall()"
-          :loading="loading"
+          :loading="isLoading"
           on:input="console.log('he;;p')"
           :search-input.sync="username"
           :items="items"
@@ -41,6 +41,7 @@ import Vue from 'vue';
 import { Action, State } from 'vuex-class';
 import { Component, Watch, Prop } from 'vue-property-decorator';
 import { debounce } from 'lodash';
+import { AddressZero } from 'ethers/constants';
 
 enum ActionType {
   Connect = 'Connect',
@@ -52,43 +53,38 @@ enum ActionType {
 export default class Connect extends Vue {
 
   get items() {
-    if (this.isTyping) {
+    if (this.isTyping || !this.username) {
       return [];
     }
 
-    if (this.address) {
-      return [
-        {text: this.username, value: ActionType.Connect},
-        {text: this.username, value: ActionType.Recover},
-      ];
-    }
-
-    if (this.notFound && this.username) {
+    if (this.address === AddressZero) {
       return [
         {text: this.username, value: ActionType.Create},
       ];
     }
 
-    return [];
+    return [
+      {text: this.username, value: ActionType.Connect},
+      {text: this.username, value: ActionType.Recover},
+    ];
   }
+
   public username = '';
   public value = '';
   public isTyping = false;
-  public unexpectedError = true;
-  public isLoadingIdentity = false;
+  public isLoading = false;
 
-  public debounceFind = debounce(function(this: Connect, username: string) {
+  public debounceFind = debounce(async function(this: Connect, username: string) {
     this.isTyping = false;
-    this.find({ username });
+    this.isLoading = true;
+    await this.find(username);
+    this.isLoading = false;
   }, 500);
 
-  @Action('find', { namespace: 'ens' }) private find!: (attributes: any) => void;
+  @Action('find', { namespace: 'ens' }) private find!: (username: string) => void;
   @State('address', { namespace: 'ens' }) private address!: string;
-  @State('notFound', { namespace: 'ens' }) private notFound!: boolean;
-  @State('loading', { namespace: 'ens' }) private loading!: boolean;
 
-
-  @Action('create', { namespace: 'identity' }) private create!: (attributes: any) => void;
+  @Action('create', { namespace: 'identity' }) private create!: (username: any) => void;
 
   @Watch('username')
   public onUsernameChanged(username: string) {
@@ -97,8 +93,7 @@ export default class Connect extends Vue {
   }
 
   public async makeIdentityCall() {
-    this.isLoadingIdentity = true;
-    const args = { username: this.username };
+    this.isLoading = true;
     switch (this.value) {
       case ActionType.Connect:
         // this.connect(args);
@@ -107,14 +102,9 @@ export default class Connect extends Vue {
         // this.recover(args);
         break;
       case ActionType.Create:
-        try {
-          const t = await this.create(args);
-          this.isLoadingIdentity = false;
-          this.$router.push('/');
-        } catch (error) {
-          this.unexpectedError = true;
-          this.isLoadingIdentity = false;
-        }
+        const t = await this.create(this.username);
+        this.isLoading = false;
+        this.$router.push('/');
         break;
     }
   }

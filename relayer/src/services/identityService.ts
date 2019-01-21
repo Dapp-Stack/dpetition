@@ -21,7 +21,7 @@ export default class IdentityService {
               private authorisationService: AuthorisationService) {
     this.abi = Identity.abi;
     this.bytecode = `0x${Identity.bytecode}`;
-    this.petitionToken = jsonRpcService.contracts.petitionToken[0];
+    this.petitionToken = jsonRpcService.contracts.PetitionToken[0];
   }
 
   async create(address: string, ensName: string, overrideOptions = {}) {
