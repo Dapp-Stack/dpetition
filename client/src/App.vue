@@ -1,5 +1,5 @@
 <template>
-  <v-app v-if="apiAvailable">
+  <v-app v-if="network">
     <Header/>
     <v-content>
       <router-view/>
@@ -16,19 +16,17 @@ import { Action, State } from 'vuex-class';
 import { Component } from 'vue-property-decorator';
 import Header from './components/header.vue';
 import ApiError from './components/apiError.vue';
+import { Network } from 'ethers/utils';
 
 @Component({
   components: { Header, ApiError },
 })
 export default class App extends Vue {
-  @State('apiAvailable') private apiAvailable!: boolean;
+  @State('network') private network!: Network;
   @Action('init') private init!: () => void;
-
-  @Action('get', { namespace: 'identity' }) private getIdentity!: () => void;
 
   public mounted() {
     this.init();
-    this.getIdentity();
   }
 }
 </script>
