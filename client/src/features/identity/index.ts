@@ -32,21 +32,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
       commit('identityExecuteError');
     }
   },
-  fetch({ commit }) {
-    const privateKey = localStorage.getItem('privateKey');
-    const ensName = localStorage.getItem('ensName');
-    const identityAddress = localStorage.getItem('identityAddress');
-
-    if (!privateKey || !ensName || !identityAddress) {
-      return;
-    }
-    const wallet = new ethers.Wallet(privateKey);
-    commit('identityFetchSuccess', { privateKey, ensName, identityAddress, address: wallet.address });
-  },
   destroy({ commit }) {
-    localStorage.removeItem('privateKey');
-    localStorage.removeItem('ensName');
-    localStorage.removeItem('identityAddress');
     commit('identityDestroySuccess');
   },
   async create({ commit, rootState }, payload: string) {
@@ -65,9 +51,6 @@ export const actions: ActionTree<IdentityState, RootState> = {
       })
       
       const transaction: ethers.utils.Transaction = response && response.data;
-      localStorage.setItem('privateKey', privateKey);
-      localStorage.setItem('ensName', ensName);
-      
       commit('identityCreateSuccess', { privateKey, ensName, address: wallet.address });
 
       if (transaction.hash && rootState.provider) {

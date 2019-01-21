@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Vue from 'vue';
 import Vuex, { StoreOptions, MutationTree, ActionTree } from 'vuex';
+import createPersistedState from 'vuex-persistedstate'
 import { Network } from 'ethers/utils';
 import { Tracker, loadContracts } from '@dpetition/lib';
 
@@ -70,6 +71,7 @@ const store: StoreOptions<RootState> = {
     authorisation: Authorisation,
     petition: Petition,
   },
+  plugins: [createPersistedState()],
 };
 
 export default new Vuex.Store<RootState>(store);
