@@ -5,30 +5,24 @@ import { IdentityState, RootState } from '../types';
 import identityJson from  "../../contracts/Identity/Identity.sol/Identity.json";
 
 export const buildData = async (state: IdentityState, rootState: RootState, petition: Petition) => {
-  debugger
   const params = [petition.title, petition.description, petition.expireOn.getTime(), petition.deposit];
-  debugger
   const wallet = new ethers.Wallet(state.privateKey, rootState.provider);
-  debugger
   const contract = new ethers.Contract(state.identityAddress, identityJson.abi, wallet);
-  debugger
-  debugger
+  const nonce = await contract.lastNonce();
+
   const message: Message =  {
     to: rootState.contracts.Controller[0].address,
     from: state.identityAddress,
     value: new BigNumber(0),
     data: rootState.contracts.Controller[0].interface.functions.create.encode(params),
     gasToken: rootState.contracts.PetitionToken[0].address,
-    operationType: '',
-    gasLimit: new BigNumber(1),
-    gasPrice: new BigNumber(1),
+    operationType: 0,
+    gasLimit: new BigNumber(1000000),
+    gasPrice: new BigNumber(1000000000),
     chainId: rootState.network.chainId,
-    nonce: 0
+    nonce,
   };
-  debugger
   const messageHash = calculateHash(message);
-  debugger
-  const signature = wallet.signMessage(ethers.utils.arrayify(messageHash));
-  debugger
+  const signature = await wallet.signMessage(ethers.utils.arrayify(messageHash));
   return {...message, signature};
 };

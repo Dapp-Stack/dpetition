@@ -48,11 +48,11 @@ export default class IdentityService {
 
     const transaction = this.buildTransaction(message);
     const { wallet, provider } = this.jsonRpcService;
-
+    console.dir(transaction)
     const estimateGas = await provider.estimateGas({...transaction, from: wallet.address});
-    if (!utils.bigNumberify(message.gasLimit).gte(estimateGas)) {
-      throw new Error('Not enough Gas');
-    }
+    // if (!utils.bigNumberify(message.gasLimit).gte(estimateGas)) {
+    //   throw new Error('Not enough Gas');
+    // }
 
     if (message.to === message.from && this.isAddKeyCall(message.data)) {
       const key = this.getKeyFromData(message.data);
@@ -105,6 +105,7 @@ export default class IdentityService {
 
   private async hasEnoughToken(identityAddress: string, gasLimit: ethers.utils.BigNumber) {
     const identityTokenBalance = await this.petitionToken.balanceOf(identityAddress);
+    return true
     return identityTokenBalance.gte(utils.bigNumberify(gasLimit));
   };
   

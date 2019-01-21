@@ -31,6 +31,7 @@ const NULL_NETWORK = {
 const defaultState: RootState = {
   network: NULL_NETWORK,
   contracts: {},
+  ready: false,
 };
 
 const mutations: MutationTree<RootState> = {
@@ -38,6 +39,7 @@ const mutations: MutationTree<RootState> = {
     state.network = payload.network;
     state.contracts = payload.contracts;
     state.provider = payload.provider;
+    state.ready = true;
   },
 };
 
@@ -51,6 +53,7 @@ const actions: ActionTree<RootState, RootState> = {
       if (network.chainId !== payload.chainId) {
         throw new Error('Network do not correspond between client and api');
       }
+
       const contracts = loadContracts(network, window.tracker, provider);
 
       commit('setRootState', { provider, network, contracts });

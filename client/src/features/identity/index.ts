@@ -21,15 +21,18 @@ export const defaultState: IdentityState = {
 export const actions: ActionTree<IdentityState, RootState> = {
   async execute({ commit, state, rootState }, payload: Petition) {
     try {
-      debugger
       const data = await buildData(state, rootState, payload);
-      debugger
-      console.dir(data)
-      await axios({
+      const response = await axios({
         url: `${apiUrl}/identity/execution`,
         method: 'POST',
         data,
       });
+      const transaction: ethers.utils.Transaction = response && response.data;
+      if (transaction.hash && rootState.provider) {
+        const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
+        debugger
+        console.dir(receipt)
+      }
       commit('identityExecuteSuccess');
     } catch (error) {
       console.dir(error)
@@ -56,13 +59,9 @@ export const actions: ActionTree<IdentityState, RootState> = {
 
       const transaction: ethers.utils.Transaction = response && response.data;
       commit('identityCreateSuccess', { privateKey, ensName, address: wallet.address });
-      debugger
-      console.log(transaction.hash)
-      console.log(rootState.provider)
+
       if (transaction.hash && rootState.provider) {
-        debugger
         const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
-        debugger
         commit('identityCreateReceipt', receipt);
       }
     } catch (error) {
@@ -101,8 +100,8 @@ export const mutations: MutationTree<IdentityState> = {
     state.ensName = payload.ensName;
     state.createSuccess = true;
   },
-  identityCreateReceipt(state, payload: { receipt: TransactionReceipt }) {
-    state.identityAddress = payload.receipt.contractAddress || '';
+  identityCreateReceipt(state, payload: TransactionReceipt) {
+    state.identityAddress = payload.contractAddress || '';
   },
   identityCreateError(state) {
     state.createSuccess = false;

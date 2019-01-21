@@ -7,7 +7,7 @@ export const create = (identityService: IdentityService) => async (req: Request,
   try {
     const transaction = await identityService.create(address, ensName);
     res.status(201)
-      .json({transaction});
+      .json(transaction);
   } catch (err) {
     next(err);
   }
@@ -18,8 +18,9 @@ export const execution = (identityService: IdentityService) => async (req: Reque
     console.dir(req.body)
     const transaction = await identityService.executeSigned(req.body);
     res.status(201)
-      .json({transaction});
+      .json(transaction);
   } catch (err) {
+    console.dir(err)
     next(err);
   }
 };

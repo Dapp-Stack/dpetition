@@ -1,5 +1,5 @@
 <template>
-  <v-app v-if="network.chainId !== -1">
+  <v-app v-if="ready">
     <Header/>
     <v-content>
       <router-view/>
@@ -16,13 +16,12 @@ import { Action, State } from 'vuex-class';
 import { Component } from 'vue-property-decorator';
 import Header from './components/header.vue';
 import ApiError from './components/apiError.vue';
-import { Network } from 'ethers/utils';
 
 @Component({
   components: { Header, ApiError },
 })
 export default class App extends Vue {
-  @State('network') private network!: Network;
+  @State('ready') private ready!: boolean;
   @Action('init') private init!: () => void;
 
   public mounted() {
