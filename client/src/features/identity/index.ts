@@ -15,7 +15,7 @@ export const defaultState: IdentityState = {
   privateKey: '',
   ensName: '',
   executeSuccess: null,
-  createSuccess: null
+  createSuccess: null,
 };
 
 export const actions: ActionTree<IdentityState, RootState> = {
@@ -25,10 +25,10 @@ export const actions: ActionTree<IdentityState, RootState> = {
       await axios({
         url: `${apiUrl}/identity/execution`,
         method: 'POST',
-        data
-      })
+        data,
+      });
       commit('identityExecuteSuccess');
-    } catch(error) {
+    } catch (error) {
       commit('identityExecuteError');
     }
   },
@@ -48,8 +48,8 @@ export const actions: ActionTree<IdentityState, RootState> = {
           ensName,
           address,
         },
-      })
-      
+      });
+
       const transaction: ethers.utils.Transaction = response && response.data;
       commit('identityCreateSuccess', { privateKey, ensName, address: wallet.address });
 
@@ -57,7 +57,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
         const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
         commit('identityCreateReceipt', receipt);
       }
-    } catch(error) {
+    } catch (error) {
       commit('identityCreateError', error);
     }
   },
@@ -70,7 +70,10 @@ export const mutations: MutationTree<IdentityState> = {
   identityExecuteError(state) {
     state.executeSuccess = false;
   },
-  identityFetchSuccess(state, payload: { privateKey: string, address: string, identityAddress: string, ensName: string }) {
+  identityFetchSuccess(state, payload: { privateKey: string,
+                                         address: string,
+                                         identityAddress: string,
+                                         ensName: string }) {
     state.privateKey = payload.privateKey;
     state.address = payload.address;
     state.identityAddress = payload.identityAddress;
@@ -82,11 +85,9 @@ export const mutations: MutationTree<IdentityState> = {
     state.identityAddress = '';
     state.ensName = '';
   },
-  identityCreateSuccess(state,
-                  payload: {
-                    privateKey: string,
-                    address: string,
-                    ensName: string }) {
+  identityCreateSuccess(state, payload: { privateKey: string,
+                                          address: string,
+                                          ensName: string }) {
     state.privateKey = payload.privateKey;
     state.address = payload.address;
     state.ensName = payload.ensName;
@@ -96,7 +97,7 @@ export const mutations: MutationTree<IdentityState> = {
     state.identityAddress = payload.receipt.contractAddress || '';
   },
   identityCreateError(state) {
-    state.createSuccess = false
+    state.createSuccess = false;
   },
 };
 

@@ -19,7 +19,7 @@ export const buildData = async (state: IdentityState, rootState: RootState, peti
     gasLimit: new BigNumber(1),
     gasPrice: new BigNumber(1),
     chainId: rootState.network.chainId,
-    nonce
+    nonce,
   };
   const messageHash = calculateHash(message);
   const signature = wallet.signMessage(ethers.utils.arrayify(messageHash));

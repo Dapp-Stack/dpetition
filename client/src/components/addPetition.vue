@@ -183,10 +183,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Editor, EditorContent, EditorMenuBar } from "tiptap";
-import { Action, State } from "vuex-class";
-import { Component, Watch, Prop } from "vue-property-decorator";
+import Vue from 'vue';
+import { Editor, EditorContent, EditorMenuBar } from 'tiptap';
+import { Action, State } from 'vuex-class';
+import { Component, Watch, Prop } from 'vue-property-decorator';
 import {
   Blockquote,
   BulletList,
@@ -203,35 +203,35 @@ import {
   Link,
   Strike,
   Underline,
-  History
-} from "tiptap-extensions";
-import { Petition } from "../types";
+  History,
+} from 'tiptap-extensions';
+import { Petition } from '@dpetition/lib';
 
-const titleRequired = (v: string) => !!v || "Title is required";
+const titleRequired = (v: string) => !!v || 'Title is required';
 const titleLength = (v: string) =>
-  (v && v.length <= 50) || "Title must be less than 50 characters";
-const depositRequired = (v: number) => !!v || "Deposit is required";
-const depositMin = (v: number) => v > 0 || "Deposit minimum is 1";
-const expireOnRequired = (v: string) => !!v || "Expire On is required";
+  (v && v.length <= 50) || 'Title must be less than 50 characters';
+const depositRequired = (v: number) => !!v || 'Deposit is required';
+const depositMin = (v: number) => v > 0 || 'Deposit minimum is 1';
+const expireOnRequired = (v: string) => !!v || 'Expire On is required';
 
 @Component({
   components: {
     EditorContent,
-    EditorMenuBar
-  }
+    EditorMenuBar,
+  },
 })
 export default class AddPetition extends Vue {
   public editor: any = null;
   public valid: boolean = false;
-  public title: string = "";
+  public title: string = '';
   public titleRules = [titleRequired, titleLength];
-  public expireOn: string = "";
+  public expireOn: string = '';
   public expireOnRules = [expireOnRequired];
   public deposit: number = 1;
   public depositRules = [depositRequired, depositMin];
 
-  @Action("create", { namespace: "petition" }) private createPetition!: (
-    attributes: Petition
+  @Action('create', { namespace: 'petition' }) private createPetition!: (
+    attributes: Petition,
   ) => void;
 
   public mounted() {
@@ -252,7 +252,7 @@ export default class AddPetition extends Vue {
         new Link(),
         new Strike(),
         new Underline(),
-        new History()
+        new History(),
       ],
       content: `
         <h2>
@@ -270,7 +270,7 @@ export default class AddPetition extends Vue {
         <p>
           This is what
         </p>
-      `
+      `,
     });
   }
 
@@ -283,10 +283,10 @@ export default class AddPetition extends Vue {
       title: this.title,
       description: this.editor.getHTML(),
       expireOn: new Date(this.expireOn),
-      deposit: this.deposit
+      deposit: this.deposit,
     };
     await this.createPetition(petition);
-    this.$emit("close");
+    this.$emit('close');
   }
 }
 </script>

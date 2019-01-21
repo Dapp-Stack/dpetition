@@ -14,8 +14,8 @@ export interface IdentityState {
   identityAddress: string;
   privateKey: string;
   ensName: string;
-  executeSuccess: null | boolean,
-  createSuccess: null | boolean
+  executeSuccess: null | boolean;
+  createSuccess: null | boolean;
 }
 
 export interface RootState {

@@ -16,11 +16,11 @@ export const actions: ActionTree<EnsState, RootState> = {
   },
 };
 
-  
+
 export const mutations: MutationTree<EnsState> = {
   updateAddress(state, payload: { address: string}) {
     state.address = payload.address;
-  }
+  },
 };
 
 const namespaced: boolean = true;
