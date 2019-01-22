@@ -1,8 +1,8 @@
 import axios from 'axios';
 import Vue from 'vue';
 import Vuex, { StoreOptions, MutationTree, ActionTree } from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
 import { Network } from 'ethers/utils';
+import VuexPersist from 'vuex-persist';
 import { Tracker, loadContracts } from '@dpetition/lib';
 
 import Authorisation from './features/authorisation';
@@ -62,6 +62,14 @@ const actions: ActionTree<RootState, RootState> = {
   },
 };
 
+const vuexLocalStorage = new VuexPersist({
+  key: 'vuex',
+  storage: window.localStorage,
+  reducer: state => (
+    {...state, ready: null}
+  )
+});
+
 const store: StoreOptions<RootState> = {
   state: defaultState,
   actions,
@@ -72,7 +80,7 @@ const store: StoreOptions<RootState> = {
     authorisation: Authorisation,
     petition: Petition,
   },
-  plugins: [createPersistedState()],
+  plugins: [vuexLocalStorage.plugin],
 };
 
 export default new Vuex.Store<RootState>(store);

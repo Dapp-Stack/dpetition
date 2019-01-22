@@ -39,5 +39,10 @@ export default class Petitions extends Vue {
   ];
 
   @State('list', { namespace }) private petitions!: any[];
+  @Action('fetch', { namespace: 'petition' }) private fetch!: () => void;
+
+  public async mounted() {
+    this.fetch();
+  }
 }
 </script>

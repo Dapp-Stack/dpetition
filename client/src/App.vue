@@ -27,7 +27,7 @@ export default class App extends Vue {
 
   public async mounted() {
     await this.init();
-    await this.fetch();
+    // await this.fetch();
   }
 }
 </script>
