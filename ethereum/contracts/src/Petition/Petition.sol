@@ -11,7 +11,7 @@ contract Petition is Ownable {
     struct Details {
         string title;
         string descriptionHash;
-        uint256 expiration;
+        uint256 expireOn;
         uint256 deposit;
         address owner;
     }
@@ -86,7 +86,7 @@ contract Petition is Ownable {
         bool alreadyWithdraw = didWithdraw(_id, _sender);
         require(alreadyWithdraw == false, "Already withdrawn.");
 
-        return details.expiration >= now;
+        return details.expireOn >= now;
     }
 
     function markAsWithdraw(uint256 _id, address _sender) public onlyOwner {
@@ -99,7 +99,7 @@ contract Petition is Ownable {
         bool alreadyWithdraw = didWithdraw(_id, _sender);
         require(alreadyWithdraw == false, "Already withdrawn.");
         
-        require(details.expiration >= now, "Petition cannot be withdraw yet.");
+        require(details.expireOn >= now, "Petition cannot be withdraw yet.");
         
         withdraws[_sender].push(_id);
 
