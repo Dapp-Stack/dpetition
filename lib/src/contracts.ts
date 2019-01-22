@@ -1,7 +1,7 @@
 import { utils, Contract, providers } from "ethers";
 import { Tracker, Contracts } from "./types";
 
-export const loadContracts = (network: utils.Network, tracker: Tracker, provider: providers.JsonRpcProvider) => {
+export const loadContracts = (network: utils.Network, tracker: Tracker, provider: providers.JsonRpcProvider): Contracts => {
   const contracts = tracker[network.chainId];
   if(!contracts) {
     throw new Error("Contracts not deployed on this network")

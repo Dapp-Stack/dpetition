@@ -13,12 +13,9 @@
             </v-alert>
           </template>
           <template slot="items" slot-scope="props">
-            <td>{{ props.item.name }}</td>
-            <td class="text-xs-right">{{ props.item.calories }}</td>
-            <td class="text-xs-right">{{ props.item.fat }}</td>
-            <td class="text-xs-right">{{ props.item.carbs }}</td>
-            <td class="text-xs-right">{{ props.item.protein }}</td>
-            <td class="text-xs-right">{{ props.item.iron }}</td>
+            <td>{{ props.item.title }}</td>
+            <td>{{ props.item.expireOn | moment("dddd, MMMM Do YYYY, h:mm:ss a") }}</td>
+            <td>{{ props.item.deposit }}WEI</td>
           </template>
         </v-data-table>
       </v-flex>
@@ -29,7 +26,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Action, State } from 'vuex-class';
-import { Component } from 'vue-property-decorator';
+import { Component, Watch } from 'vue-property-decorator';
 
 const namespace: string = 'petition';
 
@@ -37,14 +34,10 @@ const namespace: string = 'petition';
 export default class Petitions extends Vue {
   public headers = [
     { text: 'Title', value: 'title' },
-    { text: 'Expire On', value: 'expiration' },
+    { text: 'Expire On', value: 'expireOn' },
     { text: 'Deposit', value: 'deposit' },
   ];
 
   @State('list', { namespace }) private petitions!: any[];
-
-  public mounted() {
-    // this.fetch();
-  }
 }
 </script>

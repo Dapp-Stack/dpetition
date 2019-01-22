@@ -23,9 +23,11 @@ import ApiError from './components/apiError.vue';
 export default class App extends Vue {
   @State('ready') private ready!: boolean;
   @Action('init') private init!: () => void;
+  @Action('fetch', { namespace: 'petition' }) private fetch!: () => void;
 
-  public mounted() {
-    this.init();
+  public async mounted() {
+    await this.init();
+    await this.fetch();
   }
 }
 </script>

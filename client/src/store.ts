@@ -55,7 +55,6 @@ const actions: ActionTree<RootState, RootState> = {
       }
 
       const contracts = loadContracts(network, window.tracker, provider);
-
       commit('setRootState', { provider, network, contracts });
     } catch (error) {
       commit('setRootState', { provider: undefined, network: NULL_NETWORK, contract: {} });
