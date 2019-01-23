@@ -29,13 +29,10 @@ export const actions: ActionTree<IdentityState, RootState> = {
       });
       const transaction: ethers.utils.Transaction = response && response.data;
       if (transaction.hash && rootState.provider) {
-        const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
-        debugger
-        console.dir(receipt)
+        await waitForTransactionReceipt(rootState.provider, transaction.hash);
       }
       commit('identityExecuteSuccess');
     } catch (error) {
-      console.dir(error)
       commit('identityExecuteError');
     }
   },

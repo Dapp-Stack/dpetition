@@ -8,13 +8,11 @@ import identityJson from  "../../contracts/Identity/Identity.sol/Identity.json";
 
 export const buildData = async (state: IdentityState, rootState: RootState, petition: Petition) => {
   const params = [petition.title, petition.description, petition.expireOn.getTime(), petition.deposit];
-  console.dir(params)
   const wallet = new ethers.Wallet(state.privateKey, rootState.provider);
   const contract = new ethers.Contract(state.identityAddress, identityJson.abi, wallet);
   const nonce = await contract.lastNonce();
 
-  contract.on("*", (event) => {
-    console.dir(event)
+  contract.on('*', (event) => {
   });
 
   const message: Message =  {
@@ -29,7 +27,7 @@ export const buildData = async (state: IdentityState, rootState: RootState, peti
     chainId: rootState.network.chainId,
     nonce,
   };
-  debugger
+
   const messageHash = calculateHash(message);
   const signature = await wallet.signMessage(ethers.utils.arrayify(messageHash));
   return {...message, signature};

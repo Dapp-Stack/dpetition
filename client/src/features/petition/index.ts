@@ -10,17 +10,17 @@ export const actions: ActionTree<PetitionState, RootState> = {
   async fetch({ commit, rootState }) {
     const contract = rootState.contracts.Petition[0];
     const lengthHex = await contract.length();
-    const length = parseInt(lengthHex, 10)
+    const length = parseInt(lengthHex, 10);
 
-    const promises = Array(length).fill(0).map(async(_, i) => {
-      const data = await contract.petitions(i)
+    const promises = Array(length).fill(0).map(async (_, i) => {
+      const data = await contract.petitions(i);
       return {
         title: data[0] as string,
         description: data[1] as string,
-        expireOn: new Date(parseInt(data[2])),
-        deposit: Math.round(parseInt(data[4]))
-      }
-    })
+        expireOn: new Date(parseInt(data[2], 10)),
+        deposit: Math.round(parseInt(data[4], 10)),
+      };
+    });
     const petitions: Petition[] = await Promise.all(promises);
     commit('updatePetitions', petitions);
   },

@@ -65,9 +65,9 @@ const actions: ActionTree<RootState, RootState> = {
 const vuexLocalStorage = new VuexPersist({
   key: 'vuex',
   storage: window.localStorage,
-  reducer: state => (
+  reducer: (state) => (
     {...state, ready: null}
-  )
+  ),
 });
 
 const store: StoreOptions<RootState> = {
