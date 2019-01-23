@@ -4,6 +4,7 @@ import "./Mixin/Ownable.sol";
 
 contract Petition is Ownable {
 
+    event PetitionCreated(uint256 _id, string _title, string _descriptionHash, uint256 _expireOn, uint256 _depoit);
     event PetitionCreated(uint256 _id);
     event PetitionSigned(uint256 _id, address _signer);
     event PetitionMarkAsWithdraw(uint256 _id, address _signer);
@@ -40,7 +41,7 @@ contract Petition is Ownable {
         Details memory details = Details(_title, _descriptionHash, _expireOn, _deposit, _owner);
         uint256 id = petitions.push(details) - 1;
 
-        emit PetitionCreated(id);
+        emit PetitionCreated(id, _title, _descriptionHash, _expireOn, _deposit);
     }
 
     function sign(uint256 _id, address _sender) public onlyOwner {

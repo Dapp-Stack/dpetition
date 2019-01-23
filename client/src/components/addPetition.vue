@@ -206,6 +206,9 @@ import {
   History,
 } from 'tiptap-extensions';
 import { Petition } from '@dpetition/lib';
+import moment from 'moment';
+
+const tomorrow = () => moment(new Date()).add(1, 'days');
 
 const titleRequired = (v: string) => !!v || 'Title is required';
 const titleLength = (v: string) =>
@@ -213,6 +216,7 @@ const titleLength = (v: string) =>
 const depositRequired = (v: number) => !!v || 'Deposit is required';
 const depositMin = (v: number) => v > 0 || 'Deposit minimum is 1';
 const expireOnRequired = (v: string) => !!v || 'Expire On is required';
+const expireOnMin = (v: string) => moment(v).isAfter(tomorrow()) || 'Expire On must be in at least 1 day';
 
 @Component({
   components: {
@@ -226,7 +230,7 @@ export default class AddPetition extends Vue {
   public title: string = '';
   public titleRules = [titleRequired, titleLength];
   public expireOn: string = '';
-  public expireOnRules = [expireOnRequired];
+  public expireOnRules = [expireOnRequired, expireOnMin];
   public deposit: number = 1;
   public depositRules = [depositRequired, depositMin];
   public expireOnMenu: boolean = false;

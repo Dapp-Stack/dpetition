@@ -3,8 +3,7 @@ import { Petition, calculateHash, Message } from '@dpetition/lib';
 import { BigNumber } from 'ethers/utils';
 import { IdentityState, RootState } from '../types';
 
-// tslint:disable-next-line
-import identityJson from  "../../contracts/Identity/Identity.sol/Identity.json";
+import identityJson from '../../contracts/Identity/Identity.sol/Identity.json';
 
 export const buildData = async (state: IdentityState, rootState: RootState, petition: Petition) => {
   const params = [petition.title, petition.description, petition.expireOn.getTime(), petition.deposit];
@@ -13,6 +12,7 @@ export const buildData = async (state: IdentityState, rootState: RootState, peti
   const nonce = await contract.lastNonce();
 
   contract.on('*', (event) => {
+    console.log(event);
   });
 
   const message: Message =  {

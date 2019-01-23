@@ -1,6 +1,7 @@
 import { Module, ActionTree, MutationTree } from 'vuex';
 import { Petition } from '@dpetition/lib';
 import { RootState, PetitionState } from '../../types';
+import { buildPetition } from '../../services/petitionService';
 
 export const defaultState: PetitionState = {
   list: [],
@@ -14,21 +15,28 @@ export const actions: ActionTree<PetitionState, RootState> = {
 
     const promises = Array(length).fill(0).map(async (_, i) => {
       const data = await contract.petitions(i);
-      return {
-        title: data[0] as string,
-        description: data[1] as string,
-        expireOn: new Date(parseInt(data[2], 10)),
-        deposit: Math.round(parseInt(data[4], 10)),
-      };
+      data.unshift(i);
+      return buildPetition(data);
     });
     const petitions: Petition[] = await Promise.all(promises);
     commit('updatePetitions', petitions);
+  },
+
+  async listen({ commit, rootState }) {
+    const contract = rootState.contracts.Petition[0];
+    contract.on('PetitionCreated', (...args: any[]) => {
+      const petition = buildPetition(args);
+      commit('addPetition', petition);
+    });
   },
 };
 
 export const mutations: MutationTree<PetitionState> = {
   updatePetitions(state, payload: Petition[]) {
     state.list = payload;
+  },
+  addPetition(state, payload: Petition) {
+    state.list.push(payload);
   },
 };
 
