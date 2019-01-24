@@ -1,8 +1,10 @@
 pragma solidity ^0.5.0;
 
 import "./Mixin/Ownable.sol";
+import "./Mixin/Initializable.sol";
+import "./Escrow.sol";
 
-contract Petition is Ownable {
+contract Petition is Ownable, Initializable {
 
     event PetitionCreated(uint256 _id, string _title, string _descriptionHash, uint256 _expireOn, uint256 _depoit);
     event PetitionSigned(uint256 _id, address _signer);
@@ -16,10 +18,15 @@ contract Petition is Ownable {
         address owner;
     }
 
+    Escrow public escrow;
     Details[] public petitions;
     mapping (uint256 => address[]) public signers;
     mapping (address => uint256[]) public signed;
     mapping (address => uint256[]) public withdraws;
+
+    function initialize(address _escrow) public initializer {
+        escrow = Escrow(_escrow);
+    }
 
     function length() public view returns(uint256) {
         return petitions.length;
@@ -43,17 +50,17 @@ contract Petition is Ownable {
         emit PetitionCreated(id, _title, _descriptionHash, _expireOn, _deposit);
     }
 
-    function sign(uint256 _id, address _sender) public onlyOwner {
+    function sign(uint256 _id) public payable {
         Details storage details = petitions[_id];
         require(details.owner != address(0x0), "Petition does not exist.");
 
-        bool alreadySigned = didSign(_id, _sender);
+        bool alreadySigned = didSign(_id, msg.sender);
         require(alreadySigned == false, "Already signed.");
 
-        signers[_id].push(_sender);
-        signed[_sender].push(_id);
-
-        emit PetitionSigned(_id, _sender);
+        signers[_id].push(msg.sender);
+        signed[msg.sender].push(_id);
+        escrow.deposit(msg.sender, msg.value);
+        emit PetitionSigned(_id, msg.sender);
     }
 
     function didSign(uint256 _id, address _sender) public view returns (bool) {
@@ -81,28 +88,24 @@ contract Petition is Ownable {
         require(details.owner != address(0x0), "Petition does not exist.");
 
         bool alreadySigned = didSign(_id, _sender);
-        require(alreadySigned == true, "Not signed.");
+        if (!alreadySigned) {
+            return false;
+        }
 
         bool alreadyWithdraw = didWithdraw(_id, _sender);
-        require(alreadyWithdraw == false, "Already withdrawn.");
+        if (alreadyWithdraw) {
+            return false;
+        }
 
         return details.expireOn >= now;
     }
 
-    function markAsWithdraw(uint256 _id, address _sender) public onlyOwner {
-        Details storage details = petitions[_id];
-        require(details.owner != address(0x0), "Petition does not exist.");
+    function withdraw(uint256 _id) public payable {
+        bool ok = canWithdraw(_id, msg.sender);
+        require(ok, "Cannot widraw fund.");
 
-        bool alreadySigned = didSign(_id, _sender);
-        require(alreadySigned == true, "Not signed.");
-
-        bool alreadyWithdraw = didWithdraw(_id, _sender);
-        require(alreadyWithdraw == false, "Already withdrawn.");
-        
-        require(details.expireOn >= now, "Petition cannot be withdraw yet.");
-        
-        withdraws[_sender].push(_id);
-
-        emit PetitionMarkAsWithdraw(_id, _sender);
+        withdraws[msg.sender].push(_id);
+        escrow.withdraw(msg.sender, msg.value);
+        emit PetitionMarkAsWithdraw(_id, msg.sender);
     }
 }
