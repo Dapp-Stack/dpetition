@@ -5,7 +5,6 @@ import "./Mixin/Ownable.sol";
 contract Petition is Ownable {
 
     event PetitionCreated(uint256 _id, string _title, string _descriptionHash, uint256 _expireOn, uint256 _depoit);
-    event PetitionCreated(uint256 _id);
     event PetitionSigned(uint256 _id, address _signer);
     event PetitionMarkAsWithdraw(uint256 _id, address _signer);
 
