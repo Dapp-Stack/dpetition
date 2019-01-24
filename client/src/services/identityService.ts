@@ -16,10 +16,10 @@ export const buildData = async (state: IdentityState, rootState: RootState, peti
   });
 
   const message: Message =  {
-    to: rootState.contracts.Controller[0].address,
+    to: rootState.contracts.Petition[0].address,
     from: state.identityAddress,
     value: new BigNumber(0),
-    data: rootState.contracts.Controller[0].interface.functions.create.encode(params),
+    data: rootState.contracts.Petition[0].interface.functions.create.encode(params),
     gasToken: rootState.contracts.PetitionToken[0].address,
     operationType: '0',
     gasLimit: new BigNumber(1000000),

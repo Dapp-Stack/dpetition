@@ -6,7 +6,7 @@ import "./Escrow.sol";
 
 contract Petition is Ownable, Initializable {
 
-    event PetitionCreated(uint256 _id, string _title, string _descriptionHash, uint256 _expireOn, uint256 _depoit);
+    event PetitionCreated(uint256 _id, string _title, string _descriptionHash, uint256 _expireOn, uint256 _deposit);
     event PetitionSigned(uint256 _id, address _signer);
     event PetitionMarkAsWithdraw(uint256 _id, address _signer);
 
@@ -35,8 +35,7 @@ contract Petition is Ownable, Initializable {
     function create(string memory _title,
                     string memory _descriptionHash,
                     uint256 _expireOn,
-                    uint256 _deposit,
-                    address _owner) public {
+                    uint256 _deposit) public {
         require(bytes(_title).length > 0, "Title cannot be empty.");
         require(bytes(_descriptionHash).length > 0, "DescriptionHash cannot be empty.");
         require(_deposit > 0, "Deposit cannot be less than 1 Wei.");
@@ -44,7 +43,7 @@ contract Petition is Ownable, Initializable {
         uint256 minExpireOn = now + 1 days;
         require(_expireOn > minExpireOn, "Must expires in at least 1 day.");
 
-        Details memory details = Details(_title, _descriptionHash, _expireOn, _deposit, _owner);
+        Details memory details = Details(_title, _descriptionHash, _expireOn, _deposit, msg.sender);
         uint256 id = petitions.push(details) - 1;
 
         emit PetitionCreated(id, _title, _descriptionHash, _expireOn, _deposit);
