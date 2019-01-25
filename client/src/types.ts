@@ -22,5 +22,6 @@ export interface RootState {
   network: ethers.utils.Network;
   contracts: Contracts;
   provider: ethers.providers.JsonRpcProvider;
+  ipfsClient: any;
   ready: boolean;
 }

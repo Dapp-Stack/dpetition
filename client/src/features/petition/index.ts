@@ -4,6 +4,7 @@ import { RootState, PetitionState } from '../../types';
 import { buildPetition } from '../../services/petitionService';
 import petitionJson from '../../../contracts/Petition/Petition.sol/Petition.json';
 import { ethers } from 'ethers';
+import { get } from '../../services/ipfsService';
 
 export const defaultState: PetitionState = {
   list: [],
@@ -17,6 +18,7 @@ export const actions: ActionTree<PetitionState, RootState> = {
     const promises = addresses.map(async (address) => {
       const petition = new ethers.Contract(address, petitionJson.abi, rootState.provider);
       const data = await petition.get();
+      data[2] = await get(rootState.ipfsClient, data[2]);
       return buildPetition(data);
     });
     const petitions: Petition[] = await Promise.all(promises);
@@ -25,8 +27,9 @@ export const actions: ActionTree<PetitionState, RootState> = {
 
   async listen({ commit, rootState }) {
     const contract = rootState.contracts.Controller[0];
-    contract.on('PetitionCreated', (...args: any[]) => {
+    contract.on('PetitionCreated', async (...args: any[]) => {
       const petition = buildPetition(args);
+      data[2] = await get(rootState.ipfsClient, data[2]);
       commit('addPetition', petition);
     });
   },

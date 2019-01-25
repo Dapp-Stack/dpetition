@@ -5,8 +5,8 @@ import { IdentityState, RootState } from '../types';
 
 import identityJson from '../../contracts/Identity/Identity.sol/Identity.json';
 
-export const buildData = async (state: IdentityState, rootState: RootState, petition: Petition) => {
-  const params = [petition.title, petition.description, petition.expireOn.getTime(), petition.deposit];
+export const buildData = async (state: IdentityState, rootState: RootState, petition: Petition, descriptionHash: string) => {
+  const params = [petition.title, descriptionHash, petition.expireOn.getTime(), petition.deposit];
   const wallet = new ethers.Wallet(state.privateKey, rootState.provider);
   const contract = new ethers.Contract(state.identityAddress, identityJson.abi, wallet);
   const nonce = await contract.lastNonce();

@@ -8,6 +8,7 @@ import { RootState, IdentityState } from '../../types';
 import { TransactionReceipt } from 'ethers/providers';
 import { buildData } from '../../services/identityService';
 import { usernameToEns } from '../../services/ensService';
+import { add } from '../../services/ipfsService';
 
 export const defaultState: IdentityState = {
   address: '',
@@ -21,7 +22,8 @@ export const defaultState: IdentityState = {
 export const actions: ActionTree<IdentityState, RootState> = {
   async execute({ commit, state, rootState }, payload: Petition) {
     try {
-      const data = await buildData(state, rootState, payload);
+      const descriptionHash = await add(rootState.ipfsClient, payload.description);
+      const data = await buildData(state, rootState, payload, descriptionHash);
       const response = await axios({
         url: `${apiUrl}/identity/execution`,
         method: 'POST',

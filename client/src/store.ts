@@ -12,6 +12,7 @@ import Petition from './features/petition';
 
 import { apiUrl, provider } from './config';
 import { RootState } from './types';
+import { connect } from './services/ipfsService';
 
 Vue.use(Vuex);
 
@@ -33,12 +34,15 @@ const defaultState: RootState = {
   contracts: {},
   ready: false,
   provider,
+  ipfsClient: null
 };
 
 const mutations: MutationTree<RootState> = {
   setRootState(state, payload) {
     state.network = payload.network;
     state.contracts = payload.contracts;
+    state.provider = payload.provider;
+    state.ipfsClient = payload.ipfsClient;
     state.ready = true;
   },
 };
@@ -46,6 +50,7 @@ const mutations: MutationTree<RootState> = {
 const actions: ActionTree<RootState, RootState> = {
   async init({ commit }) {
     try {
+      const ipfsClient = await connect();
       const response = await axios({ url: `${apiUrl}/config` });
       const payload: Network = response && response.data;
       const network = await provider.getNetwork();
@@ -55,9 +60,9 @@ const actions: ActionTree<RootState, RootState> = {
       }
 
       const contracts = loadContracts(network, window.tracker, provider);
-      commit('setRootState', { network, contracts });
+      commit('setRootState', { ipfsClient, network, contracts });
     } catch (error) {
-      commit('setRootState', { network: NULL_NETWORK, contract: {} });
+      commit('setRootState', { ipfsClient: null, network: NULL_NETWORK, contract: {} });
     }
   },
 };
