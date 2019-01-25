@@ -21,6 +21,6 @@ export interface IdentityState {
 export interface RootState {
   network: ethers.utils.Network;
   contracts: Contracts;
-  provider?: ethers.providers.JsonRpcProvider;
+  provider: ethers.providers.JsonRpcProvider;
   ready: boolean;
 }

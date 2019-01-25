@@ -10,7 +10,7 @@ export interface Tracker {
 }
 
 export interface Petition {
-  id?: number;
+  address?: number;
   title: string;
   description: string;
   expireOn: Date;

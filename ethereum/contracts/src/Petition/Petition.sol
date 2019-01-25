@@ -32,6 +32,10 @@ contract Petition is Ownable {
         escrow = Escrow(_escrow);
     }
 
+    function get() public view returns(address, string memory, string memory, uint256, uint256) {
+        return (address(this), title, descriptionHash, expireOn, deposit);
+    }
+
     function sign() public payable {
         require(!signers[msg.sender], "Already signed.");
 

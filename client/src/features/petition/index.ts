@@ -2,6 +2,8 @@ import { Module, ActionTree, MutationTree } from 'vuex';
 import { Petition } from '@dpetition/lib';
 import { RootState, PetitionState } from '../../types';
 import { buildPetition } from '../../services/petitionService';
+import petitionJson from '../../../contracts/Petition/Petition.sol/Petition.json';
+import { ethers } from 'ethers';
 
 export const defaultState: PetitionState = {
   list: [],
@@ -9,13 +11,12 @@ export const defaultState: PetitionState = {
 
 export const actions: ActionTree<PetitionState, RootState> = {
   async fetch({ commit, rootState }) {
-    const contract = rootState.contracts.Petition[0];
-    const lengthHex = await contract.length();
-    const length = parseInt(lengthHex, 10);
+    const controller = rootState.contracts.Controller[0];
+    const addresses: string[] = await controller.petitions();
 
-    const promises = Array(length).fill(0).map(async (_, i) => {
-      const data = await contract.petitions(i);
-      data.unshift(i);
+    const promises = addresses.map(async (address) => {
+      const petition = new ethers.Contract(address, petitionJson.abi, rootState.provider);
+      const data = await petition.get();
       return buildPetition(data);
     });
     const petitions: Petition[] = await Promise.all(promises);
@@ -23,7 +24,7 @@ export const actions: ActionTree<PetitionState, RootState> = {
   },
 
   async listen({ commit, rootState }) {
-    const contract = rootState.contracts.Petition[0];
+    const contract = rootState.contracts.Controller[0];
     contract.on('PetitionCreated', (...args: any[]) => {
       const petition = buildPetition(args);
       commit('addPetition', petition);

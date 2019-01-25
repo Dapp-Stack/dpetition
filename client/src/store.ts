@@ -32,13 +32,13 @@ const defaultState: RootState = {
   network: NULL_NETWORK,
   contracts: {},
   ready: false,
+  provider,
 };
 
 const mutations: MutationTree<RootState> = {
   setRootState(state, payload) {
     state.network = payload.network;
     state.contracts = payload.contracts;
-    state.provider = payload.provider;
     state.ready = true;
   },
 };
@@ -55,9 +55,9 @@ const actions: ActionTree<RootState, RootState> = {
       }
 
       const contracts = loadContracts(network, window.tracker, provider);
-      commit('setRootState', { provider, network, contracts });
+      commit('setRootState', { network, contracts });
     } catch (error) {
-      commit('setRootState', { provider: undefined, network: NULL_NETWORK, contract: {} });
+      commit('setRootState', { network: NULL_NETWORK, contract: {} });
     }
   },
 };
