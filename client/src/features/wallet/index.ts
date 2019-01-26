@@ -42,7 +42,7 @@ export const actions: ActionTree<WalletState, RootState> = {
     }
     const overrides = { value: ethers.utils.parseEther(payload.value.toString()) };
 
-    const crowdsale = (rootState.contracts.MintedCrowdsale[0]).connect(state.main)
+    const crowdsale = (rootState.contracts.MintedCrowdsale[0]).connect(state.main);
     const transaction: ethers.utils.Transaction = await crowdsale.buyTokens(payload.recipient, overrides);
     if (transaction.hash) {
       await waitForTransactionReceipt(rootState.provider, transaction.hash);

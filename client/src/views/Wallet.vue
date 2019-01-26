@@ -73,32 +73,32 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Action, State } from "vuex-class";
-import { Component, Watch, Prop } from "vue-property-decorator";
-import Blockies from "../components/blockies.vue";
+import Vue from 'vue';
+import { Action, State } from 'vuex-class';
+import { Component, Watch, Prop } from 'vue-property-decorator';
+import Blockies from '../components/blockies.vue';
 
 @Component({
-  components: { Blockies }
+  components: { Blockies },
 })
 export default class Wallet extends Vue {
-  public mnemonic = "";
-  public privateKey = "";
-  public tokenToBuy = 0
+  public mnemonic = '';
+  public privateKey = '';
+  public tokenToBuy = 0;
 
-  @Action("build", { namespace: "wallet" }) private buildWallet!: (
-    payload: { privateKey?: string; mnemonic?: string }
+  @Action('build', { namespace: 'wallet' }) private buildWallet!: (
+    payload: { privateKey?: string; mnemonic?: string },
   ) => void;
-  @Action("buyPetitionToken", { namespace: "wallet" }) private buyPetitionToken!: (
-    payload: { recipient: string, value: number }
+  @Action('buyPetitionToken', { namespace: 'wallet' }) private buyPetitionToken!: (
+    payload: { recipient: string, value: number },
   ) => void;
-  @State("main", { namespace: "wallet" }) private wallet!: string;
-  @State("weiBalance", { namespace: "wallet" }) private weiBalance!: number;
-  @State("pptBalance", { namespace: "wallet" }) private pptBalance!: number;
+  @State('main', { namespace: 'wallet' }) private wallet!: string;
+  @State('weiBalance', { namespace: 'wallet' }) private weiBalance!: number;
+  @State('pptBalance', { namespace: 'wallet' }) private pptBalance!: number;
 
-  @Action("fetchBalance", { namespace: "identity" }) private fetchBalance!: () => void;
-  @State("identityAddress", { namespace: "identity" }) private identityAddress!: string;
-  @State("tokenBalance", { namespace: "identity" }) private tokenBalance!: number;
+  @Action('fetchBalance', { namespace: 'identity' }) private fetchBalance!: () => void;
+  @State('identityAddress', { namespace: 'identity' }) private identityAddress!: string;
+  @State('tokenBalance', { namespace: 'identity' }) private tokenBalance!: number;
 
   public async unlockWithPrivateKey() {
     await this.buildWallet({ privateKey: this.privateKey });

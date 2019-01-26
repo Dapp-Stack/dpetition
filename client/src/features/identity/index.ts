@@ -110,8 +110,8 @@ export const mutations: MutationTree<IdentityState> = {
     state.createSuccess = false;
   },
   identitySetBalance(state, payload: {balance: number}) {
-    state.tokenBalance = payload.balance
-  }
+    state.tokenBalance = payload.balance;
+  },
 };
 
 const namespaced: boolean = true;
