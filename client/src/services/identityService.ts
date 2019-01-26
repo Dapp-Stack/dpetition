@@ -2,10 +2,12 @@ import { ethers } from 'ethers';
 import { Petition, calculateHash, Message } from '@dpetition/lib';
 import { BigNumber } from 'ethers/utils';
 import { IdentityState, RootState } from '../types';
+import { add } from './ipfsService';
 
 import identityJson from '../../contracts/Identity/Identity.sol/Identity.json';
 
-export const buildData = async (state: IdentityState, rootState: RootState, petition: Petition, descriptionHash: string) => {
+export const buildData = async (state: IdentityState, rootState: RootState, petition: Petition) => {
+  const descriptionHash = await add(rootState.ipfsClient, petition.description);
   const params = [petition.title, descriptionHash, petition.expireOn.getTime(), petition.deposit];
   const wallet = new ethers.Wallet(state.privateKey, rootState.provider);
   const contract = new ethers.Contract(state.identityAddress, identityJson.abi, wallet);

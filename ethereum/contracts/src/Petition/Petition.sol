@@ -17,7 +17,7 @@ contract Petition is Ownable {
 
     Escrow public escrow;
     
-    constructor(string memory _title, string memory _descriptionHash, uint256 _expireOn, uint256 _deposit, address _escrow) public {
+    constructor(string memory _title, string memory _descriptionHash, uint256 _expireOn, uint256 _deposit) public {
         require(bytes(_title).length > 0, "Title cannot be empty.");
         require(bytes(_descriptionHash).length > 0, "DescriptionHash cannot be empty.");
         require(_deposit > 0, "Deposit cannot be less than 1 Wei.");
@@ -29,7 +29,7 @@ contract Petition is Ownable {
         descriptionHash = _descriptionHash;
         expireOn = _expireOn;
         deposit = _deposit;
-        escrow = Escrow(_escrow);
+        escrow = new Escrow();
     }
 
     function get() public view returns(address, string memory, string memory, uint256, uint256) {

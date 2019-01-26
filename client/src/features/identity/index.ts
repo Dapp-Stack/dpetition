@@ -8,7 +8,6 @@ import { RootState, IdentityState } from '../../types';
 import { TransactionReceipt } from 'ethers/providers';
 import { buildData } from '../../services/identityService';
 import { usernameToEns } from '../../services/ensService';
-import { add } from '../../services/ipfsService';
 
 export const defaultState: IdentityState = {
   address: '',
@@ -22,8 +21,7 @@ export const defaultState: IdentityState = {
 export const actions: ActionTree<IdentityState, RootState> = {
   async execute({ commit, state, rootState }, payload: Petition) {
     try {
-      const descriptionHash = await add(rootState.ipfsClient, payload.description);
-      const data = await buildData(state, rootState, payload, descriptionHash);
+      const data = await buildData(state, rootState, payload);
       const response = await axios({
         url: `${apiUrl}/identity/execution`,
         method: 'POST',
@@ -58,7 +56,6 @@ export const actions: ActionTree<IdentityState, RootState> = {
 
       const transaction: ethers.utils.Transaction = response && response.data;
       commit('identityCreateSuccess', { privateKey, ensName, address: wallet.address });
-
       if (transaction.hash && rootState.provider) {
         const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
         commit('identityCreateReceipt', receipt);

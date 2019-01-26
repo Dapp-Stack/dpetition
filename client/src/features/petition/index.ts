@@ -13,12 +13,12 @@ export const defaultState: PetitionState = {
 export const actions: ActionTree<PetitionState, RootState> = {
   async fetch({ commit, rootState }) {
     const controller = rootState.contracts.Controller[0];
-    const addresses: string[] = await controller.petitions();
+    const addresses: string[] = await controller.getAddresses();
 
     const promises = addresses.map(async (address) => {
       const petition = new ethers.Contract(address, petitionJson.abi, rootState.provider);
       const data = await petition.get();
-      data[2] = await get(rootState.ipfsClient, data[2]);
+      // data[2] = await get(rootState.ipfsClient, data[2]);
       return buildPetition(data);
     });
     const petitions: Petition[] = await Promise.all(promises);
@@ -29,7 +29,7 @@ export const actions: ActionTree<PetitionState, RootState> = {
     const contract = rootState.contracts.Controller[0];
     contract.on('PetitionCreated', async (...args: any[]) => {
       const petition = buildPetition(args);
-      data[2] = await get(rootState.ipfsClient, data[2]);
+      // data[2] = await get(rootState.ipfsClient, data[2]);
       commit('addPetition', petition);
     });
   },

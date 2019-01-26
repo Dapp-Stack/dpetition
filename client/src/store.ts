@@ -34,14 +34,13 @@ const defaultState: RootState = {
   contracts: {},
   ready: false,
   provider,
-  ipfsClient: null
+  ipfsClient: null,
 };
 
 const mutations: MutationTree<RootState> = {
   setRootState(state, payload) {
     state.network = payload.network;
     state.contracts = payload.contracts;
-    state.provider = payload.provider;
     state.ipfsClient = payload.ipfsClient;
     state.ready = true;
   },

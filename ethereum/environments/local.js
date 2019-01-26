@@ -96,17 +96,11 @@ const identityContracts = [
 const petitionContracts = [
   "Petition/Escrow.sol",
   "Petition/Petition.sol",
+  "Petition/Controller.sol",
 ]
 
 async function deployPetitionProtocol(deployer) {
-  const petition = await deployer.deploy('Petition');
-  const escrow = await deployer.deploy('Escrow');
-
-  const t1 = await escrow.transferOwnership(petition.address);
-  const t2 = await petition.initialize(escrow.address);
-  
-  await t1.wait();
-  await t2.wait();
+  await deployer.deploy('Controller');
 }
 
 module.exports = {
