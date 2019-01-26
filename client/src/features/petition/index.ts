@@ -4,7 +4,6 @@ import { RootState, PetitionState } from '../../types';
 import { buildPetition } from '../../services/petitionService';
 import petitionJson from '../../../contracts/Petition/Petition.sol/Petition.json';
 import { ethers } from 'ethers';
-import { get } from '../../services/ipfsService';
 
 export const defaultState: PetitionState = {
   list: [],

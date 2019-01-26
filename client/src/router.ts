@@ -18,5 +18,10 @@ export default new Router({
       name: 'connect',
       component: () => import(/* webpackChunkName: "connect" */ './views/Connect.vue'),
     },
+    {
+      path: '/wallet',
+      name: 'wallet',
+      component: () => import(/* webpackChunkName: "wallet" */ './views/Wallet.vue'),
+    },
   ],
 });

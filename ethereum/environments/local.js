@@ -4,11 +4,14 @@ const ethers = require("ethers");
 // const decryptedSecrets = JSON.parse(secrets.decrypt());
 
 const petitionTokenContracts = [
-  "PetitionToken/PetitionToken.sol"
+  "PetitionToken/ERC20Mintable.sol",
+  "PetitionToken/MintedCrowdsale.sol",
 ]
 
 async function deployPetitionTokenProtocol(deployer) {
-  await deployer.deploy('PetitionToken');
+  const token = await deployer.deploy('ERC20Mintable');
+  const address = await deployer.signer.getAddress()
+  await deployer.deploy('MintedCrowdsale', 1, address, token.address);
 }
 
 async function deployENSProtocol(deployer) {

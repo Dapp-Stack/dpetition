@@ -12,6 +12,7 @@ import { usernameToEns } from '../../services/ensService';
 export const defaultState: IdentityState = {
   address: '',
   identityAddress: '',
+  tokenBalance: 0,
   privateKey: '',
   ensName: '',
   executeSuccess: null,
@@ -28,7 +29,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
         data,
       });
       const transaction: ethers.utils.Transaction = response && response.data;
-      if (transaction.hash && rootState.provider) {
+      if (transaction.hash) {
         await waitForTransactionReceipt(rootState.provider, transaction.hash);
       }
       commit('identityExecuteSuccess');
@@ -56,7 +57,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
 
       const transaction: ethers.utils.Transaction = response && response.data;
       commit('identityCreateSuccess', { privateKey, ensName, address: wallet.address });
-      if (transaction.hash && rootState.provider) {
+      if (transaction.hash) {
         const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
         commit('identityCreateReceipt', receipt);
       }
@@ -64,6 +65,12 @@ export const actions: ActionTree<IdentityState, RootState> = {
       commit('identityCreateError', error);
     }
   },
+  async getBalance({ commit, state, rootState }) {
+    const token = rootState.contracts.PetitionToken[0];
+    const hexBalance = token.balanceOf(state.identityAddress);
+    const balance = parseInt(hexBalance, 10)
+    commit('identitySetBalance', balance);
+  }
 };
 
 export const mutations: MutationTree<IdentityState> = {

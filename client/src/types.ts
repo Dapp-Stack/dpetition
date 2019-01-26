@@ -12,10 +12,15 @@ export interface EnsState {
 export interface IdentityState {
   address: string;
   identityAddress: string;
+  tokenBalance: 0;
   privateKey: string;
   ensName: string;
   executeSuccess: null | boolean;
   createSuccess: null | boolean;
+}
+
+export interface WalletState {
+  main?: ethers.Wallet;
 }
 
 export interface RootState {

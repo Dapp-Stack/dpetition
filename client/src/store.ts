@@ -9,6 +9,7 @@ import Authorisation from './features/authorisation';
 import Ens from './features/ens';
 import Identity from './features/identity';
 import Petition from './features/petition';
+import Wallet from './features/wallet';
 
 import { apiUrl, provider } from './config';
 import { RootState } from './types';
@@ -83,6 +84,7 @@ const store: StoreOptions<RootState> = {
     identity: Identity,
     authorisation: Authorisation,
     petition: Petition,
+    wallet: Wallet,
   },
   plugins: [vuexLocalStorage.plugin],
 };
