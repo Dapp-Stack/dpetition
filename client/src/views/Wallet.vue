@@ -1,112 +1,113 @@
 <template>
   <v-container grid-list-xl>
-    <v-layout align-center justify-center row>
+    <v-layout align-center justify-center column>
       <v-flex md6>
-        <h1 class="display-2 text-xs-center mb-5 mt-5">Connect</h1>
-        <v-autocomplete
-          outline
-          v-model="value"
-          @input="makeIdentityCall()"
-          :loading="isLoading"
-          on:input="console.log('he;;p')"
-          :search-input.sync="username"
-          :items="items"
-          hide-no-data
-          label="Type your username"
-          placeholder="alice"
-          prepend-icon="fa-users"
-        >
-        <template slot="item" slot-scope="{ item }">
-          <v-list-tile-avatar
-            color="indigo"
-            class="headline font-weight-light white--text"
-          >
-            {{ item.value.charAt(0) }}
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.text"></v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-chip label color="primary">{{item.value}}</v-chip>
-          </v-list-tile-action>
-        </template>
-        </v-autocomplete>
+        <v-card>
+          <v-card-title primary-title>
+            <h3>
+              <Blockies :address="identityAddress"/>
+              <span class="ml-2">{{identityAddress}}</span>
+            </h3>
+          </v-card-title>
+          <v-list-tile class="mt-3">
+            <v-list-tile-content>
+              <v-list-tile-title>Petition Protocol Token</v-list-tile-title>
+              <v-list-tile-sub-title>{{tokenBalance}}</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-divider class="mt-3 pb-3"/>
+        </v-card>
+      </v-flex>
+      <v-flex v-if="wallet" md6>
+        <v-card>
+          <v-card-title primary-title>
+            <h3>
+              <Blockies :address="wallet.signingKey.address"/>
+              <span class="ml-2">{{wallet.signingKey.address}}</span>
+            </h3>
+          </v-card-title>
+          <v-list-tile class="mt-3">
+            <v-list-tile-content>
+              <v-list-tile-title>Petition Protocol Token</v-list-tile-title>
+              <v-list-tile-sub-title>{{pptBalance}}</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-divider class="mt-3"/>
+          <v-list-tile class="mt-3">
+            <v-list-tile-content>
+              <v-list-tile-title>Wei</v-list-tile-title>
+              <v-list-tile-sub-title>{{weiBalance}}</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-divider class="mt-3"/>
+          <v-card-actions>
+            <v-flex xs6>
+              <v-text-field type="number" v-model="tokenToBuy" label="Number of Token to Buy" outline></v-text-field>
+            </v-flex>
+            <v-flex xs6 class="pb-5">
+              <v-btn @click="buy" color="success">Buy</v-btn>
+            </v-flex>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+      <v-flex v-else md6>
+        <h1 class="display-2 text-xs-center mb-5 mt-5">Unlock with Mnemonic</h1>
+        <v-text-field label="Mnemonic" outline v-model="mnemonic" placeholder="12 words mnemonic"></v-text-field>
+        <v-card-actions class="justify-center">
+          <v-btn color="info" :disabled="!mnemonic" class="text-center">Unlock with Mnemonic</v-btn>
+        </v-card-actions>
+        <v-divider class="mt-5"/>
+        <h1 class="display-2 text-xs-center mb-5 mt-5">Or with a Private Key</h1>
+        <v-text-field label="Private Key" outline v-model="privateKey" placeholder="a private key"></v-text-field>
+        <v-card-actions class="justify-center">
+          <v-btn
+            color="info"
+            @click="unlockWithPrivateKey"
+            :disabled="!privateKey"
+            class="text-center"
+          >Unlock with Private Key</v-btn>
+        </v-card-actions>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Action, State } from 'vuex-class';
-import { Component, Watch, Prop } from 'vue-property-decorator';
-import { debounce } from 'lodash';
-import { AddressZero } from 'ethers/constants';
+import Vue from "vue";
+import { Action, State } from "vuex-class";
+import { Component, Watch, Prop } from "vue-property-decorator";
+import Blockies from "../components/blockies.vue";
 
-enum ActionType {
-  Connect = 'Connect',
-  Recover = 'Recover',
-  Create = 'Create',
-}
-
-@Component({})
+@Component({
+  components: { Blockies }
+})
 export default class Wallet extends Vue {
+  public mnemonic = "";
+  public privateKey = "";
+  public tokenToBuy = 0
 
-  get items() {
-    if (this.isTyping || !this.username) {
-      return [];
-    }
+  @Action("build", { namespace: "wallet" }) private buildWallet!: (
+    payload: { privateKey?: string; mnemonic?: string }
+  ) => void;
+  @Action("buyPetitionToken", { namespace: "wallet" }) private buyPetitionToken!: (
+    payload: { recipient: string, value: number }
+  ) => void;
+  @State("main", { namespace: "wallet" }) private wallet!: string;
+  @State("weiBalance", { namespace: "wallet" }) private weiBalance!: number;
+  @State("pptBalance", { namespace: "wallet" }) private pptBalance!: number;
 
-    if (this.address === AddressZero) {
-      return [
-        {text: this.username, value: ActionType.Create},
-      ];
-    }
+  @Action("fetchBalance", { namespace: "identity" }) private fetchBalance!: () => void;
+  @State("identityAddress", { namespace: "identity" }) private identityAddress!: string;
+  @State("tokenBalance", { namespace: "identity" }) private tokenBalance!: number;
 
-    return [
-      {text: this.username, value: ActionType.Connect},
-      {text: this.username, value: ActionType.Recover},
-    ];
+  public async unlockWithPrivateKey() {
+    await this.buildWallet({ privateKey: this.privateKey });
   }
 
-  public username = '';
-  public value = '';
-  public isTyping = false;
-  public isLoading = false;
+  public async buy() {
 
-  public debounceFind = debounce(async function(this: Connect, username: string) {
-    this.isTyping = false;
-    this.isLoading = true;
-    await this.find(username);
-    this.isLoading = false;
-  }, 500);
-
-  @Action('find', { namespace: 'ens' }) private find!: (username: string) => void;
-  @State('address', { namespace: 'ens' }) private address!: string;
-
-  @Action('create', { namespace: 'identity' }) private create!: (username: any) => void;
-
-  @Watch('username')
-  public onUsernameChanged(username: string) {
-    this.isTyping = true;
-    this.debounceFind(username);
-  }
-
-  public async makeIdentityCall() {
-    this.isLoading = true;
-    switch (this.value) {
-      case ActionType.Connect:
-        // this.connect(args);
-        break;
-      case ActionType.Recover:
-        // this.recover(args);
-        break;
-      case ActionType.Create:
-        const t = await this.create(this.username);
-        this.isLoading = false;
-        this.$router.push('/');
-        break;
-    }
+    await this.buyPetitionToken({recipient: this.identityAddress, value: this.tokenToBuy});
+    await this.fetchBalance();
   }
 }
 </script>

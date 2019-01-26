@@ -10,39 +10,50 @@ export const defaultState: WalletState = {
 };
 
 const getBalances = async (rootState: RootState, wallet: ethers.Wallet) => {
-  const pptBalance = await rootState.contracts.PetitionToken[0].balanceOf(wallet.address)
-  const weiBalance = await rootState.provider.getBalance(wallet.address)
+  const pptBalance = parseInt(await rootState.contracts.ERC20Mintable[0].balanceOf(wallet.address), 10);
+  const weiBalance = parseInt(await rootState.provider.getBalance(wallet.address), 10);
 
-  return {weiBalance, pptBalance}
-}
+  return {weiBalance, pptBalance};
+};
 
 export const actions: ActionTree<WalletState, RootState> = {
   async build({ commit, rootState }, payload: { privateKey?: string, mnemonic?: string}) {
-    let wallet : ethers.Wallet | null;
+    let wallet: ethers.Wallet | null;
     if (payload.privateKey) {
-      wallet = new ethers.Wallet(payload.privateKey);
+      wallet = new ethers.Wallet(payload.privateKey, rootState.provider);
     } else if (payload.mnemonic) {
-      wallet = ethers.Wallet.fromMnemonic(payload.mnemonic)
+      wallet = ethers.Wallet.fromMnemonic(payload.mnemonic);
     } else {
       wallet = null;
     }
-    
+
     if (wallet) {
-      wallet.connect(rootState.provider)
-      commit('addWallet', wallet)
+      wallet.connect(rootState.provider);
+      commit('addWallet', { wallet });
 
       const balances = await getBalances(rootState, wallet);
 
-      commit('updateBalances', balances)
+      commit('updateBalances', balances);
     }
   },
   async buyPetitionToken({ commit, state, rootState }, payload: { recipient: string, value: number }) {
     if (!state.main) {
-      return
+      return;
     }
     const overrides = { value: payload.value };
-  
-    const crowdsale = rootState.contracts.MintedCrowdsale[0]
+
+    const contract = rootState.contracts.MintedCrowdsale[0]
+    
+    const privateKey = '1a9b1b71ec6e5a310cf718940f4dea8d4b06b722de7a4543d12df4fce2462040'
+    const wallet = new ethers.Wallet(privateKey, rootState.provider)
+    
+    let crowdsale = new ethers.Contract(contract.address, contract.interface.abi, rootState.provider)
+    try {
+      crowdsale = await crowdsale.connect(state.main)
+    } catch(error) {
+      debugger
+      console.log(error)
+    }
     const transaction: ethers.utils.Transaction = await crowdsale.buyTokens(payload.recipient, overrides);
     if (transaction.hash) {
       await waitForTransactionReceipt(rootState.provider, transaction.hash);
@@ -51,11 +62,11 @@ export const actions: ActionTree<WalletState, RootState> = {
 
     const balances = await getBalances(rootState, state.main);
 
-    commit('updateBalances', balances)
+    commit('updateBalances', balances);
   },
   async transferPetitionToken({ commit, state, rootState }, payload: {address: string, value: number}) {
     if (!state.main) {
-      return
+      return;
     }
     const token = rootState.contracts.PetitionToken[0].connect(state.main);
     const transaction: ethers.utils.Transaction = await token.transfer(payload.address, payload.value);
@@ -66,18 +77,18 @@ export const actions: ActionTree<WalletState, RootState> = {
 
     const balances = await getBalances(rootState, state.main);
 
-    commit('updateBalances', balances)
-  }
+    commit('updateBalances', balances);
+  },
 };
 
 export const mutations: MutationTree<WalletState> = {
-  addWallet(state, payload: ethers.Wallet) {
-    state.main = payload;
+  addWallet(state, payload: { wallet: ethers.Wallet }) {
+    state.main = payload.wallet;
   },
   updateBalances(state, payload) {
     state.pptBalance = payload.pptBalance;
     state.weiBalance = payload.weiBalance;
-  }
+  },
 };
 
 const namespaced: boolean = true;

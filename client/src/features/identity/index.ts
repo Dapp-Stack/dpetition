@@ -65,12 +65,12 @@ export const actions: ActionTree<IdentityState, RootState> = {
       commit('identityCreateError', error);
     }
   },
-  async getBalance({ commit, state, rootState }) {
+  async fetchBalance({ commit, state, rootState }) {
     const token = rootState.contracts.PetitionToken[0];
     const hexBalance = token.balanceOf(state.identityAddress);
-    const balance = parseInt(hexBalance, 10)
+    const balance = parseInt(hexBalance, 10);
     commit('identitySetBalance', balance);
-  }
+  },
 };
 
 export const mutations: MutationTree<IdentityState> = {

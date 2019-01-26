@@ -71,7 +71,7 @@ const vuexLocalStorage = new VuexPersist({
   key: 'vuex',
   storage: window.localStorage,
   reducer: (state) => (
-    {...state, ready: null}
+    {...state, ready: null, wallet: {}}
   ),
 });
 
