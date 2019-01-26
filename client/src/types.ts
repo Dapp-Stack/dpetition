@@ -21,6 +21,8 @@ export interface IdentityState {
 
 export interface WalletState {
   main?: ethers.Wallet;
+  weiBalance: number;
+  pptBalance: number;
 }
 
 export interface RootState {
