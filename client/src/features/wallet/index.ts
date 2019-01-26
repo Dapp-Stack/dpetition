@@ -40,25 +40,13 @@ export const actions: ActionTree<WalletState, RootState> = {
     if (!state.main) {
       return;
     }
-    const overrides = { value: payload.value };
+    const overrides = { value: ethers.utils.parseEther(payload.value.toString()) };
 
-    const contract = rootState.contracts.MintedCrowdsale[0]
-    
-    const privateKey = '1a9b1b71ec6e5a310cf718940f4dea8d4b06b722de7a4543d12df4fce2462040'
-    const wallet = new ethers.Wallet(privateKey, rootState.provider)
-    
-    let crowdsale = new ethers.Contract(contract.address, contract.interface.abi, rootState.provider)
-    try {
-      crowdsale = await crowdsale.connect(state.main)
-    } catch(error) {
-      debugger
-      console.log(error)
-    }
+    const crowdsale = (rootState.contracts.MintedCrowdsale[0]).connect(state.main)
     const transaction: ethers.utils.Transaction = await crowdsale.buyTokens(payload.recipient, overrides);
     if (transaction.hash) {
       await waitForTransactionReceipt(rootState.provider, transaction.hash);
     }
-    commit('buyPetitionTokenSuccess');
 
     const balances = await getBalances(rootState, state.main);
 
@@ -68,7 +56,7 @@ export const actions: ActionTree<WalletState, RootState> = {
     if (!state.main) {
       return;
     }
-    const token = rootState.contracts.PetitionToken[0].connect(state.main);
+    const token = rootState.contracts.ERC20Mintable[0].connect(state.main);
     const transaction: ethers.utils.Transaction = await token.transfer(payload.address, payload.value);
     if (transaction.hash) {
       await waitForTransactionReceipt(rootState.provider, transaction.hash);

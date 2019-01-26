@@ -1,13 +1,12 @@
 pragma solidity ^0.5.0;
 
 import "./Mixin/ERC20.sol";
-import "./Mixin/MinterRole.sol";
 
 /**
  * @title ERC20Mintable
  * @dev ERC20 minting logic
  */
-contract ERC20Mintable is ERC20, MinterRole {
+contract ERC20Mintable is ERC20 {
     uint8 constant public decimals = 18;
     string constant public name = "Petition Protocol Token";
     string constant public symbol = "PPT";
@@ -19,7 +18,7 @@ contract ERC20Mintable is ERC20, MinterRole {
      * @param value The amount of tokens to mint.
      * @return A boolean that indicates if the operation was successful.
      */
-    function mint(address to, uint256 value) public onlyMinter returns (bool) {
+    function mint(address to, uint256 value) public returns (bool) {
         _mint(to, value);
         return true;
     }

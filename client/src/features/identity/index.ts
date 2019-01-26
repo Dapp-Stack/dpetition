@@ -66,10 +66,10 @@ export const actions: ActionTree<IdentityState, RootState> = {
     }
   },
   async fetchBalance({ commit, state, rootState }) {
-    const token = rootState.contracts.PetitionToken[0];
-    const hexBalance = token.balanceOf(state.identityAddress);
+    const token = rootState.contracts.ERC20Mintable[0];
+    const hexBalance = await token.balanceOf(state.identityAddress);
     const balance = parseInt(hexBalance, 10);
-    commit('identitySetBalance', balance);
+    commit('identitySetBalance', {balance});
   },
 };
 
@@ -109,6 +109,9 @@ export const mutations: MutationTree<IdentityState> = {
   identityCreateError(state) {
     state.createSuccess = false;
   },
+  identitySetBalance(state, payload: {balance: number}) {
+    state.tokenBalance = payload.balance
+  }
 };
 
 const namespaced: boolean = true;

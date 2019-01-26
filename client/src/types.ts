@@ -12,7 +12,7 @@ export interface EnsState {
 export interface IdentityState {
   address: string;
   identityAddress: string;
-  tokenBalance: 0;
+  tokenBalance: number;
   privateKey: string;
   ensName: string;
   executeSuccess: null | boolean;
