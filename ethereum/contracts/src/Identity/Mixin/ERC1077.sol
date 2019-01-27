@@ -108,17 +108,17 @@ contract ERC1077 is KeyHolder, IERC1077 {
 
         require(canExecute(to, value, data, nonce, gasPrice, gasToken, gasLimit, operationType, signatures), "Invalid signature");
 
-        uint256 startingGas = gasleft();
+        // uint256 startingGas = gasleft();
 
-        // /* solium-disable-next-line security/no-call-value */
-        (bool success, bytes memory reason) = to.call.value(value)(data);
-
+        // // /* solium-disable-next-line security/no-call-value */
+        (bool success, ) = to.call.value(value)(data);
+        require(success, "invalid call");
         bytes32 messageHash = calculateMessageHash(address(this), to, value, data, nonce, gasPrice, gasToken, gasLimit, operationType);
         
 
-        emit ExecutedSigned(messageHash, _lastNonce, success, reason);
+        emit ExecutedSigned(messageHash, _lastNonce, success);
         // _lastNonce++;
-        uint256 gasUsed = startingGas.sub(gasleft());
+        // uint256 gasUsed = startingGas.sub(gasleft());
         // refund(gasUsed, gasPrice, gasToken);
         return messageHash;
     }

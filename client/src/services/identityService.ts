@@ -13,10 +13,6 @@ export const buildData = async (state: IdentityState, rootState: RootState, peti
   const contract = new ethers.Contract(state.identityAddress, identityJson.abi, wallet);
   const nonce = await contract.lastNonce();
 
-  contract.on('*', (event) => {
-    console.log(event);
-  });
-
   const message: Message =  {
     to: rootState.contracts.Controller[0].address,
     from: state.identityAddress,
@@ -24,7 +20,7 @@ export const buildData = async (state: IdentityState, rootState: RootState, peti
     data: rootState.contracts.Controller[0].interface.functions.create.encode(params),
     gasToken: rootState.contracts.ERC20Mintable[0].address,
     operationType: '0',
-    gasLimit: new BigNumber(1000000),
+    gasLimit: new BigNumber(5000000),
     gasPrice: new BigNumber(1000000000),
     chainId: rootState.network.chainId,
     nonce,
