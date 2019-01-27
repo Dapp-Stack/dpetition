@@ -11,7 +11,8 @@ export const defaultState: WalletState = {
 
 const getBalances = async (rootState: RootState, wallet: ethers.Wallet) => {
   const pptBalance = parseInt(await rootState.contracts.ERC20Mintable[0].balanceOf(wallet.address), 10);
-  const weiBalance = parseInt(await rootState.provider.getBalance(wallet.address), 10);
+  const balance = await rootState.provider.getBalance(wallet.address);
+  const weiBalance = parseInt(balance.toString(), 10);
 
   return {weiBalance, pptBalance};
 };

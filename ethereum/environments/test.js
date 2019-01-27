@@ -1,8 +1,8 @@
 module.exports = {
   compile: {
-    contracts: [
-      "Petition.sol"
-    ]
+    solidity: {
+      "latest": []
+    }
   },
   ipfs: false,
   web: {

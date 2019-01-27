@@ -1,23 +1,21 @@
-import * as ipfsClient from 'ipfs-http-client';
+import * as ipfsClient from 'ipfs-api';
 
-const ipfsHost = process.env.IPFS_HOST || '127.0.0.1';
+const ipfsHost = process.env.IPFS_HOST || 'localhost';
 const ipfsPort = process.env.IPFS_PORT || '5001';
-const ipfsProtocol = process.env.IPFS_PROTOCOL || 'http';
 
 export const connect = async () => {
-  return ipfsClient({ host: ipfsHost, port: ipfsPort, protocol: ipfsProtocol });
+  return new ipfsClient( ipfsHost, ipfsPort);
 };
 
-export const add = async (ipfsClient: any, data: string) => {
-  // const content = ipfsClient.types.Buffer.from(data);
-  // const results = await ipfsClient.add(content);
-  // return results[0].hash;
-  return 'hash';
+export const add = async (api: any, data: string) => {
+  const content = api.types.Buffer.from(data);
+  const results = await api.add(content);
+  return results[0].hash;
 };
 
-export const get = (ipfsClient: any, hash: string) => {
+export const get = (ipfs: any, hash: string) => {
   return new Promise<string>((resolve, reject) => {
-    ipfsClient.get(hash, (err: Error, files: Array<{content: string}>) => {
+    ipfs.get(hash, (err: Error, files: Array<{content: string}>) => {
       if (err) {
         return reject(err);
       }

@@ -22,7 +22,7 @@ export const buildData = async (state: IdentityState, rootState: RootState, peti
     from: state.identityAddress,
     value: new BigNumber(0),
     data: rootState.contracts.Controller[0].interface.functions.create.encode(params),
-    gasToken: rootState.contracts.PetitionToken[0].address,
+    gasToken: rootState.contracts.ERC20Mintable[0].address,
     operationType: '0',
     gasLimit: new BigNumber(1000000),
     gasPrice: new BigNumber(1000000000),
