@@ -17,8 +17,7 @@ export const actions: ActionTree<PetitionState, RootState> = {
     const promises = addresses.map(async (address) => {
       const petition = new ethers.Contract(address, petitionJson.abi, rootState.provider);
       const data = await petition.get();
-      // data[2] = await get(rootState.ipfsClient, data[2]);
-      return buildPetition(data);
+      return await buildPetition(data, rootState);
     });
     const petitions: Petition[] = await Promise.all(promises);
     commit('updatePetitions', petitions);
@@ -27,8 +26,7 @@ export const actions: ActionTree<PetitionState, RootState> = {
   async listen({ commit, rootState }) {
     const contract = rootState.contracts.Controller[0];
     contract.on('PetitionCreated', async (...args: any[]) => {
-      const petition = buildPetition(args);
-      // data[2] = await get(rootState.ipfsClient, data[2]);
+      const petition = await buildPetition(args, rootState);
       commit('addPetition', petition);
     });
   },
