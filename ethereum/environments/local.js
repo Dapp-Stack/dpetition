@@ -110,7 +110,20 @@ module.exports = {
   compile: {
     // List of contracts to compile
     // contracts: saiContracts.concat(zeroContracts).concat(identityContracts).concat(petitionContracts)
-    contracts: identityContracts.concat(petitionContracts).concat(petitionTokenContracts)
+    solidity: {
+      "0.5.0": identityContracts.concat(petitionContracts).concat(petitionTokenContracts)
+    },
+
+    // List of vyper contracts to compile
+    // vyper: [
+    // ]
+
+    // Optimize solidity compilation, you can learn more about it here:
+    // https://solidity.readthedocs.io/en/v0.4.24/using-the-compiler.html
+    optimizer: {
+      enabled: false,
+      runs: 200
+    },
   },
 
   // Ethererum configuration, it can be false if not needed
