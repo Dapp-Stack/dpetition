@@ -23,11 +23,9 @@ import ApiError from './components/apiError.vue';
 export default class App extends Vue {
   @State('ready') private ready!: boolean;
   @Action('init') private init!: () => void;
-  @Action('listen', { namespace: 'petition' }) private listen!: () => void;
 
   public async mounted() {
     await this.init();
-    await this.listen();
   }
 }
 </script>

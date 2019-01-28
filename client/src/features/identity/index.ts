@@ -1,12 +1,11 @@
 import axios from 'axios';
+import { waitForTransactionReceipt } from '@dpetition/lib';
 import { Module, ActionTree, MutationTree } from 'vuex';
-import { waitForTransactionReceipt, Petition } from '@dpetition/lib';
 import { ethers } from 'ethers';
 
 import { apiUrl } from '../../config';
 import { RootState, IdentityState } from '../../types';
 import { TransactionReceipt } from 'ethers/providers';
-import { buildData } from '../../services/identityService';
 import { usernameToEns } from '../../services/ensService';
 
 export const defaultState: IdentityState = {
@@ -15,28 +14,9 @@ export const defaultState: IdentityState = {
   tokenBalance: 0,
   privateKey: '',
   ensName: '',
-  executeSuccess: null,
-  createSuccess: null,
 };
 
 export const actions: ActionTree<IdentityState, RootState> = {
-  async execute({ commit, state, rootState }, payload: Petition) {
-    try {
-      const data = await buildData(state, rootState, payload);
-      const response = await axios({
-        url: `${apiUrl}/identity/execution`,
-        method: 'POST',
-        data,
-      });
-      const transaction: ethers.utils.Transaction = response && response.data;
-      if (transaction.hash) {
-        await waitForTransactionReceipt(rootState.provider, transaction.hash);
-      }
-      commit('identityExecuteSuccess');
-    } catch (error) {
-      commit('identityExecuteError');
-    }
-  },
   destroy({ commit }) {
     commit('identityDestroySuccess');
   },
@@ -74,26 +54,12 @@ export const actions: ActionTree<IdentityState, RootState> = {
 };
 
 export const mutations: MutationTree<IdentityState> = {
-  identityExecuteSuccess(state) {
-    state.executeSuccess = true;
-  },
-  identityExecuteError(state) {
-    state.executeSuccess = false;
-  },
-  identityFetchSuccess(state, payload: { privateKey: string,
-                                         address: string,
-                                         identityAddress: string,
-                                         ensName: string }) {
-    state.privateKey = payload.privateKey;
-    state.address = payload.address;
-    state.identityAddress = payload.identityAddress;
-    state.ensName = payload.ensName;
-  },
   identityDestroySuccess(state) {
     state.privateKey = '';
     state.address = '';
     state.identityAddress = '';
     state.ensName = '';
+    state.tokenBalance = 0;
   },
   identityCreateSuccess(state, payload: { privateKey: string,
                                           address: string,
@@ -101,13 +67,9 @@ export const mutations: MutationTree<IdentityState> = {
     state.privateKey = payload.privateKey;
     state.address = payload.address;
     state.ensName = payload.ensName;
-    state.createSuccess = true;
   },
   identityCreateReceipt(state, payload: TransactionReceipt) {
     state.identityAddress = payload.contractAddress || '';
-  },
-  identityCreateError(state) {
-    state.createSuccess = false;
   },
   identitySetBalance(state, payload: {balance: number}) {
     state.tokenBalance = payload.balance;

@@ -1,16 +1,38 @@
+import axios from 'axios';
 import { Module, ActionTree, MutationTree } from 'vuex';
-import { Petition } from '@dpetition/lib';
-import { RootState, PetitionState } from '../../types';
-import { buildPetition } from '../../services/petitionService';
-import petitionJson from '../../../contracts/Petition/Petition.sol/Petition.json';
+import { waitForTransactionReceipt, extractTransactionEvents, Petition } from '@dpetition/lib';
 import { ethers } from 'ethers';
+
+import { apiUrl } from '../../config';
+import { RootState, PetitionState } from '../../types';
+import { buildPetition, buildCreateInput } from '../../services/petitionService';
+import petitionJson from '../../../contracts/Petition/Petition.sol/Petition.json';
 
 export const defaultState: PetitionState = {
   list: [],
 };
 
 export const actions: ActionTree<PetitionState, RootState> = {
-  async fetch({ commit, rootState }) {
+  async create({ commit, state, rootState }, payload: Petition) {
+    const data = await buildCreateInput(rootState, payload);
+    const response = await axios({
+      url: `${apiUrl}/identity/execution`,
+      method: 'POST',
+      data,
+    });
+    const transaction: ethers.utils.Transaction = response && response.data;
+    if (!transaction.hash) {
+      return;
+    }
+    const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
+    const txEvents = extractTransactionEvents(receipt, rootState.contracts.Controller[0]);
+    if (!txEvents.PetitionCreated) {
+      return;
+    }
+    const petition = await buildPetition(Object.values(txEvents.PetitionCreated), rootState);
+    commit('addPetition', petition);
+  },
+  async list({ commit, rootState }) {
     const controller = rootState.contracts.Controller[0];
     const addresses: string[] = await controller.getAddresses();
 
@@ -21,14 +43,6 @@ export const actions: ActionTree<PetitionState, RootState> = {
     });
     const petitions: Petition[] = await Promise.all(promises);
     commit('updatePetitions', petitions);
-  },
-
-  async listen({ commit, rootState }) {
-    const contract = rootState.contracts.Controller[0];
-    contract.on('PetitionCreated', async (...args: any[]) => {
-      const petition = await buildPetition(args, rootState);
-      commit('addPetition', petition);
-    });
   },
 };
 

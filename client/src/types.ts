@@ -15,8 +15,6 @@ export interface IdentityState {
   tokenBalance: number;
   privateKey: string;
   ensName: string;
-  executeSuccess: null | boolean;
-  createSuccess: null | boolean;
 }
 
 export interface WalletState {

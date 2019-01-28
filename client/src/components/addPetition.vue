@@ -235,7 +235,7 @@ export default class AddPetition extends Vue {
   public depositRules = [depositRequired, depositMin];
   public expireOnMenu: boolean = false;
 
-  @Action('execute', { namespace: 'identity' }) private execute!: (
+  @Action('create', { namespace: 'petition' }) private createPetition!: (
     petition: Petition,
   ) => void;
 
@@ -290,7 +290,7 @@ export default class AddPetition extends Vue {
       expireOn: new Date(this.expireOn),
       deposit: this.deposit,
     };
-    await this.execute(petition);
+    await this.createPetition(petition);
     this.$emit('close');
   }
 }

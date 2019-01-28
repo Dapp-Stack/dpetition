@@ -20,7 +20,7 @@
     "watch:lib": "cd lib; tsc --watch --pretty --preserveWatchOutput",
     "watch:ethereum": "cd ethereum; yarn das start",
     "watch:relayer:ts": "cd relayer; tsc --watch --pretty --preserveWatchOutput",
-    "watch:relayer:node": "sleep 10 && PRIVATE_KEY=1a9b1b71ec6e5a310cf718940f4dea8d4b06b722de7a4543d12df4fce2462040 DEBUG=* nodemon -V relayer/bin/www -w relayer/dist -i relayer/dist/tracker.json"
+    "watch:relayer:node": "sleep 10 && PRIVATE_KEY=f84108908243d78b74a664935b93053c358a6e226a707b381b6bda5ed427d0f5 DEBUG=* nodemon -V relayer/bin/www -w relayer/dist -i relayer/dist/tracker.json"
   },
   "devDependencies": {
     "concurrently": "^4.1.0",
