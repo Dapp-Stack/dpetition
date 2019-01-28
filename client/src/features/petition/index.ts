@@ -13,7 +13,7 @@ export const defaultState: PetitionState = {
 };
 
 export const actions: ActionTree<PetitionState, RootState> = {
-  async create({ commit, state, rootState }, payload: Petition) {
+  async create({ commit, rootState }, payload: Petition) {
     const data = await buildCreateInput(rootState, payload);
     const response = await axios({
       url: `${apiUrl}/identity/execution`,

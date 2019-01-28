@@ -29,4 +29,8 @@ export interface RootState {
   provider: ethers.providers.JsonRpcProvider;
   ipfsClient: any;
   ready: boolean;
+  ens: EnsState;
+  identity: IdentityState;
+  wallet: WalletState;
+  petition: PetitionState;
 }

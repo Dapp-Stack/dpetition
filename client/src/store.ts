@@ -6,10 +6,10 @@ import VuexPersist from 'vuex-persist';
 import { Tracker, loadContracts } from '@dpetition/lib';
 
 import Authorisation from './features/authorisation';
-import Ens from './features/ens';
-import Identity from './features/identity';
-import Petition from './features/petition';
-import Wallet from './features/wallet';
+import Ens, { defaultState as ensDefaultState } from './features/ens';
+import Identity, { defaultState as identityDefaultState } from './features/identity';
+import Petition, { defaultState as petitionDefaultState } from './features/petition';
+import Wallet, { defaultState as walletDefaultState } from './features/wallet';
 
 import { apiUrl, provider } from './config';
 import { RootState } from './types';
@@ -36,6 +36,10 @@ const defaultState: RootState = {
   ready: false,
   provider,
   ipfsClient: null,
+  identity: identityDefaultState,
+  ens: ensDefaultState,
+  petition: petitionDefaultState,
+  wallet: walletDefaultState,
 };
 
 const mutations: MutationTree<RootState> = {
