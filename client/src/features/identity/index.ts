@@ -2,87 +2,76 @@ import axios from 'axios';
 import { waitForTransactionReceipt } from '@dpetition/lib';
 import { Module, ActionTree, MutationTree } from 'vuex';
 import { ethers } from 'ethers';
+import { BigNumber } from 'ethers/utils';
 
 import { apiUrl } from '../../config';
 import { RootState, IdentityState } from '../../types';
-import { TransactionReceipt } from 'ethers/providers';
 import { usernameToEns } from '../../services/ensService';
+import { getWeiBalance, getPPTBalance } from '../../services/balanceService';
 
 export const defaultState: IdentityState = {
   address: '',
-  identityAddress: '',
-  tokenBalance: 0,
-  privateKey: '',
   ensName: '',
+  balances: {},
 };
 
 export const actions: ActionTree<IdentityState, RootState> = {
   destroy({ commit }) {
-    commit('identityDestroySuccess');
+    commit('clean');
   },
   async create({ commit, rootState }, payload: string) {
-    try {
-      const privateKey = ethers.Wallet.createRandom().privateKey;
-      const wallet = new ethers.Wallet(privateKey);
-      const address = wallet.address;
-      const ensName = usernameToEns(payload);
-      const response = await axios({
-        url: `${apiUrl}/identity`,
-        method: 'post',
-        data: {
-          ensName,
-          address,
-        },
-      });
+    const address = rootState.wallet.local.address;
+    const ensName = usernameToEns(payload);
+    const response = await axios({
+      url: `${apiUrl}/identity`,
+      method: 'post',
+      data: {
+        ensName,
+        address,
+      },
+    });
 
-      const transaction: ethers.utils.Transaction = response && response.data;
-      commit('identityCreateSuccess', { privateKey, ensName, address: wallet.address });
-      if (transaction.hash) {
-        const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
-        commit('identityCreateReceipt', receipt);
-      }
-    } catch (error) {
-      commit('identityCreateError', error);
+    const transaction: ethers.utils.Transaction = response && response.data;
+    commit('setIdentity', { ensName });
+    if (!transaction.hash) {
+      return;
     }
+    const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
+    commit('setAddress', receipt.contractAddress);
   },
-  async fetchBalance({ commit, state, rootState }) {
-    const token = rootState.contracts.ERC20Mintable[0];
-    const hexBalance = await token.balanceOf(state.identityAddress);
-    const balance = parseInt(hexBalance, 10);
-    commit('identitySetBalance', {balance});
+  async fetchBalances({ commit, state, rootState }) {
+    const wei = await getWeiBalance(rootState, state.address);
+    commit('updateBalance', {name: 'WEI', value: wei});
+
+    const ppt = await getPPTBalance(rootState, state.address);
+    commit('updateBalance', {name: 'PPT', value: ppt});
   },
 };
 
 export const mutations: MutationTree<IdentityState> = {
-  identityDestroySuccess(state) {
-    state.privateKey = '';
+  clean(state) {
     state.address = '';
-    state.identityAddress = '';
+    state.balances = {};
     state.ensName = '';
-    state.tokenBalance = 0;
   },
-  identityCreateSuccess(state, payload: { privateKey: string,
-                                          address: string,
-                                          ensName: string }) {
-    state.privateKey = payload.privateKey;
-    state.address = payload.address;
+  setIdentity(state, payload: { ensName: string }) {
     state.ensName = payload.ensName;
   },
-  identityCreateReceipt(state, payload: TransactionReceipt) {
-    state.identityAddress = payload.contractAddress || '';
+  setAddress(state, payload: { address: string }) {
+    state.address = payload.address;
   },
-  identitySetBalance(state, payload: {balance: number}) {
-    state.tokenBalance = payload.balance;
+  updateBalance(state, payload: { name: string, value: BigNumber }) {
+    state.balances[payload.name] = payload.value;
   },
 };
 
 const namespaced: boolean = true;
 
-const profile: Module<IdentityState, RootState> = {
+const identity: Module<IdentityState, RootState> = {
   namespaced,
   state: defaultState,
   actions,
   mutations,
 };
 
-export default profile;
+export default identity;

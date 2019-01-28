@@ -1,5 +1,10 @@
 import { ethers } from 'ethers';
 import { Contracts, Petition } from '@dpetition/lib';
+import { BigNumber } from 'ethers/utils';
+
+export interface Balances {
+  [currency: string]: BigNumber;
+}
 
 export interface PetitionState {
   list: Petition[];
@@ -11,16 +16,21 @@ export interface EnsState {
 
 export interface IdentityState {
   address: string;
-  identityAddress: string;
-  tokenBalance: number;
-  privateKey: string;
   ensName: string;
+  balances: Balances;
 }
 
 export interface WalletState {
-  main?: ethers.Wallet;
-  weiBalance: number;
-  pptBalance: number;
+  local: {
+    address: string,
+    privateKey: string,
+  };
+  remote: {
+    address: string;
+    privateKey: string;
+    mnemonic: string;
+    balances: Balances;
+  };
 }
 
 export interface RootState {

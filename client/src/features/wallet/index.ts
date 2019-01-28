@@ -1,92 +1,99 @@
 import { Module, ActionTree, MutationTree } from 'vuex';
-import { RootState, WalletState } from '../../types';
 import { ethers } from 'ethers';
+import { BigNumber } from 'ethers/utils';
 import { waitForTransactionReceipt } from '@dpetition/lib';
 
+import { RootState, WalletState } from '../../types';
+import { buildWallet } from '../../services/walletService';
+import { getWeiBalance, getPPTBalance } from '../../services/balanceService';
+
 export const defaultState: WalletState = {
-  main: undefined,
-  weiBalance: 0,
-  pptBalance: 0,
-};
-
-const getBalances = async (rootState: RootState, wallet: ethers.Wallet) => {
-  const pptBalance = parseInt(await rootState.contracts.ERC20Mintable[0].balanceOf(wallet.address), 10);
-  const balance = await rootState.provider.getBalance(wallet.address);
-  const weiBalance = parseInt(balance.toString(), 10);
-
-  return {weiBalance, pptBalance};
+  local: {
+    address: '',
+    privateKey: '',
+  },
+  remote: {
+    privateKey: '',
+    mnemonic: '',
+    address: '',
+    balances: {},
+  },
 };
 
 export const actions: ActionTree<WalletState, RootState> = {
-  async build({ commit, rootState }, payload: { privateKey?: string, mnemonic?: string}) {
-    let wallet: ethers.Wallet | null;
-    if (payload.privateKey) {
-      wallet = new ethers.Wallet(payload.privateKey, rootState.provider);
-    } else if (payload.mnemonic) {
-      wallet = ethers.Wallet.fromMnemonic(payload.mnemonic);
-    } else {
-      wallet = null;
-    }
-
-    if (wallet) {
-      wallet.connect(rootState.provider);
-      commit('addWallet', { wallet });
-
-      const balances = await getBalances(rootState, wallet);
-
-      commit('updateBalances', balances);
-    }
+  destroy({ commit }) {
+    commit('clean');
   },
-  async buyPetitionToken({ commit, state, rootState }, payload: { recipient: string, value: number }) {
-    if (!state.main) {
+  generateLocal({ commit, rootState, state }) {
+    if (state.local.address && state.local.privateKey) {
       return;
     }
-    const overrides = { value: ethers.utils.parseEther(payload.value.toString()) };
 
-    const crowdsale = (rootState.contracts.MintedCrowdsale[0]).connect(state.main);
-    const transaction: ethers.utils.Transaction = await crowdsale.buyTokens(payload.recipient, overrides);
-    if (transaction.hash) {
-      await waitForTransactionReceipt(rootState.provider, transaction.hash);
-    }
-
-    const balances = await getBalances(rootState, state.main);
-
-    commit('updateBalances', balances);
+    const privateKey = ethers.Wallet.createRandom().privateKey;
+    const localWallet = buildWallet(rootState.provider, privateKey);
+    commit('setLocal', { privateKey, address: localWallet.address });
   },
-  async transferPetitionToken({ commit, state, rootState }, payload: {address: string, value: number}) {
-    if (!state.main) {
+  async generateRemote({ commit, rootState }, payload: { privateKey?: string, mnemonic?: string}) {
+    const { privateKey, mnemonic } = payload;
+    const remoteWallet = buildWallet(rootState.provider, privateKey, mnemonic);
+    commit('setRemote', { privateKey, mnemonic, address: remoteWallet.address });
+
+    const wei = await getWeiBalance(rootState, remoteWallet.address);
+    commit('updateBalance', {name: 'WEI', value: wei});
+
+    const ppt = await getPPTBalance(rootState, remoteWallet.address);
+    commit('updateBalance', {name: 'PPT', value: ppt});
+  },
+  async buyPetitionToken({ commit, state, rootState }, value: number) {
+    const overrides = { value: ethers.utils.parseEther(value.toString()) };
+    const remoteWallet = buildWallet(rootState.provider, state.remote.privateKey, state.remote.mnemonic);
+    const crowdsale = (rootState.contracts.MintedCrowdsale[0]).connect(remoteWallet);
+
+    const transaction: ethers.utils.Transaction = await crowdsale.buyTokens(rootState.identity.address, overrides);
+    if (!transaction.hash) {
       return;
     }
-    const token = rootState.contracts.ERC20Mintable[0].connect(state.main);
-    const transaction: ethers.utils.Transaction = await token.transfer(payload.address, payload.value);
-    if (transaction.hash) {
-      await waitForTransactionReceipt(rootState.provider, transaction.hash);
-    }
-    commit('transferPetitionTokenSuccess');
+    await waitForTransactionReceipt(rootState.provider, transaction.hash);
 
-    const balances = await getBalances(rootState, state.main);
+    const wei = await getWeiBalance(rootState, remoteWallet.address);
+    commit('updateBalance', {name: 'WEI', value: wei});
 
-    commit('updateBalances', balances);
+    const ppt = await getPPTBalance(rootState, remoteWallet.address);
+    commit('updateBalance', {name: 'PPT', value: ppt});
   },
 };
 
 export const mutations: MutationTree<WalletState> = {
-  addWallet(state, payload: { wallet: ethers.Wallet }) {
-    state.main = payload.wallet;
+  setLocal(state, payload) {
+    state.local = payload;
   },
-  updateBalances(state, payload) {
-    state.pptBalance = payload.pptBalance;
-    state.weiBalance = payload.weiBalance;
+  setRemote(state, payload) {
+    state.remote = payload;
+  },
+  updateBalance(state, payload: { name: string, value: BigNumber }) {
+    state.remote.balances[payload.name] = payload.value;
+  },
+  clean(state) {
+    state.local = {
+      address: '',
+      privateKey: '',
+    };
+    state.remote = {
+      privateKey: '',
+      mnemonic: '',
+      address: '',
+      balances: {},
+    };
   },
 };
 
 const namespaced: boolean = true;
 
-const profile: Module<WalletState, RootState> = {
+const wallet: Module<WalletState, RootState> = {
   namespaced,
   state: defaultState,
   actions,
   mutations,
 };
 
-export default profile;
+export default wallet;

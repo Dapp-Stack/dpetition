@@ -86,26 +86,23 @@ export default class Wallet extends Vue {
   public privateKey = '';
   public tokenToBuy = 0;
 
-  @Action('build', { namespace: 'wallet' }) private buildWallet!: (
+  @Action('generateRemote', { namespace: 'wallet' }) private buildWallet!: (
     payload: { privateKey?: string; mnemonic?: string },
   ) => void;
   @Action('buyPetitionToken', { namespace: 'wallet' }) private buyPetitionToken!: (
     payload: { recipient: string, value: number },
   ) => void;
-  @State('main', { namespace: 'wallet' }) private wallet!: string;
-  @State('weiBalance', { namespace: 'wallet' }) private weiBalance!: number;
-  @State('pptBalance', { namespace: 'wallet' }) private pptBalance!: number;
+  @State('remote', { namespace: 'wallet' }) private wallet!;
 
-  @Action('fetchBalance', { namespace: 'identity' }) private fetchBalance!: () => void;
-  @State('identityAddress', { namespace: 'identity' }) private identityAddress!: string;
-  @State('tokenBalance', { namespace: 'identity' }) private tokenBalance!: number;
+  @Action('fetchBalances', { namespace: 'identity' }) private fetchBalance!: () => void;
+  @State('address', { namespace: 'identity' }) private identityAddress!;
+  @State('balances', { namespace: 'identity' }) private identityBalances!;
 
   public async unlockWithPrivateKey() {
     await this.buildWallet({ privateKey: this.privateKey });
   }
 
   public async buy() {
-
     await this.buyPetitionToken({recipient: this.identityAddress, value: this.tokenToBuy});
     await this.fetchBalance();
   }

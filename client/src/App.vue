@@ -24,8 +24,11 @@ export default class App extends Vue {
   @State('ready') private ready!: boolean;
   @Action('init') private init!: () => void;
 
+  @Action('generateLocal', { namespace: 'wallet' }) private generateLocal!: () => void;
+
   public async mounted() {
     await this.init();
+    await this.generateLocal();
   }
 }
 </script>

@@ -29,16 +29,16 @@ export const actions: ActionTree<PetitionState, RootState> = {
     if (!txEvents.PetitionCreated) {
       return;
     }
-    const petition = await buildPetition(Object.values(txEvents.PetitionCreated), rootState);
-    commit('addPetition', petition);
+    const result = await buildPetition(Object.values(txEvents.PetitionCreated), rootState);
+    commit('addPetition', result);
   },
   async list({ commit, rootState }) {
     const controller = rootState.contracts.Controller[0];
     const addresses: string[] = await controller.getAddresses();
 
     const promises = addresses.map(async (address) => {
-      const petition = new ethers.Contract(address, petitionJson.abi, rootState.provider);
-      const data = await petition.get();
+      const contract = new ethers.Contract(address, petitionJson.abi, rootState.provider);
+      const data = await contract.get();
       return await buildPetition(data, rootState);
     });
     const petitions: Petition[] = await Promise.all(promises);
@@ -57,11 +57,11 @@ export const mutations: MutationTree<PetitionState> = {
 
 const namespaced: boolean = true;
 
-const profile: Module<PetitionState, RootState> = {
+const petition: Module<PetitionState, RootState> = {
   namespaced,
   state: defaultState,
   actions,
   mutations,
 };
 
-export default profile;
+export default petition;

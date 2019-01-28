@@ -25,11 +25,11 @@ export const mutations: MutationTree<EnsState> = {
 
 const namespaced: boolean = true;
 
-const profile: Module<EnsState, RootState> = {
+const ens: Module<EnsState, RootState> = {
   namespaced,
   state: defaultState,
   actions,
   mutations,
 };
 
-export default profile;
+export default ens;

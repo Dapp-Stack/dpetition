@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { Petition, calculateHash, Message } from '@dpetition/lib';
-import { IdentityState, RootState } from '../types';
+import { RootState } from '../types';
 import { BigNumber } from 'ethers/utils';
 import { get, add } from './ipfsService';
 
@@ -20,13 +20,13 @@ export const buildPetition = async (data: string[], rootState: RootState): Promi
 export const buildCreateInput = async (rootState: RootState, petition: Petition) => {
   const descriptionHash = await add(rootState.ipfsClient, petition.description);
   const params = [petition.title, descriptionHash, petition.expireOn.getTime(), petition.deposit];
-  const wallet = new ethers.Wallet(rootState.identity.privateKey, rootState.provider);
-  const contract = new ethers.Contract(rootState.identity.identityAddress, identityJson.abi, wallet);
+  const wallet = new ethers.Wallet(rootState.wallet.local.privateKey, rootState.provider);
+  const contract = new ethers.Contract(rootState.identity.address, identityJson.abi, wallet);
   const nonce = await contract.lastNonce();
 
   const message: Message =  {
     to: rootState.contracts.Controller[0].address,
-    from: rootState.identity.identityAddress,
+    from: rootState.identity.address,
     value: new BigNumber(0),
     data: rootState.contracts.Controller[0].interface.functions.create.encode(params),
     gasToken: rootState.contracts.ERC20Mintable[0].address,

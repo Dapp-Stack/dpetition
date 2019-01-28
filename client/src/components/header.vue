@@ -74,12 +74,15 @@ import Blockies from './blockies.vue';
 export default class Header extends Vue {
   public addPetitionDialog = false;
 
-  @Action('destroy', { namespace: 'identity' }) private destroy!: () => void;
+  @Action('destroy', { namespace: 'identity' }) private destroyIdentity!: () => void;
   @State('address', { namespace: 'identity' }) private address!: string;
   @State('ensName', { namespace: 'identity' }) private ensName!: string;
 
-  public logout() {
-    this.destroy();
+  @Action('destroy', { namespace: 'wallet' }) private destroyWallet!: () => void;
+
+  public async logout() {
+    await this.destroyIdentity();
+    await this.destroyWallet();
   }
 }
 </script>
