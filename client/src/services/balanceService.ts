@@ -7,7 +7,7 @@ export const updateBalances = async (commit: Commit, rootState: RootState, addre
 
   const ppt = await getPPTBalance(rootState, address);
   commit('updateBalance', {name: 'PPT', value: ppt});
-}
+};
 
 export const getPPTBalance = async (rootState: RootState, address: string) => {
   const token = rootState.contracts.ERC20Mintable[0];
