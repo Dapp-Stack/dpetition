@@ -5,7 +5,7 @@ import { waitForTransactionReceipt } from '@dpetition/lib';
 
 import { RootState, WalletState } from '../../types';
 import { buildWallet } from '../../services/walletService';
-import { getWeiBalance, getPPTBalance } from '../../services/balanceService';
+import { updateBalances } from '../../services/balanceService';
 
 export const defaultState: WalletState = {
   local: {
@@ -38,11 +38,7 @@ export const actions: ActionTree<WalletState, RootState> = {
     const remoteWallet = buildWallet(rootState.provider, privateKey, mnemonic);
     commit('setRemote', { privateKey, mnemonic, address: remoteWallet.address });
 
-    const wei = await getWeiBalance(rootState, remoteWallet.address);
-    commit('updateBalance', {name: 'WEI', value: wei});
-
-    const ppt = await getPPTBalance(rootState, remoteWallet.address);
-    commit('updateBalance', {name: 'PPT', value: ppt});
+    await updateBalances(commit, rootState, remoteWallet.address);
   },
   async buyPetitionToken({ commit, state, rootState }, value: number) {
     const overrides = { value: ethers.utils.parseEther(value.toString()) };
@@ -54,12 +50,7 @@ export const actions: ActionTree<WalletState, RootState> = {
       return;
     }
     await waitForTransactionReceipt(rootState.provider, transaction.hash);
-
-    const wei = await getWeiBalance(rootState, remoteWallet.address);
-    commit('updateBalance', {name: 'WEI', value: wei});
-
-    const ppt = await getPPTBalance(rootState, remoteWallet.address);
-    commit('updateBalance', {name: 'PPT', value: ppt});
+    await updateBalances(commit, rootState, remoteWallet.address);
   },
 };
 

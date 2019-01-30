@@ -7,7 +7,7 @@ import { BigNumber } from 'ethers/utils';
 import { apiUrl } from '../../config';
 import { RootState, IdentityState } from '../../types';
 import { usernameToEns } from '../../services/ensService';
-import { getWeiBalance, getPPTBalance } from '../../services/balanceService';
+import { updateBalances } from '../../services/balanceService';
 
 export const defaultState: IdentityState = {
   address: '',
@@ -40,11 +40,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
     commit('setAddress', receipt.contractAddress);
   },
   async fetchBalances({ commit, state, rootState }) {
-    const wei = await getWeiBalance(rootState, state.address);
-    commit('updateBalance', {name: 'WEI', value: wei});
-
-    const ppt = await getPPTBalance(rootState, state.address);
-    commit('updateBalance', {name: 'PPT', value: ppt});
+    await updateBalances(commit, rootState, state.address);
   },
 };
 
