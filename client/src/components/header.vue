@@ -11,6 +11,7 @@
       <span>List Petitions</span>
     </v-btn>
     <v-dialog
+      v-if="address"
       v-model="addPetitionDialog"
       fullscreen
       hide-overlay

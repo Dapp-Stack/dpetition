@@ -37,7 +37,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
       return;
     }
     const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
-    commit('setAddress', receipt.contractAddress);
+    commit('setAddress', { address: receipt.contractAddress });
   },
   async fetchBalances({ commit, state, rootState }) {
     await updateBalances(commit, rootState, state.address);

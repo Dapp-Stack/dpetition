@@ -92,11 +92,11 @@ export default class Wallet extends Vue {
   @Action('buyPetitionToken', { namespace: 'wallet' }) private buyPetitionToken!: (
     payload: { recipient: string, value: number },
   ) => void;
-  @State('remote', { namespace: 'wallet' }) private wallet!;
+  @State('remote', { namespace: 'wallet' }) private wallet!: { address: string };
 
   @Action('fetchBalances', { namespace: 'identity' }) private fetchBalance!: () => void;
-  @State('address', { namespace: 'identity' }) private identityAddress!;
-  @State('balances', { namespace: 'identity' }) private identityBalances!;
+  @State('address', { namespace: 'identity' }) private identityAddress!: string;
+  @State('balances', { namespace: 'identity' }) private identityBalances!: string;
 
   public async unlockWithPrivateKey() {
     await this.buildWallet({ privateKey: this.privateKey });
