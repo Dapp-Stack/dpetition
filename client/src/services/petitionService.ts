@@ -7,7 +7,10 @@ import { get, add } from './ipfsService';
 import identityJson from '../../contracts/Identity/Identity.sol/Identity.json';
 import petitionJson from '../../contracts/Petition/Petition.sol/Petition.json';
 
-export const buildPetition = async (data: string[], signers: string[], withdraws: string[], rootState: RootState): Promise<Petition> => {
+export const buildPetition = async (data: string[],
+                                    signers: string[],
+                                    withdraws: string[],
+                                    rootState: RootState): Promise<Petition> => {
   const description = await get(rootState.ipfsClient, data[2]);
   return {
     address: data[0] as string,
