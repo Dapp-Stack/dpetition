@@ -238,6 +238,8 @@ export default class AddPetition extends Vue {
   @Action('create', { namespace: 'petition' }) private createPetition!: (
     petition: Petition,
   ) => void;
+  @Action('fetchBalances', { namespace: 'identity' }) private fetchBalance!: () => void;
+
 
   public mounted() {
     this.editor = new Editor({
@@ -293,6 +295,7 @@ export default class AddPetition extends Vue {
       withdraws: [],
     };
     await this.createPetition(petition);
+    await this.fetchBalance();
     this.$emit('close');
   }
 }
