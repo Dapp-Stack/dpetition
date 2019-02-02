@@ -2,7 +2,6 @@ import axios from 'axios';
 import { waitForTransactionReceipt } from '@dpetition/lib';
 import { Module, ActionTree, MutationTree } from 'vuex';
 import { ethers } from 'ethers';
-import { BigNumber } from 'ethers/utils';
 
 import { apiUrl } from '../../config';
 import { RootState, IdentityState } from '../../types';
@@ -60,7 +59,7 @@ export const mutations: MutationTree<IdentityState> = {
   setAddress(state, payload: { address: string }) {
     state.address = payload.address;
   },
-  updateBalance(state, payload: { name: string, value: number }) {
+  updateBalance(state, payload: { name: string, value: string }) {
     state.balances[payload.name] = payload.value;
   },
 };

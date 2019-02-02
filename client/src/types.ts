@@ -1,9 +1,8 @@
 import { ethers } from 'ethers';
 import { Contracts, Petition } from '@dpetition/lib';
-import { BigNumber } from 'ethers/utils';
 
 export interface Balances {
-  [currency: string]: number;
+  [currency: string]: string;
 }
 
 export interface PetitionState {

@@ -36,7 +36,7 @@ export const actions: ActionTree<WalletState, RootState> = {
   async generateRemote({ commit, rootState }, payload: { privateKey?: string, mnemonic?: string}) {
     const { privateKey, mnemonic } = payload;
     const remoteWallet = buildWallet(rootState.provider, privateKey, mnemonic);
-    commit('setRemote', { privateKey, mnemonic, address: remoteWallet.address });
+    commit('setRemote', { privateKey, mnemonic, address: remoteWallet.address, balances: {} });
 
     await updateBalances(commit, rootState, remoteWallet.address);
   },
@@ -61,7 +61,7 @@ export const mutations: MutationTree<WalletState> = {
   setRemote(state, payload) {
     state.remote = payload;
   },
-  updateBalance(state, payload: { name: string, value: number }) {
+  updateBalance(state, payload: { name: string, value: string }) {
     state.remote.balances[payload.name] = payload.value;
   },
   clean(state) {

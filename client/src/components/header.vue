@@ -48,6 +48,7 @@
         </v-list>
         
         <v-divider></v-divider>
+        
         <v-layout row>
           <v-flex xs=6 v-for="(value, key) in balances" :key="key">
             <v-list-tile>
