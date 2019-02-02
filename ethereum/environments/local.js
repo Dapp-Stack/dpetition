@@ -12,6 +12,8 @@ async function deployPetitionTokenProtocol(deployer) {
   const token = await deployer.deploy('ERC20Mintable');
   const address = await deployer.signer.getAddress()
   await deployer.deploy('MintedCrowdsale', 1, address, token.address);
+
+  return token;
 }
 
 async function deployENSProtocol(deployer) {
@@ -97,13 +99,13 @@ const identityContracts = [
 ]
 
 const petitionContracts = [
-  "Petition/Escrow.sol",
   "Petition/Petition.sol",
   "Petition/Controller.sol",
 ]
 
-async function deployPetitionProtocol(deployer) {
-  await deployer.deploy('Controller');
+async function deployPetitionProtocol(deployer, erc20) {
+  const recipient = await deployer.signer.getAddress()
+  await deployer.deploy('Controller', erc20.address, recipient);
 }
 
 module.exports = {
@@ -148,8 +150,8 @@ module.exports = {
       await deployENSProtocol(deployer);
       // await deploySAIProtocol(deployer);
       // await deploy0xProtocol(deployer);
-      await deployPetitionProtocol(deployer);
-      await deployPetitionTokenProtocol(deployer);
+      const erc20 = await deployPetitionTokenProtocol(deployer);
+      await deployPetitionProtocol(deployer, erc20);
     }
   },
 

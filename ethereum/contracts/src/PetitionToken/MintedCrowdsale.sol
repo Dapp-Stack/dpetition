@@ -121,10 +121,7 @@ contract MintedCrowdsale is ReentrancyGuard {
         _processPurchase(beneficiary, tokens);
         emit TokensPurchased(msg.sender, beneficiary, weiAmount, tokens);
 
-        _updatePurchasingState(beneficiary, weiAmount);
-
         _forwardFunds();
-        _postValidatePurchase(beneficiary, weiAmount);
     }
 
     /**
@@ -139,16 +136,6 @@ contract MintedCrowdsale is ReentrancyGuard {
     function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal pure {
         require(beneficiary != address(0));
         require(weiAmount != 0);
-    }
-
-    /**
-     * @dev Validation of an executed purchase. Observe state and use revert statements to undo rollback when valid
-     * conditions are not met.
-     * @param beneficiary Address performing the token purchase
-     * @param weiAmount Value in wei involved in the purchase
-     */
-    function _postValidatePurchase(address beneficiary, uint256 weiAmount) internal view {
-        // solhint-disable-previous-line no-empty-blocks
     }
 
     /**
@@ -169,16 +156,6 @@ contract MintedCrowdsale is ReentrancyGuard {
      */
     function _processPurchase(address beneficiary, uint256 tokenAmount) internal {
         _deliverTokens(beneficiary, tokenAmount);
-    }
-
-    /**
-     * @dev Override for extensions that require an internal state to check for validity (current user contributions,
-     * etc.)
-     * @param beneficiary Address receiving the tokens
-     * @param weiAmount Value in wei involved in the purchase
-     */
-    function _updatePurchasingState(address beneficiary, uint256 weiAmount) internal {
-        // solhint-disable-previous-line no-empty-blocks
     }
 
     /**
