@@ -61,7 +61,7 @@ export const mutations: MutationTree<WalletState> = {
   setRemote(state, payload) {
     state.remote = payload;
   },
-  updateBalance(state, payload: { name: string, value: BigNumber }) {
+  updateBalance(state, payload: { name: string, value: number }) {
     state.remote.balances[payload.name] = payload.value;
   },
   clean(state) {

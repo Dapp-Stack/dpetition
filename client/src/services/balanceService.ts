@@ -3,10 +3,10 @@ import { RootState } from '../types';
 
 export const updateBalances = async (commit: Commit, rootState: RootState, address: string) => {
   const wei = await getWeiBalance(rootState, address);
-  commit('updateBalance', {name: 'WEI', value: wei});
+  commit('updateBalance', {name: 'WEI', value: wei.toNumber()});
 
   const ppt = await getPPTBalance(rootState, address);
-  commit('updateBalance', {name: 'PPT', value: ppt});
+  commit('updateBalance', {name: 'PPT', value: ppt.toNumber()});
 };
 
 export const getPPTBalance = async (rootState: RootState, address: string) => {

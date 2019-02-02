@@ -3,7 +3,7 @@ import { Contracts, Petition } from '@dpetition/lib';
 import { BigNumber } from 'ethers/utils';
 
 export interface Balances {
-  [currency: string]: BigNumber;
+  [currency: string]: number;
 }
 
 export interface PetitionState {

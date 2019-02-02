@@ -46,8 +46,27 @@
             <v-list-tile-title>{{address}}</v-list-tile-title>
           </v-list-tile>
         </v-list>
+        
+        <v-divider></v-divider>
+        <v-layout row>
+          <v-flex xs=6 v-for="(value, key) in balances" :key="key">
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title class="text-xs-center">{{value}}</v-list-tile-title>
+                <v-list-tile-sub-title class="text-xs-center">{{key}}</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-flex>
+        </v-layout>
+
+        <v-divider></v-divider>
+
         <v-card-actions>
           <v-spacer></v-spacer>
+          <v-btn color="success" flat to="/wallet">
+            <v-icon class="mr-2">fa-money</v-icon>
+            Buy PPT Token
+          </v-btn>
           <v-btn color="error" flat @click="logout">
             <v-icon class="mr-2">fa-sign-out</v-icon>
             Logout
@@ -68,6 +87,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import { Action, State } from 'vuex-class';
 import AddPetition from './addPetition.vue';
 import Blockies from './blockies.vue';
+import { Balances } from '../types';
 
 @Component({
   components: { AddPetition, Blockies },
@@ -78,6 +98,7 @@ export default class Header extends Vue {
   @Action('destroy', { namespace: 'identity' }) private destroyIdentity!: () => void;
   @State('address', { namespace: 'identity' }) private address!: string;
   @State('ensName', { namespace: 'identity' }) private ensName!: string;
+  @State('balances', { namespace: 'identity' }) private balances!: Balances;
 
   @Action('destroy', { namespace: 'wallet' }) private destroyWallet!: () => void;
 

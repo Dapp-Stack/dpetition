@@ -37,7 +37,11 @@ export const actions: ActionTree<IdentityState, RootState> = {
       return;
     }
     const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
+    if (!receipt.contractAddress) {
+      return;
+    }
     commit('setAddress', { address: receipt.contractAddress });
+    await updateBalances(commit, rootState, receipt.contractAddress);
   },
   async fetchBalances({ commit, state, rootState }) {
     await updateBalances(commit, rootState, state.address);
@@ -56,7 +60,7 @@ export const mutations: MutationTree<IdentityState> = {
   setAddress(state, payload: { address: string }) {
     state.address = payload.address;
   },
-  updateBalance(state, payload: { name: string, value: BigNumber }) {
+  updateBalance(state, payload: { name: string, value: number }) {
     state.balances[payload.name] = payload.value;
   },
 };
