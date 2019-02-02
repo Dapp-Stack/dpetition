@@ -289,6 +289,8 @@ export default class AddPetition extends Vue {
       description: this.editor.getHTML(),
       expireOn: new Date(this.expireOn),
       deposit: this.deposit,
+      signers: [],
+      withdraws: [],
     };
     await this.createPetition(petition);
     this.$emit('close');

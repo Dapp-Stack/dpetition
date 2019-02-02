@@ -94,8 +94,7 @@ export default class IdentityService {
 
   private async hasEnoughToken(identityAddress: string, gasLimit: ethers.utils.BigNumber) {
     const identityTokenBalance = await this.petitionToken.balanceOf(identityAddress);
-    return true
-    return identityTokenBalance.gte(utils.bigNumberify(gasLimit));
+    return identityTokenBalance.gte(gasLimit);
   };
   
 }

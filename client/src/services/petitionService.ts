@@ -1,4 +1,4 @@
-import { ethers, Wallet } from 'ethers';
+import { ethers } from 'ethers';
 import { Petition, calculateHash, Message } from '@dpetition/lib';
 import { RootState } from '../types';
 import { BigNumber } from 'ethers/utils';
@@ -7,7 +7,7 @@ import { get, add } from './ipfsService';
 import identityJson from '../../contracts/Identity/Identity.sol/Identity.json';
 import petitionJson from '../../contracts/Petition/Petition.sol/Petition.json';
 
-export const buildPetition = async (data: string[], rootState: RootState): Promise<Petition> => {
+export const buildPetition = async (data: string[], signers: string[], withdraws: string[], rootState: RootState): Promise<Petition> => {
   const description = await get(rootState.ipfsClient, data[2]);
   return {
     address: data[0] as string,
@@ -15,6 +15,8 @@ export const buildPetition = async (data: string[], rootState: RootState): Promi
     description,
     expireOn: new Date(parseInt(data[3], 10)),
     deposit: Math.round(parseInt(data[4], 10)),
+    signers,
+    withdraws,
   };
 };
 

@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 
 import { apiUrl } from '../../config';
 import { RootState, PetitionState } from '../../types';
-import { buildPetition, buildCreateInput } from '../../services/petitionService';
+import { buildPetition, buildCreateInput, buildSignInput, buildWithdrawInput } from '../../services/petitionService';
 import petitionJson from '../../../contracts/Petition/Petition.sol/Petition.json';
 
 export const defaultState: PetitionState = {
@@ -29,8 +29,46 @@ export const actions: ActionTree<PetitionState, RootState> = {
     if (!txEvents.PetitionCreated) {
       return;
     }
-    const result = await buildPetition(Object.values(txEvents.PetitionCreated), rootState);
+    const result = await buildPetition(Object.values(txEvents.PetitionCreated), [], [], rootState);
     commit('addPetition', result);
+  },
+  async sign({ commit, rootState }, payload: Petition) {
+    const data = await buildSignInput(rootState, payload);
+    const response = await axios({
+      url: `${apiUrl}/identity/execution`,
+      method: 'POST',
+      data,
+    });
+    const transaction: ethers.utils.Transaction = response && response.data;
+    if (!transaction.hash) {
+      return;
+    }
+    const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
+    // const txEvents = extractTransactionEvents(receipt, rootState.contracts.Controller[0]);
+    // if (!txEvents.PetitionCreated) {
+    //   return;
+    // }
+    // const result = await buildPetition(Object.values(txEvents.PetitionCreated), rootState);
+    commit('petitionSigned');
+  },
+  async withdraw({ commit, rootState }, payload: Petition) {
+    const data = await buildWithdrawInput(rootState, payload);
+    const response = await axios({
+      url: `${apiUrl}/identity/execution`,
+      method: 'POST',
+      data,
+    });
+    const transaction: ethers.utils.Transaction = response && response.data;
+    if (!transaction.hash) {
+      return;
+    }
+    const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
+    // const txEvents = extractTransactionEvents(receipt, rootState.contracts.Controller[0]);
+    // if (!txEvents.PetitionCreated) {
+    //   return;
+    // }
+    // const result = await buildPetition(Object.values(txEvents.PetitionCreated), rootState);
+    commit('petitionwithdrawed');
   },
   async list({ commit, rootState }) {
     const controller = rootState.contracts.Controller[0];
@@ -39,7 +77,9 @@ export const actions: ActionTree<PetitionState, RootState> = {
     const promises = addresses.map(async (address) => {
       const contract = new ethers.Contract(address, petitionJson.abi, rootState.provider);
       const data = await contract.get();
-      return await buildPetition(data, rootState);
+      const signers = await contract.getSigners();
+      const withdraws = await contract.getWithdraws();
+      return await buildPetition(data, signers, withdraws, rootState);
     });
     const petitions: Petition[] = await Promise.all(promises);
     commit('updatePetitions', petitions);
