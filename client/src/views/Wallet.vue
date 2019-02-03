@@ -86,7 +86,7 @@ export default class Wallet extends Vue {
   public async buy() {
     await this.buyPetitionToken(this.tokenToBuy);
     await this.fetchBalance();
-    this.$router.push('/')
+    this.$router.push('/');
   }
 }
 </script>

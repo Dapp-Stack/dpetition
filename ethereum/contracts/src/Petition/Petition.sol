@@ -44,7 +44,7 @@ contract Petition is Ownable {
         return signers;
     }
 
-    function getWidraws() public view returns(address[] memory) {
+    function getWithdraws() public view returns(address[] memory) {
         return withdraws;
     }
 

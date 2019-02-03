@@ -14,6 +14,11 @@ export default new Router({
       component: Petitions,
     },
     {
+      path: '/petitions/:address',
+      name: 'petition',
+      component: () => import(/* webpackChunkName: "wallet" */ './views/ShowPetition.vue'),
+    },
+    {
       path: '/connect',
       name: 'connect',
       component: () => import(/* webpackChunkName: "connect" */ './views/Connect.vue'),

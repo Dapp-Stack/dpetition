@@ -13,9 +13,12 @@
             </v-alert>
           </template>
           <template slot="items" slot-scope="props">
-            <td>{{ props.item.title }}</td>
-            <td>{{ props.item.expireOn | moment("dddd, MMMM Do YYYY, h:mm:ss a") }}</td>
-            <td>{{ props.item.deposit }}WEI</td>
+            <router-link tag="tr" class="tr-link" :to="`/petitions/${props.item.address}`">
+              <td>{{ props.item.title }}</td>
+              <td>{{ props.item.expireOn | moment("dddd, MMMM Do YYYY, h:mm:ss a") }}</td>
+              <td>{{ props.item.deposit }}PPT</td>
+              <td>{{ props.item.signers.length }}</td>
+            </router-link>
           </template>
         </v-data-table>
       </v-flex>
@@ -28,17 +31,16 @@ import Vue from 'vue';
 import { Action, State } from 'vuex-class';
 import { Component, Watch } from 'vue-property-decorator';
 
-const namespace: string = 'petition';
-
 @Component
 export default class Petitions extends Vue {
   public headers = [
     { text: 'Title', value: 'title' },
     { text: 'Expire On', value: 'expireOn' },
     { text: 'Deposit', value: 'deposit' },
+    { text: 'Signers', value: 'signers' },
   ];
 
-  @State('list', { namespace }) private petitions!: any[];
+  @State('list', { namespace: 'petition' }) private petitions!: any[];
   @Action('list', { namespace: 'petition' }) private fetch!: () => void;
 
   public async mounted() {
@@ -46,3 +48,9 @@ export default class Petitions extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.tr-link {
+  cursor: pointer;
+}
+</style>
