@@ -1,5 +1,11 @@
 <template>
   <v-container grid-list-xl>
+    <v-snackbar v-model="snackbar" bottom multi-line>
+      Petition Signed
+      <v-btn color="pink" flat @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
     <v-layout v-if="petition" align-center justify-center row>
       <v-flex xs12>
         <v-card class="mt-5">
@@ -32,6 +38,7 @@ import { Petition } from '@dpetition/lib';
 @Component
 export default class ShowPetition extends Vue {
   public petition: Petition | null = null;
+  public snackbar = false
 
   @Action('list', { namespace: 'petition' }) private fetch!: () => void;
   @Action('sign', { namespace: 'petition' }) private signPetition!: (petition: Petition) => void;
@@ -47,6 +54,7 @@ export default class ShowPetition extends Vue {
 
   public async sign() {
     await this.signPetition(this.petition);
+    this.snackbar = true;
   }
 
   public isSigner() {

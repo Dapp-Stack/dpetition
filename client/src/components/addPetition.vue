@@ -282,6 +282,7 @@ export default class AddPetition extends Vue {
     await this.createPetition(petition);
     await this.fetchBalance();
     this.$emit('close');
+    this.$emit('showSuccess');
   }
 }
 </script>
