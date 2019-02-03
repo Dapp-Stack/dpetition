@@ -52,7 +52,6 @@ export const actions: ActionTree<PetitionState, RootState> = {
     if (!txEvents.PetitionSigned) {
       return;
     }
-    debugger
     commit('signPetition', {address: payload.address, signer: txEvents.PetitionSigned[0]});
   },
   async list({ commit, rootState }) {

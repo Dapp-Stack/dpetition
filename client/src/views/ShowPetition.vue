@@ -12,7 +12,7 @@
           <v-card-text v-html="petition.description"></v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="sign" color="success">
+            <v-btn v-if="!isSigner()" @click="sign" color="success">
               <v-icon class="mr-2">fa-pencil</v-icon>
               <span>Sign</span>
             </v-btn>
@@ -36,6 +36,7 @@ export default class ShowPetition extends Vue {
   @Action('list', { namespace: 'petition' }) private fetch!: () => void;
   @Action('sign', { namespace: 'petition' }) private signPetition!: (petition: Petition) => void;
   @State('list', { namespace: 'petition' }) private petitions!: Petition[];
+  @State('address', { namespace: 'identity' }) private address!: string;
 
   public async mounted() {
     if (this.petitions.length === 0) {
@@ -46,6 +47,10 @@ export default class ShowPetition extends Vue {
 
   public async sign() {
     await this.signPetition(this.petition);
+  }
+
+  public isSigner() {
+    return this.petition.signers.includes(this.address);
   }
 }
 </script>
