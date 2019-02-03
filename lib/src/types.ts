@@ -14,9 +14,7 @@ export interface Petition {
   title: string;
   description: string;
   expireOn: Date;
-  deposit: number;
   signers: string[];
-  withdraws: string[];
 }
 
 export interface Contracts {

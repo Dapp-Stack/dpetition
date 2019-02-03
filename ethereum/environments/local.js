@@ -12,8 +12,6 @@ async function deployPetitionTokenProtocol(deployer) {
   const token = await deployer.deploy('ERC20Mintable');
   const address = await deployer.signer.getAddress()
   await deployer.deploy('MintedCrowdsale', 1, address, token.address);
-
-  return token;
 }
 
 async function deployENSProtocol(deployer) {
@@ -29,9 +27,8 @@ const petitionContracts = [
   "Petition/Controller.sol",
 ]
 
-async function deployPetitionProtocol(deployer, erc20) {
-  const recipient = await deployer.signer.getAddress()
-  await deployer.deploy('Controller', erc20.address, recipient);
+async function deployPetitionProtocol(deployer) {
+  await deployer.deploy('Controller');
 }
 
 module.exports = {
@@ -73,8 +70,8 @@ module.exports = {
     // Function executed by DApp Stack to deploy the contracts.
     migrate: async (deployer) => {
       await deployENSProtocol(deployer);
-      const erc20 = await deployPetitionTokenProtocol(deployer);
-      await deployPetitionProtocol(deployer, erc20);
+      await deployPetitionTokenProtocol(deployer);
+      await deployPetitionProtocol(deployer);
     }
   },
 

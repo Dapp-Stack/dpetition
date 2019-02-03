@@ -16,7 +16,6 @@
             <router-link tag="tr" class="tr-link" :to="`/petitions/${props.item.address}`">
               <td>{{ props.item.title }}</td>
               <td>{{ props.item.expireOn | moment("dddd, MMMM Do YYYY, h:mm:ss a") }}</td>
-              <td>{{ props.item.deposit }}PPT</td>
               <td>{{ props.item.signers.length }}</td>
             </router-link>
           </template>
@@ -36,7 +35,6 @@ export default class Petitions extends Vue {
   public headers = [
     { text: 'Title', value: 'title' },
     { text: 'Expire On', value: 'expireOn' },
-    { text: 'Deposit', value: 'deposit' },
     { text: 'Signers', value: 'signers' },
   ];
 

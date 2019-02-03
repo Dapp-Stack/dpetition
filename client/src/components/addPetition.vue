@@ -26,15 +26,6 @@
                 class="mt-5"
                 required
               ></v-text-field>
-              <v-text-field
-                v-model="deposit"
-                :rules="depositRules"
-                label="Deposit"
-                prepend-icon="fa-credit-card"
-                type="number"
-                class="mt-5"
-                required
-              ></v-text-field>
 
               <v-menu
                 ref="expireOnMenuRef"
@@ -213,8 +204,6 @@ const tomorrow = () => moment(new Date()).add(1, 'days');
 const titleRequired = (v: string) => !!v || 'Title is required';
 const titleLength = (v: string) =>
   (v && v.length <= 50) || 'Title must be less than 50 characters';
-const depositRequired = (v: number) => !!v || 'Deposit is required';
-const depositMin = (v: number) => v > 0 || 'Deposit minimum is 1';
 const expireOnRequired = (v: string) => !!v || 'Expire On is required';
 const expireOnMin = (v: string) => moment(v).isAfter(tomorrow()) || 'Expire On must be in at least 1 day';
 
@@ -231,8 +220,6 @@ export default class AddPetition extends Vue {
   public titleRules = [titleRequired, titleLength];
   public expireOn: string = '';
   public expireOnRules = [expireOnRequired, expireOnMin];
-  public deposit: number = 1;
-  public depositRules = [depositRequired, depositMin];
   public expireOnMenu: boolean = false;
 
   @Action('create', { namespace: 'petition' }) private createPetition!: (
@@ -290,9 +277,7 @@ export default class AddPetition extends Vue {
       title: this.title,
       description: this.editor.getHTML(),
       expireOn: new Date(this.expireOn),
-      deposit: this.deposit,
       signers: [],
-      withdraws: [],
     };
     await this.createPetition(petition);
     await this.fetchBalance();

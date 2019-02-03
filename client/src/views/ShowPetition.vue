@@ -16,10 +16,6 @@
               <v-icon class="mr-2">fa-pencil</v-icon>
               <span>Sign</span>
             </v-btn>
-            <v-btn>
-              <v-icon class="mr-2">fa-eraser</v-icon>
-              <span>Withdraw</span>
-            </v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
