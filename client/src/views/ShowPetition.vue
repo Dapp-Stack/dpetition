@@ -66,6 +66,9 @@ export default class ShowPetition extends Vue {
   }
 
   public async sign() {
+    if (!this.petition) {
+      return;
+    }
     this.loading = true;
     await this.signPetition(this.petition);
     this.snackbar = true;
@@ -73,7 +76,7 @@ export default class ShowPetition extends Vue {
   }
 
   public isSigner() {
-    return this.petition.signers.includes(this.address);
+    return this.petition && this.petition.signers.includes(this.address);
   }
 }
 </script>

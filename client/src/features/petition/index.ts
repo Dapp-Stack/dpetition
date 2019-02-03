@@ -77,11 +77,11 @@ export const mutations: MutationTree<PetitionState> = {
     state.list.push(payload);
   },
   signPetition(state, payload: { address: string, signer: string}) {
-    const petition = state.list.find((p) => p.address === payload.address);
-    if (!petition) {
+    const foundedPetition = state.list.find((p) => p.address === payload.address);
+    if (!foundedPetition) {
       return;
     }
-    petition.signers.push(payload.signer);
+    foundedPetition.signers.push(payload.signer);
   },
 };
 
