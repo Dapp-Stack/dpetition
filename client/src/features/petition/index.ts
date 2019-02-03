@@ -33,6 +33,9 @@ export const actions: ActionTree<PetitionState, RootState> = {
     commit('addPetition', result);
   },
   async sign({ commit, rootState }, payload: Petition) {
+    if (!payload.address) {
+      return;
+    }
     const data = await buildSignInput(rootState, payload);
     const response = await axios({
       url: `${apiUrl}/identity/execution`,
@@ -44,12 +47,13 @@ export const actions: ActionTree<PetitionState, RootState> = {
       return;
     }
     const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
-    // const txEvents = extractTransactionEvents(receipt, rootState.contracts.Controller[0]);
-    // if (!txEvents.PetitionCreated) {
-    //   return;
-    // }
-    // const result = await buildPetition(Object.values(txEvents.PetitionCreated), rootState);
-    commit('petitionSigned');
+    const contract = new ethers.Contract(payload.address, petitionJson.abi, rootState.provider);
+    const txEvents = extractTransactionEvents(receipt, contract);
+    if (!txEvents.PetitionSigned) {
+      return;
+    }
+    debugger
+    commit('signPetition', {address: payload.address, signer: txEvents.PetitionSigned[0]});
   },
   async list({ commit, rootState }) {
     const controller = rootState.contracts.Controller[0];
@@ -72,6 +76,13 @@ export const mutations: MutationTree<PetitionState> = {
   },
   addPetition(state, payload: Petition) {
     state.list.push(payload);
+  },
+  signPetition(state, payload: { address: string, signer: string}) {
+    const petition = state.list.find((p) => p.address === payload.address);
+    if (!petition) {
+      return;
+    }
+    petition.signers.push(payload.signer);
   },
 };
 
