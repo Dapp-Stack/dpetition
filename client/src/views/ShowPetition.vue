@@ -12,7 +12,7 @@
           <v-card-text v-html="petition.description"></v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success">
+            <v-btn @click="sign" color="success">
               <v-icon class="mr-2">fa-pencil</v-icon>
               <span>Sign</span>
             </v-btn>
@@ -35,16 +35,21 @@ import { Petition } from '@dpetition/lib';
 
 @Component
 export default class ShowPetition extends Vue {
-  public petition: Petition | undefined = undefined;
+  public petition: Petition | null = null;
 
   @Action('list', { namespace: 'petition' }) private fetch!: () => void;
+  @Action('sign', { namespace: 'petition' }) private signPetition!: (petition: Petition) => void;
   @State('list', { namespace: 'petition' }) private petitions!: Petition[];
 
   public async mounted() {
     if (this.petitions.length === 0) {
       await this.fetch();
     }
-    this.petition = this.petitions.find((p) => p.address === this.$route.params.address);
+    this.petition = this.petitions.find((p) => p.address === this.$route.params.address) || null;
+  }
+
+  public async sign() {
+    await this.signPetition(this.petition);
   }
 }
 </script>
