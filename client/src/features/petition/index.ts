@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 
 import { apiUrl } from '../../config';
 import { RootState, PetitionState } from '../../types';
-import { buildPetition, buildCreateInput, buildSignInput, buildWithdrawInput } from '../../services/petitionService';
+import { buildPetition, buildCreateInput, buildSignInput } from '../../services/petitionService';
 import petitionJson from '../../../contracts/Petition/Petition.sol/Petition.json';
 
 export const defaultState: PetitionState = {
@@ -29,7 +29,7 @@ export const actions: ActionTree<PetitionState, RootState> = {
     if (!txEvents.PetitionCreated) {
       return;
     }
-    const result = await buildPetition(Object.values(txEvents.PetitionCreated), [], [], rootState);
+    const result = await buildPetition(Object.values(txEvents.PetitionCreated), [], rootState);
     commit('addPetition', result);
   },
   async sign({ commit, rootState }, payload: Petition) {
