@@ -6,6 +6,18 @@
         Close
       </v-btn>
     </v-snackbar>
+    <v-dialog v-model="loading" hide-overlay persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text>
+          Please stand by while your transaction is mined
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-layout v-if="petition" align-center justify-center row>
       <v-flex xs12>
         <v-card class="mt-5">
@@ -18,7 +30,7 @@
           <v-card-text v-html="petition.description"></v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn v-if="!isSigner()" @click="sign" color="success">
+            <v-btn v-if="!isSigner()" @click="sign" color="success" :disabled="loading" :loading="loading">
               <v-icon class="mr-2">fa-pencil</v-icon>
               <span>Sign</span>
             </v-btn>
@@ -38,7 +50,8 @@ import { Petition } from '@dpetition/lib';
 @Component
 export default class ShowPetition extends Vue {
   public petition: Petition | null = null;
-  public snackbar = false
+  public snackbar = false;
+  public loading = false;
 
   @Action('list', { namespace: 'petition' }) private fetch!: () => void;
   @Action('sign', { namespace: 'petition' }) private signPetition!: (petition: Petition) => void;
@@ -53,8 +66,10 @@ export default class ShowPetition extends Vue {
   }
 
   public async sign() {
+    this.loading = true;
     await this.signPetition(this.petition);
     this.snackbar = true;
+    this.loading = false;
   }
 
   public isSigner() {

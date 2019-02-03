@@ -1,5 +1,17 @@
 <template>
   <v-card>
+    <v-dialog v-model="loading" hide-overlay persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text>
+          Please stand by while your transaction is mined
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-form v-model="valid">
       <v-toolbar dark color="primary">
         <v-btn icon dark @click="$emit('close')">
@@ -8,7 +20,7 @@
         <v-toolbar-title>Add Petition</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
-          <v-btn :disabled="!valid" dark large flat @click="create">
+          <v-btn :disabled="!valid || loading" :loading="loading" dark large flat @click="create">
             <v-icon class="mr-2">fa-plus</v-icon>Create
           </v-btn>
         </v-toolbar-items>
@@ -221,6 +233,7 @@ export default class AddPetition extends Vue {
   public expireOn: string = '';
   public expireOnRules = [expireOnRequired, expireOnMin];
   public expireOnMenu: boolean = false;
+  public loading = false;
 
   @Action('create', { namespace: 'petition' }) private createPetition!: (
     petition: Petition,
@@ -273,6 +286,7 @@ export default class AddPetition extends Vue {
   }
 
   public async create() {
+    this.loading = true;
     const petition: Petition = {
       title: this.title,
       description: this.editor.getHTML(),
@@ -281,6 +295,7 @@ export default class AddPetition extends Vue {
     };
     await this.createPetition(petition);
     await this.fetchBalance();
+    this.loading = false;
     this.$emit('close');
     this.$emit('showSuccess');
   }
