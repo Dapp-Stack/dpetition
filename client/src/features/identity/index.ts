@@ -18,7 +18,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
   destroy({ commit }) {
     commit('clean');
   },
-  async create({ commit, rootState }, payload: string) {
+  async create({ commit, rootState, dispatch }, payload: string) {
     const address = rootState.wallet.local.address;
     const ensName = usernameToEns(payload);
     const response = await axios({
@@ -40,7 +40,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
       return;
     }
     commit('setAddress', { address: receipt.contractAddress });
-    await updateBalances(commit, rootState, receipt.contractAddress);
+    dispatch('fetchBalances');
   },
   async fetchBalances({ commit, state, rootState }) {
     await updateBalances(commit, rootState, state.address);
