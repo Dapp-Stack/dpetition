@@ -7,8 +7,8 @@ import EnsService from './ensService.js';
 import AuthorisationService from './authorisationService.js';
 
 const defaultDeployOptions = {
-  gasLimit: utils.bigNumberify(5500000),
-  gasPrice: utils.bigNumberify(9000000000)
+  gasLimit: utils.bigNumberify(2000000),
+  gasPrice: utils.bigNumberify(2000000000)
 };
 
 export default class IdentityService {

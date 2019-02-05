@@ -23,6 +23,7 @@ export const buildPetition = async (data: string[],
 export const buildSignInput = async (rootState: RootState, petition: Petition) => {
   const message: Message =  {
     ...await buildDefaultMessage(rootState),
+    gasLimit: new BigNumber(150000),
     to: petition.address,
     data: new ethers.utils.Interface(petitionJson.abi).functions.sign.encode([]),
   };
@@ -36,6 +37,7 @@ export const buildCreateInput = async (rootState: RootState, petition: Petition)
 
   const message: Message =  {
     ...await buildDefaultMessage(rootState),
+    gasLimit: new BigNumber(1000000),
     to: rootState.contracts.Controller[0].address,
     data: rootState.contracts.Controller[0].interface.functions.create.encode(params),
   };
@@ -50,8 +52,8 @@ const buildDefaultMessage = async (rootState: RootState) => {
     value: new BigNumber(0),
     gasToken: rootState.contracts.ERC20Mintable[0].address,
     operationType: '0',
-    gasLimit: new BigNumber(5000000),
-    gasPrice: new BigNumber(1000000000),
+    gasLimit: new BigNumber(100000),
+    gasPrice: new BigNumber(2000000000),
     chainId: rootState.network.chainId,
     nonce,
   };

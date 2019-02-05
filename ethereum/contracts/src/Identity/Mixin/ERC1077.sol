@@ -117,9 +117,9 @@ contract ERC1077 is KeyHolder, IERC1077 {
         
 
         emit ExecutedSigned(messageHash, _lastNonce, success);
-        _lastNonce++;
         uint256 gasUsed = startingGas.sub(gasleft());
         refund(gasUsed, gasPrice, gasToken);
+        _lastNonce++;
         return messageHash;
     }
 
