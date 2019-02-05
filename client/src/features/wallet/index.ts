@@ -21,8 +21,9 @@ export const defaultState: WalletState = {
 };
 
 export const actions: ActionTree<WalletState, RootState> = {
-  destroy({ commit }) {
+  destroy({ commit, dispatch }) {
     commit('clean');
+    dispatch('generateLocal');
   },
   generateLocal({ commit, rootState, state }) {
     if (state.local.address && state.local.privateKey) {
@@ -41,7 +42,7 @@ export const actions: ActionTree<WalletState, RootState> = {
     await updateBalances(commit, rootState, remoteWallet.address);
   },
   async buyPetitionToken({ commit, state, rootState }, value: number) {
-    const overrides = { value: ethers.utils.parseEther(value.toString()) };
+    const overrides = { value: ethers.utils.bigNumberify(value) };
     const remoteWallet = buildWallet(rootState.provider, state.remote.privateKey, state.remote.mnemonic);
     const crowdsale = (rootState.contracts.MintedCrowdsale[0]).connect(remoteWallet);
 
