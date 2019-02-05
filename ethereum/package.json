@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "das": "dapp-stack-scripts",
-    "secrets": "dapp-stack-secrets"
+    "secrets": "dapp-stack-secrets",
+    "dev": "npm run das start"
   },
   "dependencies": {
     "ethers": "^4.0.21"

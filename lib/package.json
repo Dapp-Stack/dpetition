@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "tslint": "tslint -c tslint.json -p tsconfig.json"
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "dev": "tsc --watch --pretty --preserveWatchOutput"
   },
   "dependencies": {
     "ethers": "^4.0.20"

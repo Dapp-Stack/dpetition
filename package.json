@@ -16,16 +16,10 @@
     ]
   },
   "scripts": {
-    "dev": "concurrently 'npm:watch:*'",
-    "watch:lib": "cd lib; tsc --watch --pretty --preserveWatchOutput",
-    "watch:ethereum": "cd ethereum; yarn das start",
-    "watch:relayer:ts": "cd relayer; tsc --watch --pretty --preserveWatchOutput",
-    "watch:relayer:node": "sleep 10 && PRIVATE_KEY=f84108908243d78b74a664935b93053c358a6e226a707b381b6bda5ed427d0f5 DEBUG=* nodemon -V relayer/bin/www -w relayer/dist -i relayer/dist/tracker.json"
+    "dev": "lerna run --parallel dev"
   },
   "devDependencies": {
-    "concurrently": "^4.1.0",
-    "cross-env": "^5.2.0",
-    "nodemon": "^1.18.9",
+    "lerna": "^3.10.7",
     "typescript": "^3.0.0"
   }
 }

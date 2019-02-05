@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "npm run build && npm run start:server",
-    "start:server": "node ./bin/www",
+    "production": "npm run build && npm run production:server",
+    "production:server": "node ./bin/www",
     "build": "tsc",
-    "tslint": "tslint -c tslint.json -p tsconfig.json"
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "dev": "sleep 15 && npx npm-run-all --parallel dev:*",
+    "dev:ts": "tsc --watch --pretty --preserveWatchOutput",
+    "dev:server": "PRIVATE_KEY=019beb09a569d9037a2cc450345b7b95df51fc38ee64416eb8997b362ec2a1bb DEBUG=* nodemon -V bin/www -w dist -i dist/tracker.json"
   },
   "dependencies": {
     "@dpetition/lib": "0.1.0",
@@ -30,6 +33,7 @@
     "@types/node": "^9.4.6",
     "@types/redis": "^2.8.10",
     "@types/request": "^2.47.0",
+    "nodemon": "^1.18.9",
     "tslint": "^5.9.1"
   }
 }
