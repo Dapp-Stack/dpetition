@@ -40,7 +40,7 @@ export default class IdentityService {
   }
 
   async executeSigned(message: any) {
-    if (!await this.hasEnoughToken(message.from, message.gasLimit)) { 
+    if (!await this.hasEnoughToken(message.from, message.gasLimit, message.gasPrice)) {
       throw new Error('Not enough tokens');
     }
 
@@ -92,9 +92,11 @@ export default class IdentityService {
     return utils.hexlify(utils.stripZeros(address));
   };
 
-  private async hasEnoughToken(identityAddress: string, gasLimit: ethers.utils.BigNumber) {
+  private async hasEnoughToken(identityAddress: string, gasLimit: string, gasPrice: string) {
     const identityTokenBalance = await this.petitionToken.balanceOf(identityAddress);
-    return identityTokenBalance.gte(gasLimit);
+    const requiredTokenBalance = utils.bigNumberify(gasLimit).mul(gasPrice);
+    console.dir(requiredTokenBalance.toString())
+    return identityTokenBalance.gte(requiredTokenBalance);
   };
   
 }
