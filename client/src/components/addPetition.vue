@@ -22,7 +22,7 @@
         <v-toolbar-items>
           <v-btn :disabled="!valid || loading" :loading="loading" dark large flat @click="create">
             <v-icon class="mr-2">fa-plus</v-icon>
-            Create (0.015 PPT)
+            Create (0.0015 PPT)
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
