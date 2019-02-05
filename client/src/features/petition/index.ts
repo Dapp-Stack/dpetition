@@ -13,7 +13,7 @@ export const defaultState: PetitionState = {
 };
 
 export const actions: ActionTree<PetitionState, RootState> = {
-  async create({ commit, rootState }, payload: Petition) {
+  async create({ commit, rootState, dispatch }, payload: Petition) {
     const data = await buildCreateInput(rootState, payload);
     const response = await axios({
       url: `${apiUrl}/identity/execution`,
@@ -31,8 +31,9 @@ export const actions: ActionTree<PetitionState, RootState> = {
     }
     const result = await buildPetition(Object.values(txEvents.PetitionCreated), [], rootState);
     commit('addPetition', result);
+    dispatch('identity/fetchBalances', {}, { root: true });
   },
-  async sign({ commit, rootState }, payload: Petition) {
+  async sign({ commit, rootState, dispatch }, payload: Petition) {
     if (!payload.address) {
       return;
     }
@@ -53,6 +54,7 @@ export const actions: ActionTree<PetitionState, RootState> = {
       return;
     }
     commit('signPetition', {address: payload.address, signer: txEvents.PetitionSigned[0]});
+    dispatch('identity/fetchBalances', {}, { root: true });
   },
   async list({ commit, rootState }) {
     const controller = rootState.contracts.Controller[0];

@@ -32,7 +32,7 @@
             <v-spacer></v-spacer>
             <v-btn v-if="!isSigner()" @click="sign" color="success" :disabled="loading" :loading="loading">
               <v-icon class="mr-2">fa-pencil</v-icon>
-              <span>Sign</span>
+              <span>Sign (0.00014 PPT)</span>
             </v-btn>
           </v-card-actions>
         </v-card>

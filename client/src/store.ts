@@ -52,7 +52,7 @@ const mutations: MutationTree<RootState> = {
 };
 
 const actions: ActionTree<RootState, RootState> = {
-  async init({ commit }) {
+  async init({ commit, dispatch }) {
     try {
       const ipfsClient = await connect();
       const response = await axios({ url: `${apiUrl}/config` });
@@ -65,6 +65,7 @@ const actions: ActionTree<RootState, RootState> = {
 
       const contracts = loadContracts(network, window.tracker, provider);
       commit('setRootState', { ipfsClient, network, contracts });
+      dispatch('identity/fetchBalances', {}, { root: true });
     } catch (error) {
       commit('setRootState', { ipfsClient: null, network: NULL_NETWORK, contract: {} });
     }

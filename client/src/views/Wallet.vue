@@ -77,15 +77,12 @@ export default class Wallet extends Vue {
   ) => void;
   @State('remote', { namespace: 'wallet' }) private wallet!: { address: string, balances: Balances };
 
-  @Action('fetchBalances', { namespace: 'identity' }) private fetchBalance!: () => void;
-
   public async unlockWithPrivateKey() {
     await this.generateRemote({ privateKey: this.privateKey });
   }
 
   public async buy() {
     await this.buyPetitionToken(this.tokenToBuy);
-    await this.fetchBalance();
     this.$router.push('/');
   }
 }

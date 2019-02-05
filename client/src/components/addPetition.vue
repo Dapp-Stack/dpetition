@@ -21,7 +21,8 @@
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <v-btn :disabled="!valid || loading" :loading="loading" dark large flat @click="create">
-            <v-icon class="mr-2">fa-plus</v-icon>Create
+            <v-icon class="mr-2">fa-plus</v-icon>
+            Create (0.015 PPT)
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
@@ -238,8 +239,6 @@ export default class AddPetition extends Vue {
   @Action('create', { namespace: 'petition' }) private createPetition!: (
     petition: Petition,
   ) => void;
-  @Action('fetchBalances', { namespace: 'identity' }) private fetchBalance!: () => void;
-
 
   public mounted() {
     this.editor = new Editor({
@@ -294,7 +293,6 @@ export default class AddPetition extends Vue {
       signers: [],
     };
     await this.createPetition(petition);
-    await this.fetchBalance();
     this.loading = false;
     this.$emit('close');
     this.$emit('showSuccess');

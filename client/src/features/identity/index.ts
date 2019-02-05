@@ -43,6 +43,9 @@ export const actions: ActionTree<IdentityState, RootState> = {
     dispatch('fetchBalances');
   },
   async fetchBalances({ commit, state, rootState }) {
+    if (!state.address) {
+      return;
+    }
     await updateBalances(commit, rootState, state.address);
   },
 };

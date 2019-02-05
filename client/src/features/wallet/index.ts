@@ -41,8 +41,8 @@ export const actions: ActionTree<WalletState, RootState> = {
 
     await updateBalances(commit, rootState, remoteWallet.address);
   },
-  async buyPetitionToken({ commit, state, rootState }, value: number) {
-    const overrides = { value: ethers.utils.bigNumberify(value) };
+  async buyPetitionToken({ commit, state, rootState, dispatch }, value: number) {
+    const overrides = { value: ethers.utils.parseEther(value.toString()) };
     const remoteWallet = buildWallet(rootState.provider, state.remote.privateKey, state.remote.mnemonic);
     const crowdsale = (rootState.contracts.MintedCrowdsale[0]).connect(remoteWallet);
 
@@ -52,6 +52,7 @@ export const actions: ActionTree<WalletState, RootState> = {
     }
     await waitForTransactionReceipt(rootState.provider, transaction.hash);
     await updateBalances(commit, rootState, remoteWallet.address);
+    dispatch('identity/fetchBalances', {}, { root: true });
   },
 };
 
