@@ -9,7 +9,7 @@
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "dev": "sleep 15 && npx npm-run-all --parallel dev:*",
     "dev:ts": "tsc --watch --pretty --preserveWatchOutput",
-    "dev:server": "PRIVATE_KEY=f84108908243d78b74a664935b93053c358a6e226a707b381b6bda5ed427d0f5 DEBUG=* nodemon -V bin/www -w dist -i dist/tracker.json"
+    "dev:server": "PRIVATE_KEY=f84108908243d78b74a664935b93053c358a6e226a707b381b6bda5ed427d0f5 nodemon bin/www -w dist -i dist/tracker.json"
   },
   "dependencies": {
     "@dpetition/lib": "0.1.0",
