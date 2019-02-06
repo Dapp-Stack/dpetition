@@ -20,9 +20,9 @@
         <v-toolbar-title>Add Petition</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
-          <v-btn :disabled="!valid || loading" :loading="loading" dark large flat @click="create">
+          <v-btn :disabled="!valid || loading" :loading="loading" color="success" large @click="create">
             <v-icon class="mr-2">fa-plus</v-icon>
-            Create (0.0015 PPT)
+            Create (0.0015 PPT / ${{0.0015 * ethUsdPrice}})
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
@@ -239,6 +239,8 @@ export default class AddPetition extends Vue {
   @Action('create', { namespace: 'petition' }) private createPetition!: (
     petition: Petition,
   ) => void;
+  @State('ethUsdPrice') private ethUsdPrice!: number;
+
 
   public mounted() {
     this.editor = new Editor({

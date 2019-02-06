@@ -2,6 +2,7 @@ import axios from 'axios';
 import Vue from 'vue';
 import Vuex, { StoreOptions, MutationTree, ActionTree } from 'vuex';
 import { Network } from 'ethers/utils';
+import cc from 'cryptocompare';
 import VuexPersist from 'vuex-persist';
 import { Tracker, loadContracts } from '@dpetition/lib';
 
@@ -34,6 +35,7 @@ const defaultState: RootState = {
   network: NULL_NETWORK,
   contracts: {},
   ready: false,
+  ethUsdPrice: 0,
   provider,
   ipfsClient: null,
   identity: identityDefaultState,
@@ -49,9 +51,21 @@ const mutations: MutationTree<RootState> = {
     state.ipfsClient = payload.ipfsClient;
     state.ready = true;
   },
+  updateEthUsdPrice(state, payload) {
+    state.ethUsdPrice = payload;
+  },
 };
 
 const actions: ActionTree<RootState, RootState> = {
+  async fetchPrice({ commit }) {
+    const price = await cc.price('ETH', ['USD']);
+    commit('updateEthUsdPrice', price.USD);
+  },
+  initPriceRoutine({ dispatch }) {
+    setInterval(() => {
+      dispatch('fetchPrice');
+    }, 30000);
+  },
   async init({ commit, dispatch }) {
     try {
       const ipfsClient = await connect();
@@ -66,6 +80,8 @@ const actions: ActionTree<RootState, RootState> = {
       const contracts = loadContracts(network, window.tracker, provider);
       commit('setRootState', { ipfsClient, network, contracts });
       dispatch('identity/fetchBalances', {}, { root: true });
+      dispatch('fetchPrice');
+      dispatch('initPriceRoutine');
     } catch (error) {
       commit('setRootState', { ipfsClient: null, network: NULL_NETWORK, contract: {} });
     }

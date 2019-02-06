@@ -24,7 +24,12 @@
           <v-divider class="mt-3"/>
           <v-card-actions>
             <v-flex xs6>
-              <v-text-field type="number" v-model="tokenToBuy" label="Number of Token to Buy" outline></v-text-field>
+              <v-text-field :hint="getUSDPrice()"
+                            persistentHint
+                            type="number"
+                            v-model="tokenToBuy"
+                            label="Number of Token to Buy"
+                            outline></v-text-field>
             </v-flex>
             <v-flex xs6 class="pb-5">
               <v-btn @click="buy" color="success">Buy</v-btn>
@@ -76,6 +81,7 @@ export default class Wallet extends Vue {
     payload: number,
   ) => void;
   @State('remote', { namespace: 'wallet' }) private wallet!: { address: string, balances: Balances };
+  @State('ethUsdPrice') private ethUsdPrice!: number;
 
   public async unlockWithPrivateKey() {
     await this.generateRemote({ privateKey: this.privateKey });
@@ -84,6 +90,11 @@ export default class Wallet extends Vue {
   public async buy() {
     await this.buyPetitionToken(this.tokenToBuy);
     this.$router.push('/');
+  }
+
+  public getUSDPrice() {
+    const value = (this.tokenToBuy * this.ethUsdPrice);
+    return`$${value}`;
   }
 }
 </script>

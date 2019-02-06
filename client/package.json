@@ -13,6 +13,7 @@
     "@babel/polyfill": "^7.0.0-rc.1",
     "@dpetition/lib": "0.1.0",
     "axios": "^0.18.0",
+    "cryptocompare": "^1.0.0",
     "ethereum-blockies": "^0.1.1",
     "ethers": "^4.0.20",
     "font-awesome": "^4.7.0",
